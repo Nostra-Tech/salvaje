@@ -1,0 +1,18 @@
+node_modules
+dist
+.env
+scripts/serviceAccountKey.json
+.firebase
+*.local
+.DS_Store
+Thumbs.db
+
+# Sensitive data exports (Firebase Auth dump with password hashes / PII)
+users.json
+
+# Logs
+*.log
+
+# Empty stray dirs from earlier tooling
+/C/
+

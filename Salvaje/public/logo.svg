@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <!-- Background (transparent) -->
+  <!-- Kettlebell silhouette: handle on top, rounded body below -->
+  <g fill="#4A2818">
+    <!-- Handle (rounded top) -->
+    <path d="M 78 32 C 68 32 60 40 60 50 L 60 78 C 60 84 64 88 70 88 L 84 88 C 90 88 94 84 94 78 L 94 64 C 94 56 102 50 110 50 L 146 50 C 154 50 162 56 162 64 L 162 78 C 162 84 166 88 172 88 L 186 88 C 192 88 196 84 196 78 L 196 50 C 196 40 188 32 178 32 Z"/>
+    <!-- Main body (rounded ball) -->
+    <circle cx="128" cy="160" r="76"/>
+  </g>
+  <!-- Wolf face inside body (cream cutouts) -->
+  <g fill="#F4EFE5">
+    <!-- Top muzzle V (small inverted triangle at top center) -->
+    <polygon points="120,108 128,118 136,108"/>
+    <!-- Left ear (triangle pointing up-left) -->
+    <polygon points="76,118 96,118 92,140"/>
+    <!-- Right ear (triangle pointing up-right) -->
+    <polygon points="160,118 180,118 164,140"/>
+    <!-- Left eye/cheek (triangular shape) -->
+    <polygon points="80,148 116,148 100,178"/>
+    <!-- Right eye/cheek (triangular shape) -->
+    <polygon points="140,148 176,148 156,178"/>
+    <!-- Center muzzle bottom (vertical strip) -->
+    <polygon points="124,160 132,160 128,205"/>
+    <!-- Lower jaw triangles -->
+    <polygon points="104,194 124,194 114,212"/>
+    <polygon points="132,194 152,194 142,212"/>
+  </g>
+</svg>

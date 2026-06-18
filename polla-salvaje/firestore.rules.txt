@@ -1,0 +1,42 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// REGLAS DE FIRESTORE PARA POLLA MUNDIALISTA SALVAJE
+//
+// Polla Mundialista Salvaje usa registro SIN contraseña (no hay Firebase Auth), así que las
+// escrituras llegan SIN token de autenticación. Por eso estas colecciones deben
+// permitir lectura/escritura abierta. Son colecciones separadas de las del
+// gimnasio (no afectan los datos de Salvaje).
+//
+// CÓMO APLICARLAS:
+//   1. Abre la consola de Firebase del proyecto "salvaje-app".
+//   2. Firestore Database -> Reglas.
+//   3. Pega estos 3 bloques `match` DENTRO de `match /databases/{db}/documents { ... }`,
+//      junto a las reglas existentes (NO borres las del gimnasio).
+//   4. Publica.
+//
+// Recomendado para producción: restringir la escritura de `polla_results` a los
+// correos admin mediante una colección de configuración o Custom Claims. Para una
+// polla interna, lo de abajo es suficiente.
+// ─────────────────────────────────────────────────────────────────────────────
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ... (deja aquí tus reglas existentes de Salvaje) ...
+
+    // Usuarios de la polla (registro nombre/correo/celular)
+    match /polla_users/{userId} {
+      allow read, write: if true;
+    }
+
+    // Pronósticos de cada usuario
+    match /polla_predictions/{userId} {
+      allow read, write: if true;
+    }
+
+    // Resultados oficiales (los carga el admin desde el panel)
+    match /polla_results/{docId} {
+      allow read, write: if true;
+    }
+  }
+}

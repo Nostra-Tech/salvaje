@@ -1,0 +1,165 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  color: #2c1810;
+  background-color: #1a0f0a;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* Imágenes y media nunca exceden su contenedor */
+img,
+svg,
+video {
+  max-width: 100%;
+}
+
+@layer components {
+  .display {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.02em;
+  }
+
+  /* Fondo de marca oscuro */
+  .salvaje-bg {
+    background:
+      radial-gradient(1200px 600px at 50% -10%, rgba(232, 115, 42, 0.18), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(201, 162, 39, 0.12), transparent 55%),
+      linear-gradient(180deg, #1a0f0a 0%, #2c1810 100%);
+  }
+
+  /* Fondo de marca claro (interior del sistema) */
+  .salvaje-bg-light {
+    background:
+      radial-gradient(1100px 600px at 50% -10%, rgba(232, 115, 42, 0.08), transparent 60%),
+      radial-gradient(800px 500px at 100% 0%, rgba(201, 162, 39, 0.10), transparent 55%),
+      linear-gradient(180deg, #faf6f0 0%, #f5ecd7 100%);
+  }
+
+  .card {
+    @apply bg-salvaje-light rounded-salvaje shadow-salvaje border border-black/5;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 font-semibold text-white
+      bg-salvaje-orange hover:bg-salvaje-fire transition-colors shadow-salvaje-md
+      disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 font-semibold
+      text-salvaje-gray border border-salvaje-gray/30 hover:bg-black/5 hover:text-salvaje-brown transition-colors;
+  }
+
+  .btn-gold {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 font-semibold text-salvaje-dark
+      bg-salvaje-gold hover:brightness-105 transition shadow-salvaje-md
+      disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .field {
+    @apply w-full rounded-xl border border-salvaje-gray/30 bg-white px-4 py-3 text-salvaje-brown
+      placeholder:text-salvaje-gray/60 outline-none focus:border-salvaje-orange focus:ring-2 focus:ring-salvaje-orange/20;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold;
+  }
+}
+
+/* ── Onboarding (efecto escaneo + glitch) ─────────────────────────────── */
+@keyframes scanMove {
+  0% { transform: translateY(-12vh); opacity: 0; }
+  8% { opacity: 1; }
+  92% { opacity: 1; }
+  100% { transform: translateY(92vh); opacity: 0; }
+}
+@keyframes onbWordIn {
+  0% { opacity: 0; transform: translateY(16px) skewX(12deg); filter: blur(6px); }
+  100% { opacity: 1; transform: translateY(0) skewX(0); filter: blur(0); }
+}
+@keyframes onbFadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes onbGlitch {
+  0%, 92%, 100% { text-shadow: none; }
+  93% { text-shadow: 2px 0 #E8732A, -2px 0 #C9A227; }
+  95% { text-shadow: -2px 0 #E8732A, 2px 0 #C9A227; }
+  97% { text-shadow: 1px 0 #E8732A, -1px 0 #C9A227; }
+}
+
+.onb-scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #E8732A 30%, #C9A227 70%, transparent);
+  box-shadow: 0 0 28px 7px rgba(232, 115, 42, 0.55);
+  animation: scanMove 4.8s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  pointer-events: none;
+}
+.onb-word {
+  display: inline-block;
+  animation: onbWordIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.onb-grain {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 3px 3px;
+  pointer-events: none;
+}
+.onb-fade-up {
+  animation: onbFadeUp 0.6s ease-out both;
+}
+
+@keyframes floatY {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+.float-slow {
+  animation: floatY 6s ease-in-out infinite;
+}
+
+/* Contorno blanco en el texto (mantiene el color del texto) */
+.text-outline-white {
+  text-shadow:
+    -1px -1px 0 #fff,
+    1px -1px 0 #fff,
+    -1px 1px 0 #fff,
+    1px 1px 0 #fff,
+    0 1px 0 #fff,
+    0 -1px 0 #fff,
+    1px 0 0 #fff,
+    -1px 0 0 #fff;
+}
+
+/* Scrollbar discreto */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(107, 92, 82, 0.4);
+  border-radius: 9999px;
+}

@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Propuesta Nostra · Plataforma para Gimnasios</title>
+<style>
+  @page { size: A4; margin: 0; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{font-family:'Inter','Segoe UI',system-ui,sans-serif;color:#0B1220;background:#EEF2F7;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+
+  :root{
+    --deep:#0A1633; --blue:#2563EB; --accent:#3B82F6; --cyan:#06B6D4; --violet:#8B5CF6;
+    --line:#E5E9F2; --muted:#64748B; --ink:#0B1220;
+    --grad:linear-gradient(135deg,#3B82F6 0%,#8B5CF6 100%);
+    --grad-cool:linear-gradient(135deg,#06B6D4 0%,#3B82F6 100%);
+    --grad-warm:linear-gradient(135deg,#F59E0B 0%,#EF4444 100%);
+    --grad-dark:linear-gradient(135deg,#0A1633 0%,#1E3A8A 100%);
+  }
+
+  .page{
+    width:210mm; min-height:297mm; padding:18mm 16mm; margin:0 auto 10mm;
+    background:#fff; position:relative; overflow:hidden;
+    page-break-after: always; box-shadow:0 20px 60px rgba(10,22,51,.08);
+  }
+  .page:last-child{page-break-after:auto}
+
+  .ph{display:flex;justify-content:space-between;align-items:center;font-size:9.5px;color:var(--muted);letter-spacing:.22em;text-transform:uppercase;margin-bottom:8mm}
+  .ph .brand{display:flex;align-items:center;gap:8px;font-weight:800;color:var(--deep);letter-spacing:.32em}
+  .ph .brand .dot{width:10px;height:10px;background:var(--grad);border-radius:50%;box-shadow:0 4px 12px rgba(59,130,246,.4)}
+  .pf{position:absolute;bottom:10mm;left:16mm;right:16mm;display:flex;justify-content:space-between;align-items:center;font-size:9px;color:var(--muted);padding-top:8px;border-top:1px solid var(--line)}
+  .pf b{color:var(--deep);letter-spacing:.2em}
+
+  h1.k{font-size:10.5px;letter-spacing:.4em;text-transform:uppercase;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  h2.t{font-size:46px;line-height:.98;font-weight:800;color:var(--deep);letter-spacing:-0.028em;margin-top:8px}
+  h3.s{font-size:24px;font-weight:800;color:var(--deep);letter-spacing:-0.015em}
+  .lead{font-size:13px;line-height:1.55;color:#334155}
+  .mut{font-size:10.5px;line-height:1.5;color:var(--muted)}
+
+  /* COVER */
+  .cover{background:radial-gradient(900px 600px at 90% -10%,#3B82F6 0%,#1E3A8A 50%,#050B1F 100%);color:#fff;padding:0}
+  .cover-inner{padding:22mm 16mm;min-height:297mm;display:flex;flex-direction:column;justify-content:space-between;position:relative}
+  .cover .ph{color:rgba(255,255,255,.55)}
+  .cover .ph .brand{color:#fff}
+  .cover h2.t{color:#fff;font-size:64px;line-height:.96}
+  .cover .deco{position:absolute;width:240mm;height:240mm;right:-100mm;top:-60mm;background:radial-gradient(circle at center,rgba(139,92,246,.4) 0%,transparent 60%);filter:blur(40px)}
+  .cover .deco2{position:absolute;width:160mm;height:160mm;right:-40mm;bottom:-80mm;background:radial-gradient(circle at center,rgba(6,182,212,.35) 0%,transparent 60%);filter:blur(30px)}
+  .orbit{position:absolute;right:18mm;top:60mm;width:80mm;height:80mm}
+  .orbit svg{width:100%;height:100%}
+  .cover-bottom{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;z-index:2;position:relative}
+  .cover-bottom .meta{display:flex;gap:24px;font-size:9.5px;color:rgba(255,255,255,.55);letter-spacing:.18em;text-transform:uppercase}
+  .cover-bottom .meta strong{display:block;color:#fff;font-size:12px;letter-spacing:0;text-transform:none;margin-top:5px;font-weight:600}
+
+  /* CARDS */
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .card{border:1px solid var(--line);border-radius:18px;padding:18px;background:#fff;position:relative;box-shadow:0 1px 0 rgba(255,255,255,1) inset,0 1px 2px rgba(10,22,51,.04)}
+  .card.tilt{transform:perspective(800px) rotateX(0.5deg);box-shadow:0 30px 60px -20px rgba(10,22,51,.18),0 1px 0 rgba(255,255,255,1) inset}
+  .card.dark{background:var(--grad-dark);color:#fff;border:none;box-shadow:0 24px 50px -20px rgba(10,22,51,.45)}
+  .card.dark h3,.card.dark .num{color:#fff}
+  .card.dark .mut{color:rgba(255,255,255,.7)}
+
+  .role{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;color:#fff;font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;font-weight:800}
+  .role-u{background:var(--grad-cool)}
+  .role-c{background:var(--grad-warm)}
+  .role-a{background:var(--grad)}
+  .role .pulse{width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px rgba(255,255,255,.25)}
+
+  .num-xl{font-size:88px;line-height:.9;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-0.05em}
+  .num-lg{font-size:54px;line-height:.9;font-weight:800;letter-spacing:-0.03em;color:var(--deep)}
+  .num-md{font-size:32px;font-weight:800;letter-spacing:-0.02em;color:var(--deep)}
+
+  /* SVG ICON BOX */
+  .ic{
+    width:44px;height:44px;border-radius:12px;
+    background:linear-gradient(135deg,#F0F4FF 0%,#E9EFFF 100%);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:inset 0 -2px 0 rgba(10,22,51,.05),0 6px 14px -6px rgba(59,130,246,.3);
+  }
+  .ic.lg{width:54px;height:54px;border-radius:14px}
+  .ic.grad{background:var(--grad);box-shadow:0 10px 24px -8px rgba(139,92,246,.5)}
+  .ic.cool{background:var(--grad-cool);box-shadow:0 10px 24px -8px rgba(6,182,212,.5)}
+  .ic.warm{background:var(--grad-warm);box-shadow:0 10px 24px -8px rgba(245,158,11,.5)}
+  .ic.dark{background:linear-gradient(135deg,#1E3A8A,#0A1633);box-shadow:0 10px 24px -8px rgba(10,22,51,.5)}
+  .ic svg{width:22px;height:22px;color:var(--blue);stroke-width:2}
+  .ic.grad svg,.ic.cool svg,.ic.warm svg,.ic.dark svg{color:#fff}
+  .ic.lg svg{width:28px;height:28px}
+
+  /* BENEFIT TILE (visual, minimal copy) */
+  .tile{
+    border-radius:16px; padding:14px; background:#fff; border:1px solid var(--line);
+    box-shadow:0 14px 28px -14px rgba(10,22,51,.12), inset 0 1px 0 rgba(255,255,255,1);
+    transform:perspective(800px) rotateX(.6deg);
+  }
+  .tile h5{font-size:12.5px;font-weight:800;color:var(--deep);margin-top:10px;letter-spacing:-0.01em}
+  .tile p{font-size:10px;color:var(--muted);line-height:1.45;margin-top:3px}
+
+  /* PHONE 3D */
+  .phone{
+    width:62mm;height:124mm;border-radius:26px;background:#0A1633;padding:7px;
+    box-shadow:
+      0 40px 60px -25px rgba(10,22,51,.45),
+      0 12px 28px -10px rgba(59,130,246,.25),
+      inset 0 0 0 1.5px #1E3A8A,
+      inset 0 2px 0 rgba(255,255,255,.06);
+    position:relative; flex:0 0 auto;
+    transform:perspective(1000px) rotateY(-6deg) rotateX(2deg);
+  }
+  .phone::before{content:"";position:absolute;top:5px;left:50%;transform:translateX(-50%);width:36%;height:12px;background:#0A1633;border-radius:0 0 10px 10px;z-index:5}
+  .screen{width:100%;height:100%;border-radius:20px;background:#F8FAFC;overflow:hidden;display:flex;flex-direction:column}
+  .sb{height:12px;display:flex;justify-content:space-between;align-items:center;padding:2px 14px 0;font-size:7px;color:#0B1220;font-weight:800}
+
+  /* DESKTOP 3D */
+  .desktop{
+    width:100%;border-radius:14px;background:#0A1633;padding:6px;
+    box-shadow:0 40px 80px -30px rgba(10,22,51,.5),0 8px 20px -8px rgba(59,130,246,.15);
+    transform:perspective(1200px) rotateX(1.5deg);
+  }
+  .desktop .bar{display:flex;gap:5px;padding:6px 10px 8px}
+  .desktop .bar span{width:9px;height:9px;border-radius:50%;background:#1E3A8A}
+  .desktop .bar span:nth-child(1){background:#EF4444}
+  .desktop .bar span:nth-child(2){background:#F59E0B}
+  .desktop .bar span:nth-child(3){background:#10B981}
+  .desktop .canvas{background:#F8FAFC;border-radius:10px;padding:12px;min-height:80mm}
+
+  /* FAKE CHART */
+  .bars{display:flex;align-items:flex-end;gap:5px;height:30mm;padding:0}
+  .bars div{flex:1;background:var(--grad);border-radius:4px 4px 0 0;box-shadow:0 4px 10px -4px rgba(59,130,246,.4)}
+
+  /* STAT KPI */
+  .kpi{
+    border-radius:14px;padding:14px;background:#fff;border:1px solid var(--line);
+    box-shadow:0 10px 24px -14px rgba(10,22,51,.12);
+  }
+  .kpi.dark{background:var(--grad-dark);color:#fff;border:none;box-shadow:0 20px 40px -20px rgba(10,22,51,.5)}
+  .kpi .lab{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:700}
+  .kpi.dark .lab{color:rgba(255,255,255,.6)}
+  .kpi .val{font-size:30px;font-weight:800;letter-spacing:-0.025em;color:var(--deep);margin-top:4px;line-height:1}
+  .kpi.dark .val{color:#fff}
+  .kpi .tr{font-size:10px;color:#10B981;font-weight:600;margin-top:6px;display:flex;align-items:center;gap:4px}
+  .kpi.dark .tr{color:#67E8F9}
+
+  /* MINI UI */
+  .ui-pad{padding:8px 10px;flex:1}
+  .ui-hero{background:var(--grad-dark);border-radius:12px;padding:10px;color:#fff;box-shadow:0 8px 18px -8px rgba(10,22,51,.5)}
+  .ui-hero .hi{font-size:7px;opacity:.6;letter-spacing:.18em;text-transform:uppercase}
+  .ui-hero .nm{font-size:13px;font-weight:800;margin-top:3px;letter-spacing:-0.01em}
+  .ui-row{display:flex;gap:6px;align-items:center;padding:6px 0;border-bottom:1px solid #E5E9F2}
+  .ui-row:last-child{border-bottom:none}
+  .ui-row .av{width:20px;height:20px;border-radius:7px;background:var(--grad);flex:0 0 auto;box-shadow:0 4px 8px -2px rgba(59,130,246,.4)}
+  .ui-row .av.cool{background:var(--grad-cool)}
+  .ui-row .av.warm{background:var(--grad-warm)}
+  .ui-row .info{flex:1}
+  .ui-row .info b{font-size:8.5px;color:#0B1220;display:block;letter-spacing:-0.01em}
+  .ui-row .info span{font-size:7px;color:#64748B}
+  .ui-row .b{font-size:7px;padding:2px 6px;border-radius:6px;background:#ECFDF5;color:#059669;font-weight:800}
+  .ui-row .b.am{background:#FFFBEB;color:#B45309}
+  .ui-row .b.bl{background:#EEF2FF;color:#1E40AF}
+
+  /* QR */
+  .qr{
+    width:32mm;height:32mm;margin:6px auto;border-radius:8px;
+    background:
+      linear-gradient(45deg,#0B1220 25%,transparent 25%) 0 0/4mm 4mm,
+      linear-gradient(-45deg,#0B1220 25%,transparent 25%) 0 0/4mm 4mm,
+      linear-gradient(45deg,transparent 75%,#0B1220 75%) 0 0/4mm 4mm,
+      linear-gradient(-45deg,transparent 75%,#0B1220 75%) 0 0/4mm 4mm,
+      #fff;
+    box-shadow:0 8px 18px -6px rgba(10,22,51,.3),inset 0 0 0 2px #fff;
+    position:relative;
+  }
+  .qr::before,.qr::after{content:"";position:absolute;width:8mm;height:8mm;background:#fff;border:1.5mm solid #0B1220}
+  .qr::before{top:1mm;left:1mm}
+  .qr::after{top:1mm;right:1mm}
+
+  /* MODULE NUMBER */
+  .nrow{display:grid;grid-template-columns:30px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);align-items:flex-start}
+  .nrow:last-child{border-bottom:none}
+  .nrow .nn{font-size:13px;font-weight:800;color:var(--blue);font-variant-numeric:tabular-nums;line-height:1.4}
+  .nrow h5{font-size:11.5px;font-weight:800;color:var(--deep);letter-spacing:-0.01em}
+  .nrow p{font-size:9.5px;color:var(--muted);line-height:1.5;margin-top:2px}
+
+  /* VALUE TABLE */
+  .vp{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 20px 40px -20px rgba(10,22,51,.15)}
+  .vp .vcol{padding:18px;border-right:1px solid var(--line);background:#fff;position:relative}
+  .vp .vcol:last-child{border-right:none}
+  .vp .vcol .stripe{position:absolute;top:0;left:0;right:0;height:4px}
+  .vp .vcol.u .stripe{background:var(--grad-cool)}
+  .vp .vcol.c .stripe{background:var(--grad-warm)}
+  .vp .vcol.a .stripe{background:var(--grad)}
+  .vp h6{font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:800;color:var(--deep);margin-top:6px}
+  .vp .vrow{display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+  .vp .vrow:last-child{border-bottom:none}
+  .vp .vrow svg{width:14px;height:14px;color:#10B981;flex:0 0 auto}
+  .vp .vrow span{font-size:10px;color:#1F2937;line-height:1.35}
+
+  /* QUOTE */
+  .quote{background:var(--grad-dark);color:#fff;border-radius:22px;padding:32px 36px;position:relative;overflow:hidden;box-shadow:0 30px 60px -25px rgba(10,22,51,.5)}
+  .quote .qmark{position:absolute;top:-10px;right:20px;font-size:200px;font-family:Georgia,serif;color:rgba(255,255,255,.06);line-height:1}
+  .quote .q{font-size:24px;line-height:1.25;font-weight:700;letter-spacing:-0.015em;max-width:150mm;z-index:2;position:relative}
+  .quote .a{font-size:10px;letter-spacing:.22em;margin-top:18px;text-transform:uppercase;color:rgba(255,255,255,.55);font-weight:700}
+
+  /* SECTION HEAD */
+  .sh{display:flex;justify-content:space-between;align-items:flex-end;gap:20px}
+
+  @media print{ body{background:#fff} .page{box-shadow:none;margin:0} }
+</style>
+</head>
+<body>
+
+<!-- ============ COVER ============ -->
+<section class="page cover">
+  <div class="cover-inner">
+    <div class="ph">
+      <div class="brand"><span class="dot"></span> NOSTRA · TECH</div>
+      <div>PROPUESTA · 2026</div>
+    </div>
+
+    <div class="orbit">
+      <svg viewBox="0 0 200 200" fill="none">
+        <defs>
+          <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#67E8F9"/>
+            <stop offset="1" stop-color="#A78BFA"/>
+          </linearGradient>
+        </defs>
+        <circle cx="100" cy="100" r="90" stroke="url(#g1)" stroke-width="0.6" stroke-dasharray="2 4" opacity=".6"/>
+        <circle cx="100" cy="100" r="65" stroke="url(#g1)" stroke-width="0.6" stroke-dasharray="2 4" opacity=".4"/>
+        <circle cx="100" cy="100" r="40" stroke="url(#g1)" stroke-width="0.6" opacity=".3"/>
+        <circle cx="100" cy="100" r="6" fill="url(#g1)"/>
+        <circle cx="190" cy="100" r="4" fill="#67E8F9"/>
+        <circle cx="100" cy="35" r="3" fill="#A78BFA"/>
+        <circle cx="35" cy="100" r="3" fill="#67E8F9"/>
+      </svg>
+    </div>
+
+    <div style="margin-top:30mm;z-index:2;position:relative;">
+      <h1 class="k" style="background:linear-gradient(90deg,#67E8F9,#A78BFA);-webkit-background-clip:text;background-clip:text;color:transparent;">PLATAFORMA BOX & GIMNASIO</h1>
+      <h2 class="t">Una plataforma.<br/>Tres experiencias.<br/>Cero fricción.</h2>
+    </div>
+
+    <div class="cover-bottom">
+      <div class="meta">
+        <div>POR<strong>Nostra Tech</strong></div>
+        <div>VERSIÓN<strong>1.0</strong></div>
+        <div>TIPO<strong>SaaS Operativo</strong></div>
+      </div>
+      <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+        <circle cx="30" cy="30" r="28" stroke="rgba(255,255,255,.3)" stroke-width="0.8"/>
+        <path d="M20 30 L27 37 L40 24" stroke="#67E8F9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+  <div class="deco"></div>
+  <div class="deco2"></div>
+</section>
+
+
+<!-- ============ PÁG 2 — VISIÓN GENERAL ============ -->
+<section class="page">
+  <div class="ph">
+    <div class="brand"><span class="dot"></span> NOSTRA · TECH</div>
+    <div>01 · VISIÓN</div>
+  </div>
+
+  <h1 class="k">UNA PLATAFORMA · TRES ROLES</h1>
+  <h2 class="t" style="font-size:38px;">Todo conectado.<br/>Tiempo real.</h2>
+
+  <div class="grid-3" style="margin-top:22px;">
+    <div class="card tilt">
+      <div class="ic lg cool">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </div>
+      <div style="margin-top:14px;font-size:9.5px;letter-spacing:.18em;font-weight:800;color:var(--muted);">ATLETA</div>
+      <h3 class="s" style="font-size:18px;margin-top:4px;">Su comunidad.<br/>Su progreso.</h3>
+      <p class="mut" style="margin-top:8px;">Reserva, escanea, evoluciona y crece dentro de una comunidad gamificada.</p>
+    </div>
+
+    <div class="card tilt">
+      <div class="ic lg warm">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 9 12 3 18 9 18 21 6 21Z"/>
+          <path d="M12 12v6"/>
+          <circle cx="12" cy="9" r="1.5"/>
+        </svg>
+      </div>
+      <div style="margin-top:14px;font-size:9.5px;letter-spacing:.18em;font-weight:800;color:var(--muted);">COACH</div>
+      <h3 class="s" style="font-size:18px;margin-top:4px;">Su operación.<br/>Su nómina.</h3>
+      <p class="mut" style="margin-top:8px;">Check-in en segundos, plan semanal y colilla transparente en su bolsillo.</p>
+    </div>
+
+    <div class="card tilt">
+      <div class="ic lg grad">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <path d="M3 9h18M9 21V9"/>
+        </svg>
+      </div>
+      <div style="margin-top:14px;font-size:9.5px;letter-spacing:.18em;font-weight:800;color:var(--muted);">ADMIN</div>
+      <h3 class="s" style="font-size:18px;margin-top:4px;">Su negocio.<br/>En vivo.</h3>
+      <p class="mut" style="margin-top:8px;">KPIs, cashflow, validación de pagos y nómina sin Excel ni WhatsApp.</p>
+    </div>
+  </div>
+
+  <div class="grid-4" style="margin-top:22px;">
+    <div class="kpi"><div class="lab">Roles</div><div class="val">4</div><div class="tr">user · coach · admin · superadmin</div></div>
+    <div class="kpi"><div class="lab">Módulos</div><div class="val">20+</div><div class="tr">integrados en tiempo real</div></div>
+    <div class="kpi"><div class="lab">Cobertura</div><div class="val">100%</div><div class="tr">del ciclo del atleta</div></div>
+    <div class="kpi dark"><div class="lab">Operación</div><div class="val">24/7</div><div class="tr">automatizada</div></div>
+  </div>
+
+  <div class="quote" style="margin-top:20px;">
+    <div class="qmark">"</div>
+    <div class="q">Reemplaza WhatsApp, planillas y memoria. <br/>Una sola plataforma sostiene todo el box.</div>
+    <div class="a">— el sistema nervioso de tu gimnasio</div>
+  </div>
+
+  <div class="pf"><div><b>NOSTRA · TECH</b></div><div>02</div></div>
+</section>
+
+
+<!-- ============ PÁG 3 — ATLETA ============ -->
+<section class="page">
+  <div class="ph"><div class="brand"><span class="dot"></span> NOSTRA · TECH</div><div>02 · ATLETA</div></div>
+
+  <div class="sh">
+    <div>
+      <h1 class="k">EXPERIENCIA DEL ATLETA</h1>
+      <h2 class="t" style="font-size:34px;">Su rutina,<br/>en una sola app.</h2>
+    </div>
+    <div class="role role-u"><span class="pulse"></span> ATLETA</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:62mm 1fr;gap:18px;margin-top:18px;align-items:flex-start;">
+    <div class="phone">
+      <div class="screen">
+        <div class="sb"><span>9:41</span><span>●●●</span></div>
+        <div class="ui-pad">
+          <div class="ui-hero">
+            <div class="hi">Buenos días</div>
+            <div class="nm">Cristhian</div>
+            <div style="display:flex;gap:5px;margin-top:8px;">
+              <div style="flex:1;background:rgba(255,255,255,.1);border-radius:7px;padding:5px;text-align:center;">
+                <div style="font-size:13px;font-weight:800;">12</div>
+                <div style="font-size:6.5px;opacity:.65;letter-spacing:.1em;">RACHA</div>
+              </div>
+              <div style="flex:1;background:rgba(255,255,255,.1);border-radius:7px;padding:5px;text-align:center;">
+                <div style="font-size:13px;font-weight:800;">47</div>
+                <div style="font-size:6.5px;opacity:.65;letter-spacing:.1em;">CLASES</div>
+              </div>
+              <div style="flex:1;background:rgba(255,255,255,.1);border-radius:7px;padding:5px;text-align:center;">
+                <div style="font-size:13px;font-weight:800;">3</div>
+                <div style="font-size:6.5px;opacity:.65;letter-spacing:.1em;">LOGROS</div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:8px;font-size:7.5px;font-weight:800;color:var(--deep);letter-spacing:.12em;">HOY</div>
+          <div class="ui-row"><div class="av"></div><div class="info"><b>CrossFit · 6:00</b><span>Coach Andrés · 14/18</span></div><div class="b bl">RES</div></div>
+          <div class="ui-row"><div class="av cool"></div><div class="info"><b>Mobility · 7:30</b><span>Coach Laura · 8/15</span></div><div class="b">LIBRE</div></div>
+          <div class="ui-row"><div class="av warm"></div><div class="info"><b>WOD · 17:00</b><span>Coach Andrés · 16/18</span></div><div class="b am">CASI</div></div>
+
+          <div style="margin-top:8px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px;">
+            <div style="font-size:7px;color:var(--muted);letter-spacing:.1em;font-weight:700;">PROGRESO SEMANA</div>
+            <div class="bars" style="height:14mm;margin-top:4px;">
+              <div style="height:30%;"></div><div style="height:55%;"></div><div style="height:45%;"></div>
+              <div style="height:70%;"></div><div style="height:60%;"></div><div style="height:85%;"></div><div style="height:95%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="gap:10px;">
+
+      <div class="tile">
+        <div class="ic grad">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2"/>
+            <path d="M16 2v4M8 2v4M3 10h18"/>
+          </svg>
+        </div>
+        <h5>Reservas en 1 toque</h5>
+        <p>Hoy, próximos y mis reservas. WOD visible. Cancelación inmediata.</p>
+      </div>
+
+      <div class="tile">
+        <div class="ic cool">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/>
+            <path d="M14 14h3v3M21 14v7M14 21h3"/>
+          </svg>
+        </div>
+        <h5>QR personal</h5>
+        <p>Check-in en 3 segundos. Tipo de plan, vencimiento y clases visibles.</p>
+      </div>
+
+      <div class="tile">
+        <div class="ic warm">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 17l6-6 4 4 8-8"/>
+            <path d="M14 7h7v7"/>
+          </svg>
+        </div>
+        <h5>Racha y logros</h5>
+        <p>Días consecutivos, insignias y récord histórico. Motivación visible.</p>
+      </div>
+
+      <div class="tile">
+        <div class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="5" width="20" height="14" rx="2"/>
+            <path d="M2 10h20"/>
+          </svg>
+        </div>
+        <h5>Pago + comprobante</h5>
+        <p>Múltiples métodos. Subida con un toque. Estado en tiempo real.</p>
+      </div>
+
+      <div class="tile">
+        <div class="ic grad">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="7" r="3"/>
+            <circle cx="17" cy="9" r="3"/>
+            <path d="M3 21v-1c0-3 3-5 6-5s6 2 6 5v1M14 21v-1c0-2 1.5-3.5 4-4"/>
+          </svg>
+        </div>
+        <h5>Programa de referidos</h5>
+        <p>5% para quien llega · 10% para quien refiere · 30% acumulable.</p>
+      </div>
+
+      <div class="tile">
+        <div class="ic cool">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="6 4 20 12 6 20 6 4"/>
+          </svg>
+        </div>
+        <h5>Videos educativos</h5>
+        <p>Tips, técnica y nutrición. Contenido del box dentro de la app.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="pf"><div><b>NOSTRA · TECH</b></div><div>03</div></div>
+</section>
+
+
+<!-- ============ PÁG 4 — COACH ============ -->
+<section class="page">
+  <div class="ph"><div class="brand"><span class="dot"></span> NOSTRA · TECH</div><div>03 · COACH</div></div>
+
+  <div class="sh">
+    <div>
+      <h1 class="k">EXPERIENCIA DEL COACH</h1>
+      <h2 class="t" style="font-size:34px;">Operar sin fricción.<br/>Cobrar con claridad.</h2>
+    </div>
+    <div class="role role-c"><span class="pulse"></span> COACH</div>
+  </div>
+
+  <div class="grid-4" style="margin-top:18px;">
+
+    <div class="tile">
+      <div class="ic warm">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="5" width="18" height="14" rx="2"/>
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M9 5 10.5 3h3L15 5"/>
+        </svg>
+      </div>
+      <h5>Check-in QR</h5>
+      <p>Escanea o busca por nombre. Walk-in y acceso temporal.</p>
+    </div>
+
+    <div class="tile">
+      <div class="ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 6v6l4 2"/>
+        </svg>
+      </div>
+      <h5>Clase en vivo</h5>
+      <p>Asistentes en tiempo real. Cierre con encuestas automáticas.</p>
+    </div>
+
+    <div class="tile">
+      <div class="ic grad">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2"/>
+          <path d="M3 10h18M8 4v6M16 4v6"/>
+        </svg>
+      </div>
+      <h5>Plan semanal</h5>
+      <p>Borrador, envío y aprobación. Recordatorio antes del corte.</p>
+    </div>
+
+    <div class="tile">
+      <div class="ic cool">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 1v22M5 6l7-3 7 3M5 6v12l7 4 7-4V6"/>
+        </svg>
+      </div>
+      <h5>Nómina viva</h5>
+      <p>Confirmado vs proyectado. Colilla detallada por clase.</p>
+    </div>
+
+  </div>
+
+  <!-- DESKTOP MOCKUP COACH -->
+  <div class="desktop" style="margin-top:18px;">
+    <div class="bar"><span></span><span></span><span></span></div>
+    <div class="canvas">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-size:9px;color:var(--muted);letter-spacing:.18em;font-weight:700;">HOLA, ANDRÉS</div>
+          <div style="font-size:17px;font-weight:800;color:var(--deep);">Tu día tiene 4 clases.</div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;background:linear-gradient(135deg,#10B981,#06B6D4);color:#fff;padding:8px 14px;border-radius:10px;box-shadow:0 8px 18px -6px rgba(16,185,129,.5);">
+          <div style="width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px rgba(255,255,255,.3);"></div>
+          <div>
+            <div style="font-size:8px;font-weight:800;letter-spacing:.16em;">EN VIVO</div>
+            <div style="font-size:11px;font-weight:800;">CrossFit · 14/18</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px;">
+        <div class="kpi" style="padding:10px;">
+          <div class="lab">Quincena</div>
+          <div class="val" style="font-size:22px;">$ 1.42M</div>
+          <div class="tr">confirmado</div>
+        </div>
+        <div class="kpi" style="padding:10px;">
+          <div class="lab">Proyección</div>
+          <div class="val" style="font-size:22px;color:#F59E0B;">$ 1.78M</div>
+          <div class="tr" style="color:#B45309;">+ programadas</div>
+        </div>
+        <div class="kpi" style="padding:10px;">
+          <div class="lab">Clases hoy</div>
+          <div class="val" style="font-size:22px;">4</div>
+          <div class="tr">17 esta semana</div>
+        </div>
+        <div class="kpi dark" style="padding:10px;">
+          <div class="lab">Histórico</div>
+          <div class="val" style="font-size:22px;">$ 18.4M</div>
+          <div class="tr">12 períodos</div>
+        </div>
+      </div>
+
+      <div style="margin-top:10px;display:grid;grid-template-columns:7fr 1fr;gap:5px;">
+        <div style="background:#fff;padding:8px;border-radius:8px;border:1px solid var(--line);">
+          <div style="font-size:8px;color:var(--muted);letter-spacing:.12em;font-weight:700;">SEMANA</div>
+          <div class="bars" style="height:18mm;margin-top:4px;">
+            <div style="height:55%;"></div><div style="height:75%;"></div><div style="height:40%;"></div>
+            <div style="height:80%;"></div><div style="height:90%;"></div><div style="height:60%;"></div><div style="height:20%;background:#E5E9F2;box-shadow:none;"></div>
+          </div>
+        </div>
+        <div style="background:linear-gradient(135deg,#10B981,#06B6D4);color:#fff;padding:10px;border-radius:8px;text-align:center;display:flex;flex-direction:column;justify-content:center;box-shadow:0 8px 18px -6px rgba(6,182,212,.4);">
+          <div style="font-size:8px;letter-spacing:.16em;opacity:.85;">PLAN</div>
+          <div style="font-size:14px;font-weight:800;margin-top:2px;">OK</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pf"><div><b>NOSTRA · TECH</b></div><div>04</div></div>
+</section>
+
+
+<!-- ============ PÁG 5 — ADMIN ============ -->
+<section class="page">
+  <div class="ph"><div class="brand"><span class="dot"></span> NOSTRA · TECH</div><div>04 · ADMIN</div></div>
+
+  <div class="sh">
+    <div>
+      <h1 class="k">PANEL ADMINISTRATIVO</h1>
+      <h2 class="t" style="font-size:34px;">El negocio,<br/>en una sola vista.</h2>
+    </div>
+    <div class="role role-a"><span class="pulse"></span> ADMIN</div>
+  </div>
+
+  <div class="desktop" style="margin-top:18px;">
+    <div class="bar"><span></span><span></span><span></span></div>
+    <div class="canvas">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-size:9px;color:var(--muted);letter-spacing:.18em;font-weight:700;">DASHBOARD · MAYO 2026</div>
+          <div style="font-size:17px;font-weight:800;color:var(--deep);">Lo que mueve el box hoy.</div>
+        </div>
+        <div style="display:flex;gap:5px;">
+          <div style="font-size:8px;padding:5px 10px;background:var(--deep);color:#fff;border-radius:6px;font-weight:800;">HOY</div>
+          <div style="font-size:8px;padding:5px 10px;background:#fff;border:1px solid var(--line);border-radius:6px;color:var(--muted);">SEMANA</div>
+          <div style="font-size:8px;padding:5px 10px;background:#fff;border:1px solid var(--line);border-radius:6px;color:var(--muted);">MES</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px;">
+        <div class="kpi" style="padding:10px;">
+          <div class="lab">Activos</div>
+          <div class="val" style="font-size:24px;">412</div>
+          <div class="tr">+18 este mes</div>
+        </div>
+        <div class="kpi" style="padding:10px;">
+          <div class="lab">En riesgo</div>
+          <div class="val" style="font-size:24px;color:#EF4444;">23</div>
+          <div class="tr" style="color:#EF4444;">14 días sin venir</div>
+        </div>
+        <div class="kpi" style="padding:10px;">
+          <div class="lab">Pagos · cola</div>
+          <div class="val" style="font-size:24px;color:#F59E0B;">7</div>
+          <div class="tr" style="color:#B45309;">esperan validación</div>
+        </div>
+        <div class="kpi dark" style="padding:10px;">
+          <div class="lab">Profit · mes</div>
+          <div class="val" style="font-size:24px;">$ 38.2M</div>
+          <div class="tr">+12% vs anterior</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:10px;margin-top:10px;">
+        <div style="background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px;">
+          <div style="font-size:8px;color:var(--deep);font-weight:800;letter-spacing:.12em;">INGRESOS · 6 MESES</div>
+          <div class="bars" style="height:22mm;margin-top:6px;">
+            <div style="height:45%;"></div><div style="height:60%;"></div><div style="height:55%;"></div>
+            <div style="height:78%;"></div><div style="height:72%;"></div><div style="height:95%;"></div>
+          </div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px;">
+          <div style="font-size:8px;color:var(--deep);font-weight:800;letter-spacing:.12em;">CLASES EN VIVO</div>
+          <div style="margin-top:6px;padding:7px;background:#ECFDF5;border-left:3px solid #10B981;border-radius:6px;">
+            <div style="font-size:9.5px;font-weight:800;color:var(--deep);">CrossFit · 6:00</div>
+            <div style="font-size:7.5px;color:#059669;font-weight:700;">14/18 · Andrés</div>
+          </div>
+          <div style="margin-top:5px;padding:7px;background:#FFFBEB;border-left:3px solid #F59E0B;border-radius:6px;">
+            <div style="font-size:9.5px;font-weight:800;color:var(--deep);">Mobility · 7:30</div>
+            <div style="font-size:7.5px;color:#B45309;font-weight:700;">Listo · 4 min</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-4" style="margin-top:14px;">
+    <div class="tile">
+      <div class="ic grad">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="7" r="3"/>
+          <circle cx="17" cy="9" r="3"/>
+          <path d="M3 21v-1c0-3 3-5 6-5s6 2 6 5v1M14 21v-1c0-2 1.5-3.5 4-4"/>
+        </svg>
+      </div>
+      <h5>Comunidad segmentada</h5>
+      <p>Activos, en riesgo, dormidos y consistentes — automático.</p>
+    </div>
+    <div class="tile">
+      <div class="ic cool">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="5" width="20" height="14" rx="2"/>
+          <path d="M2 10h20M6 15h4"/>
+        </svg>
+      </div>
+      <h5>Cola de pagos</h5>
+      <p>Validación manual con comprobante. Aprobar o rechazar con motivo.</p>
+    </div>
+    <div class="tile">
+      <div class="ic warm">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 3v18h18"/>
+          <path d="M7 15l4-4 4 4 5-5"/>
+        </svg>
+      </div>
+      <h5>Finanzas + cashflow</h5>
+      <p>Ingresos, egresos y profit con trazabilidad por período.</p>
+    </div>
+    <div class="tile">
+      <div class="ic dark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2 4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6z"/>
+          <path d="M9 12l2 2 4-4"/>
+        </svg>
+      </div>
+      <h5>Nómina en un click</h5>
+      <p>Cierre quincenal automático con colilla por coach.</p>
+    </div>
+  </div>
+
+  <div class="pf"><div><b>NOSTRA · TECH</b></div><div>05</div></div>
+</section>
+
+
+<!-- ============ PÁG 6 — SISTEMA + VALOR + CIERRE ============ -->
+<section class="page">
+  <div class="ph"><div class="brand"><span class="dot"></span> NOSTRA · TECH</div><div>05 · CIERRE</div></div>
+
+  <div class="sh">
+    <div>
+      <h1 class="k">SISTEMA NERVIOSO</h1>
+      <h2 class="t" style="font-size:34px;">Notificaciones, IA<br/>y todo en vivo.</h2>
+    </div>
+  </div>
+
+  <div class="grid-4" style="margin-top:18px;">
+    <div class="tile">
+      <div class="ic grad">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M10 21h4"/>
+        </svg>
+      </div>
+      <h5>Tiempo real</h5>
+      <p>Cada acción llega al rol correcto al instante.</p>
+    </div>
+    <div class="tile">
+      <div class="ic cool">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 6v6l4 2"/>
+        </svg>
+      </div>
+      <h5>Recordatorios</h5>
+      <p>Próxima clase, vencimiento, corte de nómina.</p>
+    </div>
+    <div class="tile">
+      <div class="ic warm">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2 4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+      </div>
+      <h5>IA + alertas</h5>
+      <p>Banners de retención y sugerencias accionables.</p>
+    </div>
+    <div class="tile">
+      <div class="ic dark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 4h16v16H4z"/>
+          <path d="M8 8h8M8 12h8M8 16h5"/>
+        </svg>
+      </div>
+      <h5>Log de actividad</h5>
+      <p>Cada decisión queda registrada y auditable.</p>
+    </div>
+  </div>
+
+  <!-- VALOR POR ROL -->
+  <h1 class="k" style="margin-top:22px;">VALOR POR ROL</h1>
+  <h3 class="s" style="font-size:22px;margin-top:4px;margin-bottom:12px;">Tres formas de ganar.</h3>
+
+  <div class="vp">
+    <div class="vcol u">
+      <div class="stripe"></div>
+      <div class="ic cool" style="width:32px;height:32px;border-radius:9px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </div>
+      <h6>ATLETA GANA</h6>
+      <div class="vrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg><span>Reservas y QR sin fricción</span></div>
+      <div class="vrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg><span>Progreso visible y celebrado</span></div>
+      <div class="vrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg><span>Comunidad gamificada</span></div>
+      <div class="vrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg><span>Recompensas por referir</span></div>
+      <div class="vrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg><span>Recordatorios inteligentes</span></div>
+    </div>
+    <div class="vcol c">
+      <div class="stripe"></div>
+      <div class="ic warm" style="width:32px;height:32px;border-radius:9px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
+          <path d="M6 9 12 3 18 9 18 21 6 21Z"/><path d="M12 12v6"/>
+        </svg>
+      </div>
+      <h6>COACH GANA</h6>
+      <div class="vrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg><span>Cero papeles, cero Excel</span></div>
+      <div class="vrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg><span>Check-in en segundos</span></div>
+      <div class="vrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg><span>Nómina transparente</span></div>
+      <div class="vrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg><span>Proyección en vivo</span></div>
+      <div class="vrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg><span>Enfoque en entrenar</span></div>
+    </div>
+    <div class="vcol a">
+      <div class="stripe"></div>
+      <div class="ic grad" style="width:32px;height:32px;border-radius:9px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
+        </svg>
+      </div>
+      <h6>ADMIN GANA</h6>
+      <div class="vrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg><span>Vista ejecutiva en vivo</span></div>
+      <div class="vrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg><span>Cero pagos perdidos</span></div>
+      <div class="vrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg><span>Cashflow auditable</span></div>
+      <div class="vrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg><span>Alertas de churn tempranas</span></div>
+      <div class="vrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg><span>Decisiones con evidencia</span></div>
+    </div>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:22px;padding:14px 18px;background:var(--grad-dark);color:#fff;border-radius:16px;box-shadow:0 20px 40px -20px rgba(10,22,51,.5);">
+    <div>
+      <div style="font-size:9px;color:rgba(255,255,255,.55);letter-spacing:.22em;">SIGUIENTE PASO</div>
+      <div style="font-size:16px;font-weight:800;margin-top:3px;">Demo en vivo · onboarding del equipo</div>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-size:9px;color:rgba(255,255,255,.55);letter-spacing:.22em;">CONTACTO</div>
+      <div style="font-size:14px;font-weight:800;margin-top:3px;">nostratech.com.co</div>
+    </div>
+  </div>
+
+  <div class="pf"><div><b>NOSTRA · TECH</b></div><div>06</div></div>
+</section>
+
+</body>
+</html>

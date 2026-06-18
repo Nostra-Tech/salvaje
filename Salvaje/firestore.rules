@@ -1,0 +1,344 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuth() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // V6 Ajuste 28 — superadmin = admin doc with isSuperAdmin: true.
+    function isSuperAdmin() {
+      return isAuth()
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+        && get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.isSuperAdmin == true;
+    }
+
+    function isCoach() {
+      return isAuth() && exists(/databases/$(database)/documents/coaches/$(request.auth.uid));
+    }
+
+    function isUser() {
+      return isAuth() && exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    function isOwner(uid) {
+      return isAuth() && request.auth.uid == uid;
+    }
+
+    function onlyChanged(allowedFields) {
+      return request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(allowedFields);
+    }
+
+    // USERS
+    match /users/{userId} {
+      // Read: owner, admin, coach, plus multi-member relationships:
+      //   - a titular can read each of their linked members
+      //   - a linked member can read their titular
+      allow read: if isOwner(userId) || isAdmin() || isCoach()
+        || (isAuth() && resource.data.linkedTo == request.auth.uid)
+        || (isAuth() && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+            && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.linkedTo == userId);
+      // Admin can create users on behalf of others (direct creation from admin panel)
+      allow create: if isAdmin();
+      allow create: if isOwner(userId)
+        && request.resource.data.role == "user"
+        && request.resource.data.uid == userId
+        && request.resource.data.isActive == true
+        && request.resource.data.isBlocked == false;
+      allow update: if isOwner(userId)
+        && onlyChanged(['displayName','profilePhotoURL',
+            'enableEmailNotifications','enablePushNotifications',
+            'fcmToken','lastLoginAt','lastActivityAt',
+            'totalSessionTime','lastBirthdayGreetingSent','updatedAt']);
+      allow update: if isOwner(userId)
+        && onlyChanged(['freezeStatus','freezeReason','freezeDaysRequested','freezeRequestedAt','updatedAt'])
+        && request.resource.data.freezeStatus == 'requested';
+      allow update: if isOwner(userId)
+        && onlyChanged(['freezeStatus','unfreezeReturnNote','unfreezeRequestedAt','updatedAt'])
+        && request.resource.data.freezeStatus == 'unfreeze_requested';
+      allow update: if isOwner(userId)
+        && onlyChanged(['unblockRequested','unblockRequestedAt','updatedAt'])
+        && request.resource.data.unblockRequested == true;
+      allow update: if isOwner(userId)
+        && onlyChanged(['classAccessRequested','classAccessRequestedAt','updatedAt'])
+        && request.resource.data.classAccessRequested == true;
+      allow update: if isAdmin()
+        && request.resource.data.role == resource.data.role
+        && request.resource.data.uid == resource.data.uid
+        && request.resource.data.email == resource.data.email;
+      allow update: if isCoach()
+        && onlyChanged(['classesAttended','currentStreak','longestStreak',
+            'lastClassDate','unlockedAchievements','ticketeraBalance',
+            'hasUsedFreeTrial','membershipType','membershipIsActive',
+            'lastActivityAt','updatedAt']);
+      allow delete: if isAdmin();
+    }
+
+    // COACHES
+    match /coaches/{coachId} {
+      allow read: if isAuth();
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin();
+      allow update: if isOwner(coachId)
+        && onlyChanged(['displayName','profilePhotoURL','bio',
+            'specializations','certifications','availableSchedule','updatedAt']);
+    }
+
+    // ADMINS — any authenticated user can list (needed so notifyAllAdmins() can
+    // read admin UIDs to broadcast notifications). Admin UIDs are not sensitive.
+    match /admins/{adminId} {
+      allow read: if isAuth();
+      allow write: if false;
+    }
+
+    // CLASSES
+    match /classes/{classId} {
+      allow read: if isAuth();
+      allow create: if isAdmin() || isCoach();
+      allow update: if isAdmin();
+      allow update: if isCoach() && resource.data.coachId == request.auth.uid;
+      allow update: if isUser()
+        && resource.data.status == "scheduled"
+        && resource.data.currentBookings < resource.data.maxCapacity
+        && (request.resource.data.currentBookings == resource.data.currentBookings + 1
+            || request.resource.data.currentBookings == resource.data.currentBookings - 1)
+        && onlyChanged(['attendeeList','currentBookings','updatedAt']);
+      allow delete: if isAdmin();
+    }
+
+    // WEEKLY PLANS
+    match /weekly_plans/{planId} {
+      allow read: if isAuth();
+      allow create, update: if isAdmin() || (isCoach() && request.resource.data.coachId == request.auth.uid);
+      allow delete: if isAdmin();
+    }
+
+    // MEMBERSHIPS CATALOG
+    match /memberships_catalog/{docId} {
+      allow read: if isAuth();
+      allow write: if isAdmin();
+    }
+
+    // MEMBERSHIP PURCHASES
+    match /membership_purchases/{docId} {
+      allow read: if isAdmin() || (isAuth() && resource.data.userId == request.auth.uid);
+      // Admin can create confirmed purchases on behalf of users
+      allow create: if isAdmin();
+      allow create: if isAuth()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.paymentStatus == "pending";
+      allow update: if isAdmin();
+      allow delete: if false;
+    }
+
+    // TICKETERAS
+    match /ticketeras/{docId} {
+      allow read: if isAdmin() || (isAuth() && resource.data.userId == request.auth.uid);
+      allow create: if isAdmin();
+      allow update: if isCoach()
+        && onlyChanged(['classesUsed','classesRemaining','usageHistory','updatedAt']);
+      allow update: if isAdmin();
+      allow delete: if false;
+    }
+
+    // QR TOKENS
+    match /qr_tokens/{tokenId} {
+      allow read: if isAuth() && (
+        resource.data.userId == request.auth.uid || isCoach() || isAdmin()
+      );
+      allow create: if isAuth() && request.resource.data.userId == request.auth.uid;
+      allow update: if isCoach()
+        && onlyChanged(['isUsed','usedAt','usedByClassId']);
+      allow delete: if isAdmin();
+    }
+
+    // PAYROLL
+    match /payroll/{docId} {
+      allow read: if isAdmin() || (isCoach() && resource.data.coachId == request.auth.uid);
+      allow write: if isAdmin();
+    }
+
+    // REFERRAL CODES
+    match /referral_codes/{code} {
+      allow read: if isAuth();
+      allow create: if isAuth() && request.resource.data.ownerId == request.auth.uid;
+      allow update: if isAuth()
+        && (request.resource.data.usageCount == resource.data.usageCount + 1
+            && onlyChanged(['usageCount','usedBy']))
+        || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // NOTIFICATIONS
+    match /notifications/{notifId} {
+      allow read: if isAuth() && resource.data.recipientId == request.auth.uid;
+      allow create: if isAuth();
+      allow update: if isAuth()
+        && resource.data.recipientId == request.auth.uid
+        && onlyChanged(['isRead','readAt']);
+      // El destinatario puede eliminar sus propias notificaciones; admin cualquiera.
+      allow delete: if isAdmin()
+        || (isAuth() && resource.data.recipientId == request.auth.uid);
+    }
+
+    // ACHIEVEMENTS CATALOG
+    match /achievements/{docId} {
+      allow read: if isAuth();
+      allow write: if isAdmin();
+    }
+
+    // APP CONFIG
+    match /app_config/{docId} {
+      allow read: if isAuth();
+      allow write: if isAdmin();
+    }
+
+    // PENDING USERS — holds signup form data until email is verified.
+    // Doc id = Firebase Auth uid (after Auth account is created).
+    // Promoted into /users/{uid} on first verified login (or admin-vouched login).
+    match /pending_users/{docId} {
+      // Public read by email lookup is needed during registration (anonymous)
+      allow read: if true;
+      // Create paths:
+      //   - admin can invite anyone
+      //   - self creates their own pending doc keyed by their uid
+      //   - a titular can create a linked-member pending doc whose `linkedTo`
+      //     points back at the titular (used by Colegio Monteluna multi-member
+      //     purchases and AdminCreate's family flow when titular is the caller).
+      allow create: if isAdmin()
+        || (isAuth() && docId == request.auth.uid)
+        || (isAuth() && request.resource.data.linkedTo == request.auth.uid);
+      // Self can update (e.g. retry resend timestamps). Admin can also.
+      allow update: if isAdmin()
+        || (isAuth() && docId == request.auth.uid);
+      // Self can delete after promotion. Admin can also.
+      allow delete: if isAdmin()
+        || (isAuth() && docId == request.auth.uid);
+    }
+
+    // PENDING COACHES — same pattern
+    match /pending_coaches/{docId} {
+      allow read: if true;
+      allow create: if isAdmin();
+      allow update: if isAdmin() || (isAuth() && request.resource.data.status == "claimed");
+      allow delete: if isAdmin();
+    }
+
+    // ACTIVITY LOGS
+    match /activity_logs/{logId} {
+      allow read: if isAdmin() || (isAuth() && resource.data.userId == request.auth.uid);
+      allow create: if isAuth() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+
+    // CASHFLOW ENTRIES
+    match /cashflow_entries/{entryId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // PAYROLL PERIODS
+    match /payroll_periods/{periodId} {
+      allow read: if isAdmin() || (isCoach() && resource.data.status != "open");
+      allow write: if isAdmin();
+    }
+
+    // PAYMENT QR CONFIG (legacy doc managed by SuperAdmin via PaymentMethodsSection).
+    match /payment_qr_config/{docId} {
+      allow read: if isAuth();
+      allow write: if isSuperAdmin();
+    }
+
+    // V6 Ajuste 19/24 — Global app config (serviceHours, appSettings).
+    match /config/{docId} {
+      allow read: if isAuth();
+      allow write: if isSuperAdmin();
+    }
+
+    // PAYROLL REMINDERS — markers to dedupe payroll-cut reminders.
+    match /payrollReminders/{markerId} {
+      allow read: if isAuth();
+      allow create: if isAuth()
+        && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+
+    // DISCOUNT CODES — admin-managed promo codes.
+    match /discountCodes/{codeId} {
+      allow read: if isAuth();
+      allow create, update, delete: if isAdmin();
+      // Users may bump usedCount when redeeming (validated in client first).
+      allow update: if isAuth()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['usedCount','updatedAt'])
+        && request.resource.data.usedCount == resource.data.usedCount + 1;
+    }
+
+    // PENDING SURVEYS — auto-created by class finalize, consumed by user.
+    match /pendingSurveys/{docId} {
+      allow read: if isAuth() && (resource.data.userId == request.auth.uid || isAdmin());
+      // Coach/admin create on finalize. User updates only to mark answered/skipped.
+      allow create: if isAuth();
+      allow update: if isAuth() && resource.data.userId == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['status','answeredAt','skippedAt','rating','comment']);
+      allow delete: if isAdmin();
+    }
+
+    // FEEDBACK / SATISFACTION SURVEYS
+    match /feedback/{docId} {
+      // Owner can read their own; admin reads all (for the dashboard).
+      allow read: if isAdmin() || (isAuth() && resource.data.userId == request.auth.uid);
+      allow create: if isAuth() && request.resource.data.userId == request.auth.uid;
+      // No edits/deletes once submitted; admin can clean up if needed.
+      allow update, delete: if isAdmin();
+    }
+
+    // RECOMMENDATION VIDEOS — any authenticated user can read; coach/admin can write
+    match /recommendation_videos/{videoId} {
+      allow read: if isAuth();
+      allow create: if isAdmin() || isCoach();
+      allow update: if isAdmin() || (isCoach() && resource.data.authorId == request.auth.uid);
+      allow delete: if isAdmin() || (isCoach() && resource.data.authorId == request.auth.uid);
+    }
+
+    // EVENTS — admin/coach create & manage; all authenticated users can read & register
+    match /events/{eventId} {
+      allow read: if isAuth();
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      // Users/coaches can register or unregister (updates registeredList + registeredCount)
+      allow update: if isAuth()
+        && onlyChanged(['registeredList','registeredCount','updatedAt']);
+      allow delete: if isAdmin();
+    }
+
+    // ─────────────────────────────────────────────────────────────────────
+    // POLLA MUNDIALISTA SALVAJE (app aparte, registro sin contraseña → sin Firebase Auth).
+    // Colecciones independientes de las del gimnasio. Acceso abierto porque las
+    // escrituras llegan sin token. No afectan ninguna colección de Salvaje.
+    // ─────────────────────────────────────────────────────────────────────
+    match /polla_users/{userId} {
+      allow read, write: if true;
+    }
+    match /polla_predictions/{userId} {
+      allow read, write: if true;
+    }
+    match /polla_results/{docId} {
+      allow read, write: if true;
+    }
+
+    // ─────────────────────────────────────────────────────────────────────
+    // SALVAJE MOCK (landing aparte en /mock, formulario público sin Auth).
+    // El público solo puede CREAR su inscripción; leer/editar/borrar = admin.
+    // ─────────────────────────────────────────────────────────────────────
+    match /mock_inscriptions/{docId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+  }
+}

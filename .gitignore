@@ -1,0 +1,25 @@
+# Dependencias
+**/node_modules/
+
+# Builds
+**/dist/
+**/.firebase/
+
+# Variables de entorno (secretos)
+**/.env
+**/.env.local
+**/.env.*.local
+
+# Logs
+**/*.log
+
+# Git interno desactivado de la sub-app
+**/.git_disabled/
+
+# Datos personales / artefactos de envío de correos (PII)
+**/emails/
+**/users.json
+
+# Sistema
+**/.DS_Store
+**/Thumbs.db

@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>SALVAJE Mock · Mock Competition</title>
+  <meta name="description" content="Vive una simulación de competencia con la comunidad SALVAJE y la atleta de CrossFit Games Camila Quintero. Reserva tu cupo." />
+  <link rel="icon" type="image/png" href="/Favicon.png" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/Favicon.png" />
+  <meta name="theme-color" content="#2C1810" />
+
+  <meta property="og:title" content="SALVAJE Mock · Mock Competition" />
+  <meta property="og:description" content="Simulación de competencia + psicología deportiva, nutrición y estrategia, junto a Camila Quintero (CrossFit Games)." />
+  <meta property="og:image" content="/Favicon.png" />
+  <meta property="og:type" content="website" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            salvaje: {
+              brown: '#2C1810', cream: '#F5ECD7', dark: '#1A0F0A',
+              orange: '#D4521A', fire: '#E8732A', gold: '#C9A227',
+              success: '#2D7A4F', danger: '#8B1A1A', gray: '#6B5C52',
+              light: '#FAF6F0', 'light-alt': '#F0E8D8',
+            },
+          },
+          fontFamily: {
+            display: ['"Bebas Neue"', 'sans-serif'],
+            body: ['"DM Sans"', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: #FAF6F0; }
+    .font-display { font-family: 'Bebas Neue', sans-serif; }
+
+    /* Staggered entrance (replaces framer-motion stagger) */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+    @keyframes fadeDown { from { opacity: 0; transform: translateY(-18px); } to { opacity: 1; transform: none; } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .reveal { opacity: 0; animation: fadeUp .7s cubic-bezier(.22,.61,.36,1) forwards; }
+    .reveal-down { opacity: 0; animation: fadeDown .6s ease-out forwards; }
+    .reveal-in { opacity: 0; animation: fadeIn 1s ease-out forwards; }
+
+    /* On-scroll reveal */
+    .io { opacity: 0; transform: translateY(24px); transition: opacity .7s cubic-bezier(.22,.61,.36,1), transform .7s cubic-bezier(.22,.61,.36,1); }
+    .io.visible { opacity: 1; transform: none; }
+
+    /* Programa — scroller horizontal */
+    .progscroll { scrollbar-width: none; -ms-overflow-style: none; }
+    .progscroll::-webkit-scrollbar { display: none; }
+
+    /* Video Camila — entrada: desplazamiento horizontal (entra desde la derecha) */
+    @keyframes camilaIn {
+      0%   { opacity: 0; transform: translateX(12%); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+    .camila-hero { opacity: 0; animation: camilaIn 1.4s cubic-bezier(.16,.84,.44,1) .3s forwards; }
+
+    /* Móvil: video como fondo completo, fundido arriba/abajo */
+    #heroVideo {
+      position: absolute; inset: 0;
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 20%, #000 72%, transparent 100%);
+              mask-image: linear-gradient(to bottom, transparent 0%, #000 20%, #000 72%, transparent 100%);
+      opacity: .3;
+    }
+    /* Desktop: video como panel derecho, fundido a la izquierda */
+    @media (min-width: 768px) {
+      #heroVideo {
+        inset: 0 0 0 auto; width: 56%;
+        -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 32%, #000 100%);
+                mask-image: linear-gradient(to right, transparent 0%, #000 32%, #000 100%);
+        opacity: 1;
+      }
+    }
+    @media (min-width: 1024px) { #heroVideo { width: 54%; } }
+
+    /* UnicornStudio embed — crop watermark + disable interaction, hide branding */
+    [data-us-project] { position: relative !important; overflow: hidden !important; }
+    [data-us-project] canvas { clip-path: inset(0 0 10% 0) !important; }
+    [data-us-project] * { pointer-events: none !important; }
+    [data-us-project] a[href*="unicorn"],
+    [data-us-project] button[title*="unicorn"],
+    [data-us-project] div[title*="Made with"],
+    [data-us-project] [class*="brand"],
+    [data-us-project] [class*="credit"],
+    [data-us-project] [class*="watermark"] {
+      display: none !important; visibility: hidden !important; opacity: 0 !important;
+      position: absolute !important; left: -9999px !important; top: -9999px !important;
+    }
+  </style>
+</head>
+<body class="text-salvaje-dark overflow-x-hidden">
+
+  <!-- ================= HERO (oscuro, con rayo) ================= -->
+  <section class="relative w-full overflow-hidden text-salvaje-cream" style="background:#120A06;">
+    <div class="absolute inset-0 z-0">
+      <div class="absolute inset-0" style="background: radial-gradient(circle at 50% 60%, rgba(212,82,26,0.10), transparent 60%);"></div>
+      <canvas id="lightning" class="absolute inset-0 h-full w-full"></canvas>
+      <div class="absolute inset-0" style="background: linear-gradient(to bottom, rgba(18,10,6,0.35) 0%, rgba(18,10,6,0.05) 40%, rgba(18,10,6,0.7) 100%);"></div>
+      <div class="pointer-events-none absolute left-1/2 top-[58%] h-[680px] w-[680px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl"
+           style="background: radial-gradient(circle at 50% 90%, rgba(232,115,42,0.22) 12%, rgba(18,10,6,0.0) 70%);"></div>
+    </div>
+
+    <!-- Camila Quintero — video: fondo completo en móvil, panel derecho en desktop -->
+    <div id="heroVideo" class="camila-hero pointer-events-none z-10">
+      <!-- glow cálido detrás del video -->
+      <div class="absolute right-[6%] top-1/2 h-[70%] w-[70%] -translate-y-1/2 rounded-full blur-3xl"
+           style="background: radial-gradient(circle, rgba(212,82,26,0.26), transparent 68%);"></div>
+      <video class="absolute inset-0 h-full w-full object-cover object-center" style="mix-blend-mode:screen;"
+             src="/mock/camila.mp4" autoplay loop muted playsinline></video>
+      <!-- fundidos para integrar bordes con el fondo -->
+      <div class="absolute inset-x-0 bottom-0 h-1/4" style="background:linear-gradient(to top, #120A06, transparent);"></div>
+      <div class="absolute inset-x-0 top-0 h-1/6" style="background:linear-gradient(to bottom, #120A06, transparent);"></div>
+    </div>
+
+    <!-- Velo de contraste para el texto (solo móvil) -->
+    <div class="absolute inset-0 z-[15] md:hidden" style="background:linear-gradient(to bottom, rgba(18,10,6,0.55) 0%, rgba(18,10,6,0.42) 45%, rgba(18,10,6,0.72) 100%);"></div>
+
+    <div class="relative z-20 mx-auto flex min-h-screen min-h-[100dvh] max-w-7xl flex-col px-5 py-6 sm:px-8">
+      <!-- HERO CONTENT -->
+      <div class="flex flex-1 flex-col items-center justify-center py-12 text-center" style="text-shadow:0 2px 16px rgba(18,10,6,0.7);">
+        <h1 class="reveal sr-only">SALVAJE MOCK</h1>
+        <img src="/mock/salvaje-logo-white.png" alt="SALVAJE" class="reveal h-28 w-auto object-contain drop-shadow-[0_4px_24px_rgba(0,0,0,0.5)] sm:h-40 lg:h-48" style="animation-delay:.18s" />
+        <p class="reveal mt-3 pb-2 font-display text-6xl uppercase leading-[0.95] tracking-[0.22em] text-transparent sm:mt-5 sm:text-8xl lg:text-9xl"
+           style="animation-delay:.3s; background:linear-gradient(90deg,#E8732A,#D4521A,#C9A227); -webkit-background-clip:text; background-clip:text;">MOCK</p>
+
+        <p class="reveal mt-5 max-w-2xl text-base font-medium leading-relaxed text-salvaje-cream/90 sm:text-lg" style="animation-delay:.42s">
+          Un espacio donde vivirás una <span class="text-salvaje-cream">simulación de competencia</span>,
+          compartirás con otros atletas de la comunidad y aprenderás junto a nuestra invitada especial,
+          atleta de CrossFit Games.
+        </p>
+
+        <div class="reveal mt-8 flex flex-col items-center gap-3" style="animation-delay:.54s">
+          <a href="#inscripcion" class="group flex items-center gap-2 rounded-full bg-salvaje-orange px-8 py-4 font-display text-base uppercase tracking-widest text-white shadow-[0_0_30px_rgba(212,82,26,0.45)] transition-colors hover:bg-salvaje-fire">
+            Quiero participar
+            <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 16 16" fill="none"><path d="M8 3L13 8L8 13M13 8H3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="#programa" class="group flex items-center gap-2 rounded-full border border-white/25 bg-black/20 px-7 py-3 font-display text-sm uppercase tracking-widest text-salvaje-cream backdrop-blur-sm transition-colors hover:border-salvaje-gold/60 hover:text-salvaje-gold">
+            Ver programa
+            <svg class="h-4 w-4 transition-transform group-hover:translate-y-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="reveal-in flex justify-center pb-2" style="animation-delay:1s">
+        <svg class="h-6 w-6 animate-bounce text-salvaje-cream/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CONTENIDO · PROGRAMA (crema) ================= -->
+  <section id="programa" class="relative scroll-mt-4" style="background:#FAF6F0;">
+    <div class="pt-16 pb-8 sm:pt-20 sm:pb-10">
+      <div class="io mb-10 px-5 text-center sm:px-8">
+        <p class="font-display text-sm uppercase tracking-[5px] text-salvaje-orange">Programa</p>
+        <h2 class="mt-2 font-display text-4xl uppercase tracking-wide text-salvaje-brown sm:text-5xl">Contenido del programa</h2>
+        <p class="mt-2 font-body text-sm text-salvaje-gray">Desliza para explorar · toca la flecha para ver el detalle</p>
+      </div>
+
+      <!-- Scroll horizontal automático + seleccionable -->
+      <div id="progScroller" class="io progscroll flex gap-5 overflow-x-auto px-5 pb-4 sm:px-8"></div>
+
+      <!-- Valor + CTA (dentro de la misma sección del programa) -->
+      <div class="io mt-10 px-5 text-center sm:px-8">
+        <p class="font-display text-sm uppercase tracking-[5px] text-salvaje-gray">Valor de la experiencia</p>
+        <p class="mt-1 font-display text-6xl uppercase tracking-wide text-salvaje-brown sm:text-7xl">$150.000</p>
+        <p class="font-body text-sm text-salvaje-gray">por persona</p>
+        <a href="#inscripcion" class="group mt-5 inline-flex items-center gap-2 rounded-full bg-salvaje-orange px-8 py-3.5 font-display text-base uppercase tracking-widest text-white shadow-[0_8px_24px_rgba(212,82,26,0.3)] transition-colors hover:bg-salvaje-fire">
+          Reservar mi cupo
+          <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 16 16" fill="none"><path d="M8 3L13 8L8 13M13 8H3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= INVITADA ESPECIAL ================= -->
+  <section class="relative border-t border-salvaje-cream" style="background:#F0E8D8;">
+    <div class="mx-auto max-w-5xl px-5 py-16 sm:px-8 sm:py-20">
+      <div class="io mb-10 text-center">
+        <p class="font-display text-sm uppercase tracking-[5px] text-salvaje-orange">Invitada especial</p>
+        <h2 class="mt-2 font-display text-4xl uppercase tracking-wide text-salvaje-brown sm:text-5xl">Aprende de la mejor</h2>
+      </div>
+
+      <div class="io relative mx-auto flex max-w-3xl flex-col items-center md:flex-row">
+        <!-- Imagen (video de Camila) -->
+        <div class="relative z-10 mb-[-3rem] h-52 w-52 flex-shrink-0 overflow-hidden rounded-3xl border-4 border-white bg-salvaje-dark shadow-[0_16px_40px_rgba(44,24,16,0.25)] md:mb-0 md:mr-[-4rem] md:h-64 md:w-64">
+          <img src="/mock/camila.png" alt="María Camila Quintero" class="h-full w-full object-cover object-top" />
+        </div>
+
+        <!-- Tarjeta -->
+        <div class="relative w-full rounded-3xl border border-salvaje-cream bg-white px-6 pb-6 pt-16 shadow-[0_16px_48px_rgba(44,24,16,0.12)] md:pl-28 md:pr-7 md:pt-7">
+          <svg class="absolute left-5 top-5 h-9 w-9 text-salvaje-orange/20" viewBox="0 0 24 24" fill="currentColor"><path d="M9.13 8.6c.41-.2.81-.36 1.16-.46l-.5-1.92c-.5.13-1.07.35-1.66.65-1.78.9-3.13 2.62-3.13 5.18 0 2.2 1.46 3.85 3.4 3.85 1.7 0 3-.34 3-2.5 0-1.74-1.27-2.53-2.45-2.53-.2 0-.4.02-.58.06.06-.96.62-1.6 1.36-2.0Zm8 0c.41-.2.81-.36 1.16-.46l-.5-1.92c-.5.13-1.07.35-1.66.65-1.78.9-3.13 2.62-3.13 5.18 0 2.2 1.46 3.85 3.4 3.85 1.7 0 3-.34 3-2.5 0-1.74-1.27-2.53-2.45-2.53-.2 0-.4.02-.58.06.06-.96.62-1.6 1.36-2.0Z"/></svg>
+
+          <blockquote class="font-body text-sm leading-relaxed text-salvaje-gray md:text-base">
+            <span class="font-semibold text-salvaje-dark">2x CrossFit Games Athlete</span> y
+            <span class="font-semibold text-salvaje-dark">3x CrossFit Games Team Athlete</span>.
+            Embajadora de Mayhem Athlete y Lycan Fitness. Compartirá su experiencia de competencia,
+            mentalidad y rendimiento con la comunidad SALVAJE.
+          </blockquote>
+
+          <!-- Logros como chips -->
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-salvaje-orange/10 px-3 py-1 text-xs font-semibold text-salvaje-orange">
+              <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+              2x Individual
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-salvaje-gold/10 px-3 py-1 text-xs font-semibold text-salvaje-gold">
+              <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              3x Team
+            </span>
+          </div>
+
+          <div class="mt-5 flex items-end justify-between gap-3">
+            <div class="min-w-0">
+              <p class="font-display text-2xl uppercase leading-none tracking-wide text-salvaje-brown">María Camila Quintero</p>
+              <p class="mt-1 font-body text-sm text-salvaje-gray">Colombiana · Atleta de CrossFit Games</p>
+            </div>
+            <a href="https://www.instagram.com/mariacamilaqs/" target="_blank" rel="noopener noreferrer"
+               class="group inline-flex flex-shrink-0 items-center gap-2 rounded-full bg-salvaje-brown px-4 py-2.5 font-display text-xs uppercase tracking-widest text-white transition-colors hover:bg-salvaje-orange">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+              <span class="hidden sm:inline">@mariacamilaqs</span>
+              <span class="sm:hidden">Instagram</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= INSCRIPCIÓN (crema + animación) ================= -->
+  <section id="inscripcion" class="relative border-t border-salvaje-cream" style="background:#F0E8D8;">
+    <div class="mx-auto max-w-6xl px-5 pb-16 pt-8 sm:px-8 sm:pb-20 sm:pt-10">
+      <div class="io mb-10 text-center">
+        <p class="font-display text-sm uppercase tracking-[5px] text-salvaje-orange">Inscripción</p>
+        <h2 class="mt-2 font-display text-4xl uppercase tracking-wide text-salvaje-brown sm:text-5xl">Reserva tu cupo</h2>
+        <p class="mx-auto mt-3 max-w-2xl text-salvaje-gray">
+          Para dejar tu inscripción lista, cuéntanos los siguientes datos. Con esta información podremos
+          adaptar mejor la experiencia para ti y compartirte los datos de pago para reservar tu cupo.
+        </p>
+      </div>
+
+      <div class="mx-auto grid max-w-2xl items-stretch gap-6 lg:max-w-5xl lg:grid-cols-2">
+        <!-- Panel video (SOLO desktop, columna izquierda) -->
+        <div class="io relative hidden overflow-hidden rounded-3xl border border-salvaje-cream bg-salvaje-dark lg:block">
+          <video src="/mock/registro-desktop.mp4" autoplay loop muted playsinline class="absolute inset-0 h-full w-full object-cover object-top"></video>
+          <div class="pointer-events-none absolute inset-0 flex items-end justify-center pb-10"
+               style="background:linear-gradient(180deg, rgba(18,10,6,0.30) 0%, rgba(18,10,6,0.08) 45%, rgba(18,10,6,0.5) 100%);">
+            <img src="/mock/salvaje-logo-white.png" alt="SALVAJE — Vida Deportiva" class="h-20 w-auto object-contain drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)]" />
+          </div>
+        </div>
+
+        <!-- Formulario con la animación contenida como banner superior (SOLO móvil) -->
+        <form id="mockForm" class="io space-y-5 overflow-hidden rounded-3xl border border-salvaje-cream bg-white p-6 shadow-[0_16px_48px_rgba(44,24,16,0.10)] sm:p-8">
+          <!-- Banner imagen (solo móvil) -->
+          <div class="relative -mx-6 -mt-6 mb-1 overflow-hidden bg-salvaje-dark sm:-mx-8 sm:-mt-8 lg:hidden">
+            <img src="/mock/registro-banner.png" alt="SALVAJE Mock" class="w-full object-cover" />
+          </div>
+
+          <div class="grid gap-4 sm:grid-cols-2">
+            <label class="block">
+              <span class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-salvaje-gray">Nombre completo *</span>
+              <div class="relative">
+                <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-salvaje-gray" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <input name="nombre" required type="text" placeholder="Tu nombre" class="w-full rounded-xl border border-salvaje-cream bg-salvaje-light py-3 pl-9 pr-4 text-sm text-salvaje-dark placeholder:text-salvaje-gray/50 outline-none transition focus:border-salvaje-orange focus:ring-2 focus:ring-salvaje-orange/30" />
+              </div>
+            </label>
+            <label class="block">
+              <span class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-salvaje-gray">Correo electrónico *</span>
+              <div class="relative">
+                <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-salvaje-gray" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                <input name="email" required type="email" placeholder="tu@correo.com" class="w-full rounded-xl border border-salvaje-cream bg-salvaje-light py-3 pl-9 pr-4 text-sm text-salvaje-dark placeholder:text-salvaje-gray/50 outline-none transition focus:border-salvaje-orange focus:ring-2 focus:ring-salvaje-orange/30" />
+              </div>
+            </label>
+            <label class="block">
+              <span class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-salvaje-gray">Celular / WhatsApp *</span>
+              <div class="relative">
+                <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-salvaje-gray" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                <input name="celular" required type="tel" inputmode="numeric" maxlength="10" pattern="[0-9]{10}" placeholder="3000000000" class="w-full rounded-xl border border-salvaje-cream bg-salvaje-light py-3 pl-9 pr-4 text-sm text-salvaje-dark placeholder:text-salvaje-gray/50 outline-none transition focus:border-salvaje-orange focus:ring-2 focus:ring-salvaje-orange/30" />
+              </div>
+            </label>
+            <label class="block">
+              <span class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-salvaje-gray">Ciudad *</span>
+              <div class="relative">
+                <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-salvaje-gray" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                <input name="ciudad" required type="text" placeholder="Tu ciudad" class="w-full rounded-xl border border-salvaje-cream bg-salvaje-light py-3 pl-9 pr-4 text-sm text-salvaje-dark placeholder:text-salvaje-gray/50 outline-none transition focus:border-salvaje-orange focus:ring-2 focus:ring-salvaje-orange/30" />
+              </div>
+            </label>
+          </div>
+
+          <div>
+            <span class="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-salvaje-gray">
+              <svg class="h-4 w-4 text-salvaje-orange" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              ¿Participarás en formato individual o equipos? *
+            </span>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-salvaje-cream bg-salvaje-light px-4 py-3 text-sm font-semibold text-salvaje-dark transition has-[:checked]:border-salvaje-orange has-[:checked]:bg-salvaje-orange/10 has-[:checked]:text-salvaje-orange">
+                <input type="radio" name="formato" value="Individual" required class="accent-salvaje-orange" /> Individual
+              </label>
+              <label class="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-salvaje-cream bg-salvaje-light px-4 py-3 text-sm font-semibold text-salvaje-dark transition has-[:checked]:border-salvaje-orange has-[:checked]:bg-salvaje-orange/10 has-[:checked]:text-salvaje-orange">
+                <input type="radio" name="formato" value="Equipos" required class="accent-salvaje-orange" /> Equipos
+              </label>
+            </div>
+          </div>
+
+          <div class="block">
+            <span class="mb-1.5 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-salvaje-gray">
+              <svg class="h-4 w-4 text-salvaje-orange" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+              ¿En qué categoría compites o te gustaría competir? *
+            </span>
+            <select name="categoria" id="categoriaSel" required class="w-full appearance-none rounded-xl border border-salvaje-cream bg-salvaje-light px-4 py-3 text-sm text-salvaje-dark outline-none transition focus:border-salvaje-orange focus:ring-2 focus:ring-salvaje-orange/30">
+              <option value="" disabled selected>Selecciona una opción…</option>
+              <option value="Principiante">Principiante</option>
+              <option value="Intermedio">Intermedio</option>
+              <option value="Avanzado">Avanzado</option>
+              <option value="Otro">Otro</option>
+            </select>
+            <input name="categoriaOtro" id="categoriaOtro" type="text" placeholder="¿Cuál? Especifica tu categoría" class="mt-2 hidden w-full rounded-xl border border-salvaje-cream bg-salvaje-light px-4 py-3 text-sm text-salvaje-dark placeholder:text-salvaje-gray/50 outline-none transition focus:border-salvaje-orange focus:ring-2 focus:ring-salvaje-orange/30" />
+          </div>
+
+          <div class="block">
+            <span class="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-salvaje-gray">
+              <svg class="h-4 w-4 text-salvaje-orange" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+              ¿Te preparas para alguna competencia específica? *
+            </span>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-salvaje-cream bg-salvaje-light px-4 py-3 text-sm font-semibold text-salvaje-dark transition has-[:checked]:border-salvaje-orange has-[:checked]:bg-salvaje-orange/10 has-[:checked]:text-salvaje-orange">
+                <input type="radio" name="preparaComp" value="Si" required class="accent-salvaje-orange" /> Sí
+              </label>
+              <label class="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-salvaje-cream bg-salvaje-light px-4 py-3 text-sm font-semibold text-salvaje-dark transition has-[:checked]:border-salvaje-orange has-[:checked]:bg-salvaje-orange/10 has-[:checked]:text-salvaje-orange">
+                <input type="radio" name="preparaComp" value="No" required class="accent-salvaje-orange" /> No
+              </label>
+            </div>
+            <input name="preparacion" id="preparaCual" type="text" placeholder="¿Cuál? Nombre de la competencia" class="mt-2 hidden w-full rounded-xl border border-salvaje-cream bg-salvaje-light px-4 py-3 text-sm text-salvaje-dark placeholder:text-salvaje-gray/50 outline-none transition focus:border-salvaje-orange focus:ring-2 focus:ring-salvaje-orange/30" />
+          </div>
+
+          <p id="formError" class="hidden rounded-lg bg-salvaje-danger/5 px-3 py-2 text-sm text-salvaje-danger"></p>
+
+          <button id="submitBtn" type="submit" class="flex w-full items-center justify-center gap-2 rounded-xl bg-salvaje-orange px-7 py-4 font-display text-lg uppercase tracking-widest text-white shadow-[0_8px_24px_rgba(212,82,26,0.3)] transition-colors hover:bg-salvaje-fire disabled:cursor-not-allowed disabled:opacity-60">
+            Enviar inscripción
+            <svg class="h-4 w-4" viewBox="0 0 16 16" fill="none"><path d="M8 3L13 8L8 13M13 8H3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <p class="text-center text-xs text-salvaje-gray">Te contactaremos por WhatsApp para completar tu inscripción y confirmar tu cupo.</p>
+        </form>
+      </div>
+
+      <!-- Success -->
+      <div id="successBox" class="io mx-auto mt-9 hidden max-w-2xl rounded-2xl border border-salvaje-success/30 bg-salvaje-success/5 p-8 text-center">
+        <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-salvaje-success/15 text-salvaje-success">
+          <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        </div>
+        <h3 class="mt-4 font-display text-3xl uppercase tracking-wide text-salvaje-brown">¡Inscripción recibida!</h3>
+        <p class="mt-2 text-salvaje-gray">
+          Gracias por reservar tu lugar en la <span class="text-salvaje-dark">SALVAJE Mock Competition</span>.
+          En breve te contactaremos para compartirte los <span class="text-salvaje-dark">datos de pago</span> y confirmar tu cupo.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="w-full border-t border-salvaje-cream px-4 py-5 text-center" style="background:#FAF6F0;">
+    <p class="text-xs text-salvaje-gray">
+      Copyright © 2026 Powered by
+      <a href="https://nostratech.com.co/" target="_blank" rel="noopener noreferrer" class="font-semibold text-salvaje-orange transition-colors hover:text-salvaje-fire hover:underline">Nostra Tech</a>.
+      Todos los derechos reservados.
+    </p>
+  </footer>
+
+  <!-- ============== Modal de detalle del programa ============== -->
+  <div id="progModal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" data-close></div>
+    <div class="relative z-10 w-full max-w-lg overflow-hidden rounded-3xl bg-white shadow-2xl">
+      <div class="relative h-52">
+        <img id="pmImg" class="h-full w-full object-cover" alt="" />
+        <div class="absolute inset-0" style="background:linear-gradient(to top, rgba(0,0,0,0.5), transparent 60%);"></div>
+        <button type="button" data-close aria-label="Cerrar" class="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur transition-colors hover:bg-black/60">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="p-6 sm:p-8">
+        <p id="pmStats" class="font-display text-sm uppercase tracking-[4px] text-salvaje-orange"></p>
+        <h3 id="pmTitle" class="mt-1 font-display text-3xl uppercase tracking-wide text-salvaje-brown"></h3>
+        <p id="pmDesc" class="mt-3 font-body leading-relaxed text-salvaje-gray"></p>
+        <a href="#inscripcion" data-close class="group mt-6 inline-flex items-center gap-2 rounded-full bg-salvaje-orange px-6 py-3 font-display text-sm uppercase tracking-widest text-white transition-colors hover:bg-salvaje-fire">
+          Inscribirme
+          <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 16 16" fill="none"><path d="M8 3L13 8L8 13M13 8H3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============== LIGHTNING SHADER (WebGL, hero) — se inicializa PRIMERO ============== -->
+  <script>
+    (function () {
+      const canvas = document.getElementById('lightning'); if (!canvas) return
+      const isMobile = () => window.matchMedia('(max-width: 767px)').matches
+      const HUE = 24, X_OFFSET = 0, SPEED = 1.6, SIZE = 2
+      // En móvil el rayo va con más fuerza para que tenga protagonismo.
+      let INTENSITY = isMobile() ? 1.7 : 1.0
+      let gl, prog, uRes, uTime, uHue, uX, uSpeed, uInt, uSz, raf, start, lost = false
+
+      // Si el navegador quita el contexto (p. ej. por otra animación WebGL o memoria),
+      // lo marcamos y el bucle intentará recrearlo — así el rayo nunca desaparece para siempre.
+      canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); lost = true }, false)
+      canvas.addEventListener('webglcontextrestored', () => { lost = false; init() }, false)
+      document.addEventListener('visibilitychange', () => { if (!document.hidden && (!gl || gl.isContextLost())) init() })
+      window.addEventListener('pageshow', () => { if (!gl || gl.isContextLost()) init() })
+
+      const vert = `attribute vec2 aPosition; void main(){ gl_Position=vec4(aPosition,0.0,1.0); }`
+      const frag = `precision mediump float;
+        #define OCTAVE_COUNT 10
+        uniform vec2 iResolution; uniform float iTime;
+        uniform float uHue,uXOffset,uSpeed,uIntensity,uSize;
+        vec3 hsv2rgb(vec3 c){ vec3 rgb=clamp(abs(mod(c.x*6.0+vec3(0.0,4.0,2.0),6.0)-3.0)-1.0,0.0,1.0); return c.z*mix(vec3(1.0),rgb,c.y); }
+        float hash11(float p){ p=fract(p*.1031); p*=p+33.33; p*=p+p; return fract(p); }
+        float hash12(vec2 p){ vec3 p3=fract(vec3(p.xyx)*.1031); p3+=dot(p3,p3.yzx+33.33); return fract((p3.x+p3.y)*p3.z); }
+        mat2 rotate2d(float t){ float c=cos(t),s=sin(t); return mat2(c,-s,s,c); }
+        float noise(vec2 p){ vec2 ip=floor(p),fp=fract(p); float a=hash12(ip),b=hash12(ip+vec2(1.,0.)),c=hash12(ip+vec2(0.,1.)),d=hash12(ip+vec2(1.,1.)); vec2 t=smoothstep(0.,1.,fp); return mix(mix(a,b,t.x),mix(c,d,t.x),t.y); }
+        float fbm(vec2 p){ float v=0.,a=.5; for(int i=0;i<OCTAVE_COUNT;++i){ v+=a*noise(p); p*=rotate2d(.45); p*=2.; a*=.5; } return v; }
+        void mainImage(out vec4 o,in vec2 fc){ vec2 uv=fc/iResolution.xy; uv=2.*uv-1.; uv.x*=iResolution.x/iResolution.y; uv.x+=uXOffset; uv+=2.*fbm(uv*uSize+0.8*iTime*uSpeed)-1.; float dist=abs(uv.x); vec3 base=hsv2rgb(vec3(uHue/360.,0.7,0.8)); vec3 col=base*pow(mix(0.0,0.07,hash11(iTime*uSpeed))/dist,1.0)*uIntensity; o=vec4(col,1.0); }
+        void main(){ mainImage(gl_FragColor, gl_FragCoord.xy); }`
+
+      function resize(){ const dpr=Math.min(window.devicePixelRatio||1,2); canvas.width=Math.max(1,canvas.clientWidth*dpr); canvas.height=Math.max(1,canvas.clientHeight*dpr) }
+      function mk(s,t){ const sh=gl.createShader(t); gl.shaderSource(sh,s); gl.compileShader(sh); if(!gl.getShaderParameter(sh,gl.COMPILE_STATUS)) console.error('[lightning] shader compile:', gl.getShaderInfoLog(sh)); return sh }
+
+      function init(){
+        gl = canvas.getContext('webgl', { antialias:true, preserveDrawingBuffer:false }); if (!gl) return
+        lost = false
+        resize()
+        prog = gl.createProgram(); gl.attachShader(prog,mk(vert,gl.VERTEX_SHADER)); gl.attachShader(prog,mk(frag,gl.FRAGMENT_SHADER)); gl.linkProgram(prog)
+        if(!gl.getProgramParameter(prog,gl.LINK_STATUS)) console.error('[lightning] program link:', gl.getProgramInfoLog(prog))
+        gl.useProgram(prog)
+        const buf=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,buf); gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW)
+        const aPos=gl.getAttribLocation(prog,'aPosition'); gl.enableVertexAttribArray(aPos); gl.vertexAttribPointer(aPos,2,gl.FLOAT,false,0,0)
+        uRes=gl.getUniformLocation(prog,'iResolution'); uTime=gl.getUniformLocation(prog,'iTime'); uHue=gl.getUniformLocation(prog,'uHue'); uX=gl.getUniformLocation(prog,'uXOffset'); uSpeed=gl.getUniformLocation(prog,'uSpeed'); uInt=gl.getUniformLocation(prog,'uIntensity'); uSz=gl.getUniformLocation(prog,'uSize')
+        start = performance.now()
+        cancelAnimationFrame(raf); raf = requestAnimationFrame(render)
+      }
+      let recover = 0
+      function render(){
+        // Si el contexto se perdió, no matamos el bucle: reintentamos recrearlo.
+        if (!gl || gl.isContextLost() || lost) {
+          if ((recover++ % 45) === 0) { try { init() } catch (e) {} }
+          raf = requestAnimationFrame(render); return
+        }
+        recover = 0
+        gl.viewport(0,0,canvas.width,canvas.height)
+        gl.uniform2f(uRes,canvas.width,canvas.height); gl.uniform1f(uTime,(performance.now()-start)/1000)
+        gl.uniform1f(uHue,HUE); gl.uniform1f(uX,X_OFFSET); gl.uniform1f(uSpeed,SPEED); gl.uniform1f(uInt,INTENSITY); gl.uniform1f(uSz,SIZE)
+        gl.drawArrays(gl.TRIANGLES,0,6); raf = requestAnimationFrame(render)
+      }
+      window.addEventListener('resize', resize)
+      init()
+    })()
+  </script>
+
+  <!-- ============== Programa · scroll horizontal automático + modal ============== -->
+  <script>
+    (function () {
+      const scroller = document.getElementById('progScroller')
+      if (!scroller) return
+
+      const FEATURES = [
+        { label: 'Psicología deportiva', stats: 'Mentalidad & enfoque', theme: '18,78%,47%',
+          img: 'https://images.unsplash.com/photo-1599058917212-d750089bc07e?q=80&w=1200&auto=format&fit=crop',
+          desc: 'Trabajaremos la mentalidad de competencia: manejo de la presión, foco, rutinas pre-WOD y diálogo interno para sostener el rendimiento cuando el cuerpo dice basta.' },
+        { label: 'Nutrición aplicada', stats: 'Rendimiento desde la mesa', theme: '147,46%,33%',
+          img: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=1200&auto=format&fit=crop',
+          desc: 'Estrategias prácticas de nutrición para entrenar y competir: timing de comidas, hidratación, energía para WODs largos y recuperación entre eventos.' },
+        { label: 'Estrategias de competencia', stats: 'Planea y ejecuta tus WODs', theme: '45,67%,47%',
+          img: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=1200&auto=format&fit=crop',
+          desc: 'Cómo leer un WOD, dosificar el esfuerzo, elegir particiones, transiciones y ritmo para sacar tu mejor versión en cada evento de la competencia.' },
+        { label: 'Mock Competition', stats: 'Un día de competencia real', theme: '22,81%,54%',
+          img: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1200&auto=format&fit=crop',
+          desc: 'La simulación completa: varios WODs, jueces, estándares de movimiento y ambiente de competencia para que vivas la experiencia real junto a la comunidad SALVAJE.' },
+      ]
+
+      // Modal
+      const modal = document.getElementById('progModal')
+      const pmImg = document.getElementById('pmImg')
+      const pmTitle = document.getElementById('pmTitle')
+      const pmStats = document.getElementById('pmStats')
+      const pmDesc = document.getElementById('pmDesc')
+      function openModal(f) {
+        if (!modal) return
+        pmImg.src = f.img; pmImg.alt = f.label
+        pmTitle.textContent = f.label
+        pmStats.textContent = f.stats
+        pmDesc.textContent = f.desc
+        modal.classList.remove('hidden'); modal.classList.add('flex')
+        document.body.style.overflow = 'hidden'
+      }
+      function closeModal() {
+        if (!modal) return
+        modal.classList.add('hidden'); modal.classList.remove('flex')
+        document.body.style.overflow = ''
+      }
+      if (modal) {
+        modal.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', closeModal))
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal() })
+      }
+
+      // Construye una tarjeta: imagen arriba + panel sólido abajo (texto siempre legible)
+      function buildCard(f) {
+        const card = document.createElement('div')
+        card.className = 'progcard group flex h-[400px] w-[280px] flex-shrink-0 flex-col overflow-hidden rounded-2xl border border-salvaje-cream sm:w-[320px]'
+        card.style.boxShadow = '0 0 40px -15px hsl(' + f.theme + ' / 0.5)'
+        card.innerHTML =
+          // Imagen
+          '<div class="relative h-44 flex-shrink-0 overflow-hidden">' +
+            '<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style="background-image:url(' + f.img + ')"></div>' +
+            '<span class="absolute left-3 top-3 rounded-full px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.2em] text-white" style="background:hsl(' + f.theme + ' / 0.85)">Sesión</span>' +
+            '<div class="absolute inset-x-0 bottom-0 h-10" style="background:linear-gradient(to top, hsl(' + f.theme + '), transparent)"></div>' +
+          '</div>' +
+          // Panel sólido inferior
+          '<div class="flex flex-1 flex-col p-5 text-white" style="background:hsl(' + f.theme + ')">' +
+            '<h3 class="font-display text-2xl uppercase leading-[0.95] tracking-wide">' + f.label + '</h3>' +
+            '<p class="mt-1 text-sm font-medium text-white/85">' + f.stats + '</p>' +
+            '<button type="button" class="vermas mt-auto flex items-center justify-between rounded-lg border border-white/30 bg-white/10 px-4 py-3 transition-all hover:bg-white/20">' +
+              '<span class="font-display text-sm uppercase tracking-widest">Ver detalle</span>' +
+              '<svg class="arrow h-4 w-4 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>' +
+            '</button>' +
+          '</div>'
+        const btn = card.querySelector('.vermas')
+        const arrow = card.querySelector('.arrow')
+        btn.addEventListener('mouseenter', () => { arrow.style.transform = 'translateX(4px)' })
+        btn.addEventListener('mouseleave', () => { arrow.style.transform = '' })
+        btn.addEventListener('click', (e) => { e.stopPropagation(); openModal(f) })
+        return card
+      }
+
+      // Carrusel infinito: triplicamos las tarjetas para que el bucle no tenga saltos
+      // y siempre haya contenido llenando todo el ancho en desktop.
+      const COPIES = 3
+      for (let k = 0; k < COPIES; k++) FEATURES.map(buildCard).forEach((c) => scroller.appendChild(c))
+
+      // Auto-scroll continuo hacia la derecha; pausa al interactuar y reanuda.
+      let paused = false, raf
+      scroller.addEventListener('mouseenter', () => { paused = true })
+      scroller.addEventListener('mouseleave', () => { paused = false })
+      scroller.addEventListener('pointerdown', () => { paused = true })
+      window.addEventListener('pointerup', () => { setTimeout(() => { paused = false }, 900) })
+
+      let pos = 0, syncing = false
+      scroller.addEventListener('scroll', () => { if (!syncing) pos = scroller.scrollLeft })
+
+      function tick() {
+        if (!paused) {
+          const oneSet = scroller.scrollWidth / COPIES // ancho de UNA serie
+          if (oneSet > 0) {
+            pos += 0.7
+            if (pos >= oneSet) pos -= oneSet // reinicio sin salto visible
+            syncing = true
+            scroller.scrollLeft = pos
+            syncing = false
+          }
+        }
+        raf = requestAnimationFrame(tick)
+      }
+      raf = requestAnimationFrame(tick)
+    })()
+  </script>
+
+  <!-- ============== Scroll reveal ============== -->
+  <script>
+    const io = new IntersectionObserver((entries)=>{ entries.forEach((e)=>{ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target) } }) }, { threshold: 0.12 })
+    document.querySelectorAll('.io').forEach((el)=>io.observe(el))
+  </script>
+
+  <!-- ============== Firebase (Firestore) ============== -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'
+    import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js'
+    const firebaseConfig = {
+      apiKey: 'AIzaSyCVAmWO1xnvbKJT14rAtRPe48Ee0x4mqII',
+      authDomain: 'salvaje-app.firebaseapp.com',
+      projectId: 'salvaje-app',
+      storageBucket: 'salvaje-app.firebasestorage.app',
+      messagingSenderId: '862256463582',
+      appId: '1:862256463582:web:fb233538fb6557ae6a8c4f',
+    }
+    const app = initializeApp(firebaseConfig)
+    const db = getFirestore(app)
+    const form = document.getElementById('mockForm')
+    const btn = document.getElementById('submitBtn')
+    const errorEl = document.getElementById('formError')
+    const successBox = document.getElementById('successBox')
+
+    // Dominios de correo temporales/desechables más comunes — se bloquean.
+    const DISPOSABLE = new Set([
+      'mailinator.com','yopmail.com','guerrillamail.com','guerrillamail.info','sharklasers.com',
+      '10minutemail.com','10minutemail.net','temp-mail.org','tempmail.com','tempmailo.com',
+      'getnada.com','nada.email','trashmail.com','dispostable.com','maildrop.cc','mailnesia.com',
+      'fakeinbox.com','throwawaymail.com','mintemail.com','mohmal.com','emailondeck.com',
+      'spam4.me','grr.la','tempr.email','tempmail.plus','moakt.com','mailcatch.com','inboxkitten.com',
+      'discard.email','spamgourmet.com','tmail.ws','byom.de','mvrht.net','luxusmail.org','1secmail.com',
+    ])
+    const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+
+    // Campos condicionales
+    const categoriaSel = document.getElementById('categoriaSel')
+    const categoriaOtro = document.getElementById('categoriaOtro')
+    const preparaCual = document.getElementById('preparaCual')
+    categoriaSel.addEventListener('change', () => {
+      const otro = categoriaSel.value === 'Otro'
+      categoriaOtro.classList.toggle('hidden', !otro)
+      categoriaOtro.required = otro
+      if (!otro) categoriaOtro.value = ''
+    })
+    form.querySelectorAll('input[name="preparaComp"]').forEach((r) => {
+      r.addEventListener('change', () => {
+        const si = form.querySelector('input[name="preparaComp"]:checked')?.value === 'Si'
+        preparaCual.classList.toggle('hidden', !si)
+        preparaCual.required = si
+        if (!si) preparaCual.value = ''
+      })
+    })
+
+    function validate(data) {
+      if (!data.nombre) return 'Ingresa tu nombre completo.'
+      if (!EMAIL_RE.test(data.email)) return 'Ingresa un correo electrónico válido.'
+      const domain = data.email.split('@')[1].toLowerCase()
+      if (DISPOSABLE.has(domain)) return 'No se permiten correos temporales/desechables. Usa un correo real.'
+      const digits = data.celular.replace(/\D/g, '')
+      if (digits.length !== 10) return 'El celular debe tener exactamente 10 dígitos.'
+      data.celular = digits
+      if (!data.ciudad) return 'Ingresa tu ciudad.'
+      if (!data.formato) return 'Selecciona el formato (Individual o Equipos).'
+      if (!data.categoria) return 'Selecciona tu categoría.'
+      if (data.categoria === 'Otro' && !data.categoriaOtro) return 'Especifica cuál es tu categoría.'
+      if (!data.preparaComp) return 'Indica si te preparas para alguna competencia.'
+      if (data.preparaComp === 'Si' && !data.preparacion) return 'Indica para cuál competencia te preparas.'
+      return null
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault()
+      errorEl.classList.add('hidden'); btn.disabled = true; btn.textContent = 'Enviando…'
+      const fd = new FormData(form)
+      const categoriaVal = (fd.get('categoria') || '').toString()
+      const categoriaOtroVal = (fd.get('categoriaOtro') || '').toString().trim()
+      const preparaComp = (fd.get('preparaComp') || '').toString()
+      const preparaCualVal = (fd.get('preparacion') || '').toString().trim()
+      const data = {
+        nombre:(fd.get('nombre')||'').toString().trim(), email:(fd.get('email')||'').toString().trim(),
+        celular:(fd.get('celular')||'').toString().trim(), ciudad:(fd.get('ciudad')||'').toString().trim(),
+        formato:(fd.get('formato')||'').toString(),
+        categoria: categoriaVal, categoriaOtro: categoriaOtroVal,
+        preparaComp,
+        // Resumen legible para la tabla/Excel del admin
+        preparacion: preparaComp === 'Si' ? preparaCualVal : (preparaComp === 'No' ? 'No / primera experiencia' : ''),
+        valor:150000, source:'landing-mock', createdAt: serverTimestamp(),
+      }
+      // categoría final legible (si eligió Otro)
+      if (categoriaVal === 'Otro' && categoriaOtroVal) data.categoria = 'Otro: ' + categoriaOtroVal
+      const verr = validate({ ...data, categoria: categoriaVal, categoriaOtro: categoriaOtroVal, preparacion: preparaCualVal })
+      if (verr) {
+        errorEl.textContent = verr; errorEl.classList.remove('hidden')
+        btn.disabled = false; btn.textContent = 'Enviar inscripción'
+        return
+      }
+      data.celular = data.celular.replace(/\D/g, '')
+      try {
+        await addDoc(collection(db, 'mock_inscriptions'), data)
+        form.classList.add('hidden'); successBox.classList.remove('hidden'); successBox.classList.add('visible')
+        successBox.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      } catch (err) {
+        console.error(err)
+        errorEl.textContent = 'No pudimos enviar tu inscripción. Revisa tu conexión e inténtalo de nuevo.'
+        errorEl.classList.remove('hidden'); btn.disabled = false; btn.textContent = 'Enviar inscripción'
+      }
+    })
+  </script>
+</body>
+</html>
