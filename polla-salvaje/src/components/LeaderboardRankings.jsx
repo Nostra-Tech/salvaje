@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Avatar } from './Avatar'
 
 /** Lista de posiciones con paginación (10 por página por defecto). */
-export function LeaderboardRankings({ rows, startRank = 1, meId, pageSize = 10 }) {
+export function LeaderboardRankings({ rows, startRank = 1, meId, pageSize = 10, onSelect }) {
   const [page, setPage] = useState(0)
   if (!rows.length) return null
 
@@ -30,7 +30,11 @@ export function LeaderboardRankings({ rows, startRank = 1, meId, pageSize = 10 }
               const rank = startRank + start + i
               const me = r.id === meId
               return (
-                <tr key={r.id} className={`border-b border-black/5 last:border-0 ${me ? 'bg-salvaje-orange/10' : ''}`}>
+                <tr
+                  key={r.id}
+                  onClick={() => onSelect && onSelect(r)}
+                  className={`cursor-pointer border-b border-black/5 transition last:border-0 hover:bg-salvaje-light-alt/60 ${me ? 'bg-salvaje-orange/10' : ''}`}
+                >
                   <td className="px-3 py-2.5">
                     <span className="display text-base text-salvaje-brown">{rank}</span>
                   </td>

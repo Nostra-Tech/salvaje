@@ -135,6 +135,98 @@ export const GROUP_MATCHES = RAW.map(([group, teamA, teamB, date, time, stadium]
   kickoff: kickoffMs(date, time), // instante de inicio (ms, UTC)
 }));
 
+// ── Fase eliminatoria (rondas) ──────────────────────────────────────────────
+// Solo los cruces YA DEFINIDOS. Cada ronda se pronostica igual que la fase de
+// grupos: marcador editable hasta 5 min antes del partido y mismo motor de
+// puntaje (5 pts exacto / 2 pts resultado). Nombres canónicos para resolver el
+// escudo (deben existir en GROUPS). Los ids NO se renumeran (hay predicciones
+// guardadas): dieciseisavos = k*, octavos = o*, etc.
+
+// Dieciseisavos de final (1/16) — en orden de fecha/hora.
+const R32_RAW = [
+  ['k1', 'Sudáfrica', 'Canadá', 'Domingo, 28 de junio 2026', '14:00'],
+  ['k2', 'Brasil', 'Japón', 'Lunes, 29 de junio 2026', '12:00'],
+  ['k5', 'Alemania', 'Paraguay', 'Lunes, 29 de junio 2026', '15:30'],
+  ['k3', 'Países Bajos', 'Marruecos', 'Lunes, 29 de junio 2026', '20:00'],
+  ['k6', 'Costa de Marfil', 'Noruega', 'Martes, 30 de junio 2026', '12:00'],
+  ['k7', 'FRANCIA', 'Suecia', 'Martes, 30 de junio 2026', '16:00'],
+  ['k10', 'México', 'Ecuador', 'Martes, 30 de junio 2026', '20:00'],
+  ['k11', 'Inglaterra', 'RD Congo', 'Miércoles, 1 de julio 2026', '11:00'],
+  ['k12', 'Bélgica', 'Senegal', 'Miércoles, 1 de julio 2026', '15:00'],
+  ['k4', 'Estados Unidos', 'Bosnia', 'Miércoles, 1 de julio 2026', '19:00'],
+  ['k13', 'España', 'Austria', 'Jueves, 2 de julio 2026', '14:00'],
+  ['k14', 'Portugal', 'Croacia', 'Jueves, 2 de julio 2026', '18:00'],
+  ['k15', 'Suiza', 'Argelia', 'Jueves, 2 de julio 2026', '22:00'],
+  ['k8', 'Australia', 'Egipto', 'Viernes, 3 de julio 2026', '13:00'],
+  ['k9', 'Argentina', 'Islas de Cabo Verde', 'Viernes, 3 de julio 2026', '17:00'],
+  ['k16', 'Colombia', 'Ghana', 'Viernes, 3 de julio 2026', '20:30'],
+];
+
+// Octavos de final (1/8), en orden de fecha/hora.
+const O16_RAW = [
+  ['o1', 'Canadá', 'Marruecos', 'Sábado, 4 de julio 2026', '12:00'],
+  ['o2', 'Paraguay', 'FRANCIA', 'Sábado, 4 de julio 2026', '16:00'],
+  ['o3', 'Brasil', 'Noruega', 'Domingo, 5 de julio 2026', '15:00'],
+  ['o4', 'México', 'Inglaterra', 'Domingo, 5 de julio 2026', '19:00'],
+  ['o6', 'Portugal', 'España', 'Lunes, 6 de julio 2026', '14:00'],
+  ['o5', 'Estados Unidos', 'Bélgica', 'Lunes, 6 de julio 2026', '19:00'],
+  ['o7', 'Argentina', 'Egipto', 'Martes, 7 de julio 2026', '11:00'],
+  ['o8', 'Suiza', 'Colombia', 'Martes, 7 de julio 2026', '15:00'],
+];
+
+// Cuartos de final (1/4).
+const Q8_RAW = [
+  ['q1', 'FRANCIA', 'Marruecos', 'Jueves, 9 de julio 2026', '15:00'],
+];
+
+// Definición de rondas (orden cronológico). `minDate` (ISO) evita emparejar por
+// error con un partido anterior entre las mismas selecciones al sincronizar los
+// resultados oficiales desde la API.
+const KNOCKOUT_ROUND_DEFS = [
+  { key: 'R32', label: 'Dieciseisavos de final', short: '1/16', minDate: '2026-06-28', raw: R32_RAW },
+  { key: 'R16', label: 'Octavos de final', short: '1/8', minDate: '2026-07-04', raw: O16_RAW },
+  { key: 'R8', label: 'Cuartos de final', short: '1/4', minDate: '2026-07-09', raw: Q8_RAW },
+];
+
+function buildKnockoutRound(def) {
+  return def.raw.map(([id, teamA, teamB, date, time]) => ({
+    id,
+    round: def.key,
+    roundLabel: def.label,
+    teamA,
+    teamB,
+    date,
+    time,
+    stadium: '',
+    kickoff: kickoffMs(date, time),
+  }));
+}
+
+// Rondas con sus partidos ya construidos (para render por sección).
+export const KNOCKOUT_ROUNDS = KNOCKOUT_ROUND_DEFS.map((d) => ({
+  key: d.key,
+  label: d.label,
+  short: d.short,
+  minDate: d.minDate,
+  matches: buildKnockoutRound(d),
+}));
+
+// TODOS los partidos de eliminatorias (todas las rondas).
+export const KNOCKOUT_MATCHES = KNOCKOUT_ROUNDS.flatMap((r) => r.matches);
+
+// Etiqueta de la primera ronda (compatibilidad con imports existentes).
+export const KNOCKOUT_ROUND_LABEL = KNOCKOUT_ROUNDS[0].label;
+
+// Todos los partidos con marcador pronosticable (grupos + eliminatorias), en
+// orden cronológico (los grupos terminan antes de que empiecen las eliminatorias).
+export const ALL_MATCHES = [...GROUP_MATCHES, ...KNOCKOUT_MATCHES];
+const MATCH_BY_ID = Object.fromEntries(ALL_MATCHES.map((m) => [m.id, m]));
+
+/** Devuelve un partido (grupos o eliminatorias) por su id. */
+export function getMatchById(id) {
+  return MATCH_BY_ID[id] || null;
+}
+
 // ── Reglas de edición ────────────────────────────────────────────────────────
 // Marcadores: editables hasta 5 minutos antes del inicio de cada partido.
 export const SCORE_LOCK_MS = 5 * 60 * 1000;
@@ -158,10 +250,25 @@ export function formatCO(ms) {
 /** Etiqueta legible del cierre de clasificados (para mostrar al usuario). */
 export const QUALIFIERS_DEADLINE_LABEL = '18 jun 2026, 11:00 a. m.';
 
-// Finales (Campeón, Subcampeón, Goleador): editables hasta el 18 de junio de 2026
-// a las 11:59 p. m. (hora Colombia).
-export const FINALS_DEADLINE_MS = new Date('2026-06-18T23:59:00-05:00').getTime();
-export const FINALS_DEADLINE_LABEL = '18 jun 2026, 11:59 p. m.';
+// Inicio de los dieciseisavos de final = el primer partido (menor kickoff).
+export const KNOCKOUT_START_MS = KNOCKOUT_MATCHES.reduce(
+  (min, m) => (m.kickoff && !Number.isNaN(m.kickoff) ? Math.min(min, m.kickoff) : min),
+  Infinity,
+);
+
+// Finales (Campeón, Subcampeón, Goleador): editables hasta el INICIO de los
+// dieciseisavos de final (primer partido, hora Colombia). Después se bloquean.
+export const FINALS_DEADLINE_MS = KNOCKOUT_START_MS;
+
+const _coFinalsDeadlineFmt = new Intl.DateTimeFormat('es-CO', {
+  timeZone: 'America/Bogota',
+  day: 'numeric', month: 'long', year: 'numeric',
+  hour: 'numeric', minute: '2-digit', hour12: true,
+});
+// p. ej. "28 de junio de 2026, 2:00 p. m."
+export const FINALS_DEADLINE_LABEL = Number.isFinite(FINALS_DEADLINE_MS)
+  ? _coFinalsDeadlineFmt.format(new Date(FINALS_DEADLINE_MS))
+  : '';
 
 /** ¿Ya cerró la edición de Campeón/Subcampeón/Goleador? */
 export function isFinalsLocked(now = Date.now()) {
@@ -177,6 +284,16 @@ export const ALL_TEAMS = Array.from(new Set(Object.values(GROUPS).flat())).sort(
 export function isScoreLocked(match, now = Date.now()) {
   if (!match?.kickoff || Number.isNaN(match.kickoff)) return false;
   return now >= match.kickoff - SCORE_LOCK_MS;
+}
+
+/**
+ * ¿El partido YA COMENZÓ? (a partir de su kickoff, hora real). Se usa para
+ * revelar los pronósticos de otros usuarios: nadie puede ver lo que pusieron los
+ * demás antes de que empiece el partido.
+ */
+export function hasMatchStarted(match, now = Date.now()) {
+  if (!match?.kickoff || Number.isNaN(match.kickoff)) return false;
+  return now >= match.kickoff;
 }
 
 /** Instante (ms) en que se cierra la edición del marcador de un partido. */
@@ -198,6 +315,32 @@ export function matchesByDate(matches = GROUP_MATCHES) {
     map.get(m.date).push(m);
   }
   return Array.from(map.entries()).map(([date, items]) => ({ date, items }));
+}
+
+// Clave de día (YYYY-MM-DD) en hora Colombia. 'en-CA' formatea como YYYY-MM-DD,
+// así que comparar dos claves con < / >= equivale a comparar fechas.
+const _coDayKey = new Intl.DateTimeFormat('en-CA', {
+  timeZone: 'America/Bogota', year: 'numeric', month: '2-digit', day: '2-digit',
+});
+
+/** Día calendario (YYYY-MM-DD, hora Colombia) de un instante en ms. */
+export function coDateKey(ms) {
+  if (!ms || Number.isNaN(ms)) return '';
+  return _coDayKey.format(new Date(ms));
+}
+
+/**
+ * Filtra grupos de días (los que devuelve `matchesByDate`) y deja SOLO el día de
+ * hoy y los siguientes (hora Colombia). Los días ya pasados se ocultan: al día
+ * siguiente, los partidos de ayer desaparecen y quedan los de hoy en adelante.
+ * Un partido sigue visible todo su día aunque ya se haya jugado/bloqueado.
+ */
+export function upcomingDays(dayGroups = [], now = Date.now()) {
+  const today = coDateKey(now);
+  return dayGroups.filter(({ items }) => {
+    const k = items.find((m) => m.kickoff && !Number.isNaN(m.kickoff))?.kickoff;
+    return k ? coDateKey(k) >= today : true;
+  });
 }
 
 /** Día corto legible a partir del `date` largo en español. */

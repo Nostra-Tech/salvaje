@@ -9,11 +9,13 @@ import { PredictionDashboard } from '../components/PredictionDashboard'
 import { FinalsSection } from '../components/FinalsSection'
 import { Avatar } from '../components/Avatar'
 import { toast } from '../components/Toast'
-import { GROUPS, GROUP_LETTERS, GROUP_MATCHES, matchesByDate, isQualifiersLocked, QUALIFIERS_DEADLINE_LABEL, isFinalsLocked } from '../data/worldCup'
+import { GROUPS, GROUP_LETTERS, GROUP_MATCHES, KNOCKOUT_ROUNDS, matchesByDate, upcomingDays, isQualifiersLocked, QUALIFIERS_DEADLINE_LABEL, isFinalsLocked } from '../data/worldCup'
 import { usePollaStore } from '../store/pollaStore'
 import { getPrediction, savePrediction, getResults } from '../services/polla.service'
 
 const DAYS = matchesByDate(GROUP_MATCHES)
+// Cada ronda de eliminatorias con sus días agrupados (para render por sección).
+const KNOCKOUT_ROUND_DAYS = KNOCKOUT_ROUNDS.map((r) => ({ ...r, days: matchesByDate(r.matches) }))
 
 // Un marcador oficial solo cuenta (y bloquea la tarjeta) si tiene ambos goles.
 function officialScore(s) {
@@ -75,6 +77,19 @@ export default function Predict() {
     () => GROUP_LETTERS.filter((g) => qualifiers[g]?.first && qualifiers[g]?.second).length,
     [qualifiers],
   )
+
+  // Marcadores: solo se muestran los partidos de HOY en adelante (hora Colombia).
+  // Los de días ya pasados quedan ocultos (siguen bloqueados y contados, pero no
+  // estorban). Al cambiar de día, los de ayer desaparecen automáticamente.
+  const visibleDays = useMemo(() => upcomingDays(DAYS), [])
+  const visibleKnockoutRounds = useMemo(
+    () =>
+      KNOCKOUT_ROUND_DAYS
+        .map((r) => ({ ...r, days: upcomingDays(r.days) }))
+        .filter((r) => r.days.length > 0),
+    [],
+  )
+  const noUpcoming = visibleDays.length === 0 && visibleKnockoutRounds.length === 0
 
   const MAX_THIRDS = 8
   const setScore = (id, p) => setScores((s) => ({ ...s, [id]: p }))
@@ -169,7 +184,7 @@ export default function Predict() {
               Después queda <strong>bloqueado</strong>. Verás la fecha límite en cada tarjeta.
             </p>
           </div>
-          {DAYS.map(({ date, items }) => (
+          {visibleDays.map(({ date, items }) => (
             <section key={date}>
               <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-salvaje-gray">
                 <span className="h-px flex-1 bg-salvaje-gray/20" />
@@ -190,6 +205,51 @@ export default function Predict() {
               </div>
             </section>
           ))}
+
+          {/* Fase eliminatoria — una sección por ronda, solo cruces definidos y de hoy en adelante */}
+          {visibleKnockoutRounds.map((round) => (
+            <div key={round.key} className="pt-2">
+              <div className="mb-3 flex items-center gap-2 rounded-xl border border-salvaje-gold/40 bg-salvaje-gold/15 p-3 text-sm text-salvaje-brown">
+                <Sparkles size={18} className="mt-0.5 shrink-0 text-salvaje-gold" />
+                <p>
+                  <strong>{round.label} ({round.short}).</strong> Pronostica el marcador de los cruces ya
+                  definidos. Mismas reglas: <strong>5 pts</strong> al marcador exacto y <strong>2 pts</strong> al
+                  resultado. Editable hasta 5 minutos antes de cada partido.
+                </p>
+              </div>
+              {round.days.map(({ date, items }) => (
+                <section key={date} className="mb-6">
+                  <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-salvaje-gray">
+                    <span className="h-px flex-1 bg-salvaje-gray/20" />
+                    {date}
+                    <span className="h-px flex-1 bg-salvaje-gray/20" />
+                  </h3>
+                  <div className="grid gap-2 md:grid-cols-2">
+                    {items.map((m) => (
+                      <MatchScoreCard
+                        key={m.id}
+                        match={m}
+                        pred={scores[m.id] || {}}
+                        onChange={(p) => setScore(m.id, p)}
+                        official={officialScore(results.scores?.[m.id])}
+                      />
+                    ))}
+                  </div>
+                </section>
+              ))}
+            </div>
+          ))}
+
+          {noUpcoming && (
+            <div className="card flex flex-col items-center gap-2 p-8 text-center">
+              <Lock size={32} className="text-salvaje-gold" />
+              <h2 className="display text-2xl text-salvaje-brown">No hay partidos por pronosticar</h2>
+              <p className="max-w-sm text-sm text-salvaje-gray">
+                Los partidos de días anteriores ya se jugaron y quedaron bloqueados. Cuando se acerque la
+                siguiente jornada, sus partidos aparecerán aquí.
+              </p>
+            </div>
+          )}
         </div>
       ) : tab === 'qualifiers' ? (
         <div className="pb-28">

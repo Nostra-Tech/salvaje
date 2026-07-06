@@ -9,10 +9,13 @@ const CONF = {
   3: { ring: 'ring-salvaje-fire/50', badge: 'bg-salvaje-fire', block: 'from-salvaje-fire/80 to-salvaje-fire/40', h: 'h-16' },
 }
 
-function PodiumSpot({ row, rank, me }) {
+function PodiumSpot({ row, rank, me, onSelect }) {
   const c = CONF[rank]
   return (
-    <div className="flex w-full max-w-[140px] flex-1 flex-col items-center">
+    <div
+      onClick={() => onSelect && onSelect(row)}
+      className="flex w-full max-w-[140px] flex-1 cursor-pointer flex-col items-center transition hover:-translate-y-0.5"
+    >
       {rank === 1 && <img src={asset('trophy.png')} alt="Campeón" className="mb-1 h-10 w-auto object-contain drop-shadow" />}
 
       {/* Avatar con número de puesto */}
@@ -40,7 +43,7 @@ function PodiumSpot({ row, rank, me }) {
   )
 }
 
-export function LeaderboardPodium({ top, meId }) {
+export function LeaderboardPodium({ top, meId, onSelect }) {
   // top = [1º, 2º, 3º] (en orden de ranking). Lo mostramos como 2º · 1º · 3º.
   const order = [
     { row: top[1], rank: 2 },
@@ -53,7 +56,7 @@ export function LeaderboardPodium({ top, meId }) {
   return (
     <div className="mb-6 flex items-end justify-center gap-2 sm:gap-5">
       {order.map(({ row, rank }) => (
-        <PodiumSpot key={row.id} row={row} rank={rank} me={row.id === meId} />
+        <PodiumSpot key={row.id} row={row} rank={rank} me={row.id === meId} onSelect={onSelect} />
       ))}
     </div>
   )

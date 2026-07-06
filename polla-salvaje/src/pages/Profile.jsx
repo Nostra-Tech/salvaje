@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { User, Phone, Mail, Camera, Save, Trash2, ArrowLeft } from 'lucide-react'
 import { Avatar } from '../components/Avatar'
 import { AppInput } from '../components/AppInput'
+import { FinalsBell } from '../components/FinalsBell'
 import { toast } from '../components/Toast'
 import { usePollaStore } from '../store/pollaStore'
 import { updateProfile } from '../services/polla.service'
@@ -86,9 +87,14 @@ export default function Profile() {
 
   return (
     <div className="mx-auto max-w-lg px-4 pb-28 pt-6">
-      <button onClick={() => navigate(-1)} className="mb-4 inline-flex items-center gap-1 text-sm text-salvaje-gray hover:text-salvaje-brown">
-        <ArrowLeft size={16} /> Volver
-      </button>
+      <div className="mb-4 flex items-center justify-between">
+        <button onClick={() => navigate(-1)} className="inline-flex items-center gap-1 text-sm text-salvaje-gray hover:text-salvaje-brown">
+          <ArrowLeft size={16} /> Volver
+        </button>
+
+        {/* Campana de notificaciones */}
+        <FinalsBell />
+      </div>
 
       <div className="rounded-salvaje bg-salvaje-light p-6 shadow-salvaje">
         <h1 className="display text-3xl text-salvaje-brown">Mi perfil</h1>

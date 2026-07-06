@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { LogOut } from 'lucide-react'
 import { Logo } from './Logo'
 import { Avatar } from './Avatar'
+import { FinalsBell } from './FinalsBell'
 import { usePollaStore } from '../store/pollaStore'
 
 export function Header() {
@@ -27,6 +28,7 @@ export function Header() {
 
         {user && (
           <div className="flex items-center gap-2">
+            <FinalsBell />
             <button
               onClick={() => navigate('/profile')}
               title="Mi perfil"

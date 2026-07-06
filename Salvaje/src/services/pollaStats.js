@@ -47,6 +47,54 @@ const RAW = [
 export const GROUP_MATCHES = RAW.map(([group, teamA, teamB], i) => ({ id: `g${i + 1}`, group, teamA, teamB }))
 const MATCH_BY_ID = Object.fromEntries(GROUP_MATCHES.map((m) => [m.id, m]))
 
+// Fase eliminatoria por rondas (mismo orden e ids que la app de la polla). Se
+// pronostican y puntúan igual que la fase de grupos.
+export const KNOCKOUT_ROUNDS = [
+  {
+    key: 'R32', label: 'Dieciseisavos de final', short: '1/16',
+    matches: [
+      ['k1', 'Sudáfrica', 'Canadá', 'Dom 28 jun · 14:00'],
+      ['k2', 'Brasil', 'Japón', 'Lun 29 jun · 12:00'],
+      ['k5', 'Alemania', 'Paraguay', 'Lun 29 jun · 15:30'],
+      ['k3', 'Países Bajos', 'Marruecos', 'Lun 29 jun · 20:00'],
+      ['k6', 'Costa de Marfil', 'Noruega', 'Mar 30 jun · 12:00'],
+      ['k7', 'FRANCIA', 'Suecia', 'Mar 30 jun · 16:00'],
+      ['k10', 'México', 'Ecuador', 'Mar 30 jun · 20:00'],
+      ['k11', 'Inglaterra', 'RD Congo', 'Mié 1 jul · 11:00'],
+      ['k12', 'Bélgica', 'Senegal', 'Mié 1 jul · 15:00'],
+      ['k4', 'Estados Unidos', 'Bosnia', 'Mié 1 jul · 19:00'],
+      ['k13', 'España', 'Austria', 'Jue 2 jul · 14:00'],
+      ['k14', 'Portugal', 'Croacia', 'Jue 2 jul · 18:00'],
+      ['k15', 'Suiza', 'Argelia', 'Jue 2 jul · 22:00'],
+      ['k8', 'Australia', 'Egipto', 'Vie 3 jul · 13:00'],
+      ['k9', 'Argentina', 'Islas de Cabo Verde', 'Vie 3 jul · 17:00'],
+      ['k16', 'Colombia', 'Ghana', 'Vie 3 jul · 20:30'],
+    ],
+  },
+  {
+    key: 'R16', label: 'Octavos de final', short: '1/8',
+    matches: [
+      ['o1', 'Canadá', 'Marruecos', 'Sáb 4 jul · 12:00'],
+      ['o2', 'Paraguay', 'FRANCIA', 'Sáb 4 jul · 16:00'],
+      ['o3', 'Brasil', 'Noruega', 'Dom 5 jul · 15:00'],
+      ['o4', 'México', 'Inglaterra', 'Dom 5 jul · 19:00'],
+      ['o6', 'Portugal', 'España', 'Lun 6 jul · 14:00'],
+      ['o5', 'Estados Unidos', 'Bélgica', 'Lun 6 jul · 19:00'],
+      ['o7', 'Argentina', 'Egipto', 'Mar 7 jul · 11:00'],
+      ['o8', 'Suiza', 'Colombia', 'Mar 7 jul · 15:00'],
+    ],
+  },
+  {
+    key: 'R8', label: 'Cuartos de final', short: '1/4',
+    matches: [
+      ['q1', 'FRANCIA', 'Marruecos', 'Jue 9 jul · 15:00'],
+    ],
+  },
+].map((r) => ({ ...r, matches: r.matches.map(([id, teamA, teamB, when]) => ({ id, teamA, teamB, when })) }))
+
+export const KNOCKOUT_MATCHES = KNOCKOUT_ROUNDS.flatMap((r) => r.matches)
+export const KNOCKOUT_ROUND_LABEL = KNOCKOUT_ROUNDS[0].label
+
 export const SCORING = { exact: 5, result: 2, qualifier: 3, champion: 25, runnerUp: 20, scorer: 15 }
 
 const sign = (n) => (n > 0 ? 1 : n < 0 ? -1 : 0)

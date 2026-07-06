@@ -3,6 +3,7 @@ import { Trophy, RefreshCw, Target, Flag } from 'lucide-react'
 import { Spinner } from '../components/Spinner'
 import { LeaderboardPodium } from '../components/LeaderboardPodium'
 import { LeaderboardRankings } from '../components/LeaderboardRankings'
+import { UserScoresModal } from '../components/UserScoresModal'
 import { toast } from '../components/Toast'
 import { getLeaderboard } from '../services/polla.service'
 import { SCORING } from '../services/scoring'
@@ -13,13 +14,16 @@ const DATE_RANGE = '11 jun – 19 jul 2026' // ventana del Mundial 2026
 export default function Leaderboard() {
   const user = usePollaStore((s) => s.user)
   const [rows, setRows] = useState([])
+  const [results, setResults] = useState({ scores: {} })
+  const [selected, setSelected] = useState(null) // usuario abierto en el modal
   const [loading, setLoading] = useState(true)
 
   const load = async () => {
     setLoading(true)
     try {
       const data = await getLeaderboard()
-      setRows(data)
+      setRows(data.rows || [])
+      setResults(data.results || { scores: {} })
     } catch (e) {
       console.error(e)
       toast.error('No se pudo cargar el ranking.')
@@ -72,11 +76,18 @@ export default function Leaderboard() {
           </div>
         ) : (
           <>
-            <LeaderboardPodium top={top3} meId={user?.id} />
-            <LeaderboardRankings rows={rest} startRank={4} meId={user?.id} pageSize={10} />
+            <p className="mb-3 text-center text-xs text-salvaje-gray">
+              Toca un participante para ver sus marcadores de partidos ya jugados.
+            </p>
+            <LeaderboardPodium top={top3} meId={user?.id} onSelect={setSelected} />
+            <LeaderboardRankings rows={rest} startRank={4} meId={user?.id} pageSize={10} onSelect={setSelected} />
           </>
         )}
       </div>
+
+      {selected && (
+        <UserScoresModal user={selected} results={results} onClose={() => setSelected(null)} />
+      )}
     </div>
   )
 }

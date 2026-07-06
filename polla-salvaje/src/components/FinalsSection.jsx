@@ -6,7 +6,7 @@ import { FINALS_DEADLINE_LABEL } from '../data/worldCup'
 
 /**
  * Campeón (+25), Subcampeón (+20) y Goleador (+15).
- * Editables hasta el 18 de junio 11:59 p. m.
+ * Editables hasta el inicio de los dieciseisavos de final (primer partido).
  */
 export function FinalsSection({
   locked,

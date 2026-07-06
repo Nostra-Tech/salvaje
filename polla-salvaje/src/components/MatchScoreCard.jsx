@@ -78,7 +78,7 @@ export function MatchScoreCard({ match, pred = {}, onChange, official, variant =
       />
       <div className="relative z-10 flex flex-col gap-2">
         <div className={`text-outline-white flex items-center justify-between text-[11px] font-bold ${c.meta}`}>
-        <span className="font-bold uppercase tracking-wide">Grupo {match.group}</span>
+        <span className="font-bold uppercase tracking-wide">{match.group ? `Grupo ${match.group}` : match.roundLabel}</span>
         <span>
           {shortDate(match.date)} · {match.time}
         </span>

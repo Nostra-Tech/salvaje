@@ -8,7 +8,7 @@
  */
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from './firebase'
-import { GROUP_MATCHES } from '../data/worldCup'
+import { GROUP_MATCHES, KNOCKOUT_ROUNDS } from '../data/worldCup'
 
 const FEED = 'https://raw.githubusercontent.com/martj42/international_results/master'
 
@@ -92,14 +92,20 @@ function parseResults(text) {
   return out
 }
 
-/** Construye { g1:{a,b}, ... } SOLO con partidos finalizados emparejados. */
-function mapToFixtures(results) {
+/**
+ * Construye { g1:{a,b}, ... } SOLO con partidos finalizados emparejados.
+ * @param {Array} results  partidos parseados del feed
+ * @param {Array} fixtures fixtures a emparejar (grupos o eliminatorias)
+ * @param {string|null} minDate  ISO (YYYY-MM-DD): solo empareja partidos desde esa fecha
+ */
+function mapToFixtures(results, fixtures, minDate = null) {
   const scores = {}
-  for (const m of GROUP_MATCHES) {
+  for (const m of fixtures) {
     const A = aliasNorms(m.teamA)
     const B = aliasNorms(m.teamB)
     const r = results.find((x) =>
       x.finished &&
+      (!minDate || x.date >= minDate) &&
       ((A.includes(x.home) && B.includes(x.away)) || (A.includes(x.away) && B.includes(x.home))),
     )
     if (!r) continue
@@ -118,7 +124,13 @@ function mapToFixtures(results) {
 export async function syncOfficialResults() {
   try {
     const text = await fetchFeed()
-    const scores = mapToFixtures(parseResults(text))
+    const parsed = parseResults(text)
+    const scores = { ...mapToFixtures(parsed, GROUP_MATCHES) }
+    // Cada ronda de eliminatorias se empareja por pareja de selecciones, pero
+    // solo desde su fecha de inicio (minDate) para no chocar con rondas previas.
+    for (const round of KNOCKOUT_ROUNDS) {
+      Object.assign(scores, mapToFixtures(parsed, round.matches, round.minDate))
+    }
     if (Object.keys(scores).length === 0) return null
     await setDoc(
       doc(db, 'polla_results', 'current'),

@@ -4,7 +4,7 @@ import { Trophy, Users, Target, Flag, RefreshCw, Goal, Crown, Star, ChevronDown,
 import toast from 'react-hot-toast'
 import { AdminShell } from '../../components/layout/AdminShell'
 import { Avatar } from '../../components/ui/Avatar'
-import { subscribePolla, analyzePolla, deletePollaUser, setPollaPaid, GROUP_MATCHES, GROUP_LETTERS } from '../../services/pollaStats'
+import { subscribePolla, analyzePolla, deletePollaUser, setPollaPaid, GROUP_MATCHES, GROUP_LETTERS, KNOCKOUT_ROUNDS } from '../../services/pollaStats'
 import { getBadge, WC_FALLBACK_BADGE } from '../../services/wcBadges'
 
 const hasScore = (s) => s && s.a !== '' && s.a != null && s.b !== '' && s.b != null
@@ -282,6 +282,36 @@ function UserPredictionsModal({ user, pred, results, onClose }) {
               </div>
             )
           })}
+
+          {/* Fase eliminatoria — una sección por ronda */}
+          {KNOCKOUT_ROUNDS.map((round) => (
+            <div key={round.key}>
+              <p className="font-mono text-[10px] uppercase tracking-widest text-salvaje-gray mb-1.5">{round.label} ({round.short})</p>
+              <div className="space-y-1">
+                {round.matches.map((m) => {
+                  const s = scores[m.id]
+                  const puesto = hasScore(s)
+                  const off = officialScores[m.id]
+                  return (
+                    <div key={m.id} className="flex items-center gap-2 rounded-lg border border-salvaje-cream bg-white px-3 py-2">
+                      {puesto
+                        ? <CheckCircle2 size={15} className="text-salvaje-success flex-shrink-0" />
+                        : <AlertCircle size={15} className="text-salvaje-orange flex-shrink-0" />}
+                      <span className="font-body text-sm text-salvaje-dark truncate flex-1">{m.teamA} <span className="text-salvaje-gray">vs</span> {m.teamB}</span>
+                      {puesto ? (
+                        <span className="font-mono text-sm font-bold text-salvaje-brown whitespace-nowrap">{s.a} - {s.b}</span>
+                      ) : (
+                        <span className="font-body text-[11px] font-semibold uppercase text-salvaje-orange whitespace-nowrap">Falta</span>
+                      )}
+                      {hasScore(off) && (
+                        <span className="ml-1 rounded-full bg-salvaje-gold/15 px-2 py-0.5 font-mono text-[10px] font-bold text-salvaje-gold whitespace-nowrap">of. {off.a}-{off.b}</span>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          ))}
 
           {/* Clasificados elegidos */}
           <div>

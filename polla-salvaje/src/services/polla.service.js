@@ -238,6 +238,9 @@ function buildRows(usersObj, predsMap, results) {
       hasPredicted: !!predsMap[id],
       score: breakdown.total,
       breakdown,
+      // Marcadores que puso el usuario. La privacidad (no ver pronósticos antes
+      // de que empiece el partido) se aplica al MOSTRARLOS en la UI.
+      prediction: { scores: prediction.scores || {} },
     })
   }
   rows.sort((a, b) => b.score - a.score || a.name.localeCompare(b.name))
@@ -246,6 +249,8 @@ function buildRows(usersObj, predsMap, results) {
 
 /**
  * Tabla de posiciones recalculada contra los resultados oficiales actuales.
+ * Devuelve { rows, results } — `results` permite revelar en la UI los marcadores
+ * de cada usuario (solo de partidos ya iniciados) con sus puntos.
  */
 export async function getLeaderboard() {
   return withFallback(
@@ -259,11 +264,11 @@ export async function getLeaderboard() {
       usersSnap.forEach((u) => (usersObj[u.id] = u.data()))
       const predsMap = {}
       predsSnap.forEach((p) => (predsMap[p.id] = p.data()))
-      return buildRows(usersObj, predsMap, results)
+      return { rows: buildRows(usersObj, predsMap, results), results }
     },
     async () => {
       const { users, preds, results } = await local.getLeaderboardData()
-      return buildRows(users, preds, results)
+      return { rows: buildRows(users, preds, results), results }
     },
   )
 }

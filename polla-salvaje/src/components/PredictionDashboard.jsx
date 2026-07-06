@@ -1,6 +1,6 @@
-import { Target, Flag, Flame, Star, ChevronRight, Goal, Crown } from 'lucide-react'
+import { Target, Flag, Flame, Star, ChevronRight, Goal, Crown, Swords } from 'lucide-react'
 import { TeamBadge } from './TeamBadge'
-import { GROUP_MATCHES, GROUP_LETTERS } from '../data/worldCup'
+import { GROUP_MATCHES, GROUP_LETTERS, KNOCKOUT_ROUNDS } from '../data/worldCup'
 
 const has = (s) => s && s.a !== '' && s.a != null && s.b !== '' && s.b != null
 
@@ -249,6 +249,45 @@ export function PredictionDashboard({ scores, qualifiers, bestThirds, champion, 
           </div>
         )}
       </Card>
+
+      {/* Fase eliminatoria — una tarjeta por ronda con los marcadores que diste */}
+      {KNOCKOUT_ROUNDS.map((round) => (
+        <Card key={round.key} icon={Swords} title={`${round.label} (${round.short})`} className="md:col-span-2">
+          <div className="mb-3 flex items-baseline gap-2">
+            <span className="display text-4xl text-salvaje-brown">
+              {round.matches.filter((m) => has(scores?.[m.id])).length}
+            </span>
+            <span className="text-xs text-salvaje-gray">de {round.matches.length} cruces pronosticados</span>
+          </div>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {round.matches.map((m) => {
+              const s = scores?.[m.id]
+              const filled = has(s)
+              return (
+                <div key={m.id} className="flex items-center gap-2 rounded-xl border border-black/5 bg-white p-2.5">
+                  <TeamBadge name={m.teamA} size={20} showName={false} />
+                  <span className="min-w-0 flex-1 truncate text-right text-xs font-semibold text-salvaje-brown">{m.teamA}</span>
+                  {filled ? (
+                    <span className="shrink-0 rounded-lg bg-salvaje-light-alt px-2 py-0.5 text-sm font-bold text-salvaje-brown">
+                      {s.a} : {s.b}
+                    </span>
+                  ) : (
+                    <span className="shrink-0 rounded-lg bg-salvaje-light-alt px-2 py-0.5 text-xs text-salvaje-gray/60">— : —</span>
+                  )}
+                  <span className="min-w-0 flex-1 truncate text-xs font-semibold text-salvaje-brown">{m.teamB}</span>
+                  <TeamBadge name={m.teamB} size={20} showName={false} />
+                </div>
+              )
+            })}
+          </div>
+          <button
+            onClick={() => onGo('scores')}
+            className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-salvaje-orange hover:text-salvaje-fire"
+          >
+            Editar marcadores <ChevronRight size={14} />
+          </button>
+        </Card>
+      ))}
 
       {/* Accesos para editar */}
       <div className="grid grid-cols-2 gap-3 md:col-span-2">
