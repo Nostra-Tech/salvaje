@@ -224,15 +224,16 @@ export default function Predict() {
                     {date}
                     <span className="h-px flex-1 bg-salvaje-gray/20" />
                   </h3>
-                  <div className="grid gap-2 md:grid-cols-2">
+                  <div className="flex flex-wrap justify-center gap-2">
                     {items.map((m) => (
-                      <MatchScoreCard
-                        key={m.id}
-                        match={m}
-                        pred={scores[m.id] || {}}
-                        onChange={(p) => setScore(m.id, p)}
-                        official={officialScore(results.scores?.[m.id])}
-                      />
+                      <div key={m.id} className="w-full md:w-[calc(50%-0.25rem)]">
+                        <MatchScoreCard
+                          match={m}
+                          pred={scores[m.id] || {}}
+                          onChange={(p) => setScore(m.id, p)}
+                          official={officialScore(results.scores?.[m.id])}
+                        />
+                      </div>
                     ))}
                   </div>
                 </section>
