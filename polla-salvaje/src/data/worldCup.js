@@ -179,6 +179,7 @@ const Q8_RAW = [
   ['q1', 'FRANCIA', 'Marruecos', 'Jueves, 9 de julio 2026', '15:00'],
   ['q2', 'España', 'Bélgica', 'Viernes, 10 de julio 2026', '14:00'],
   ['q3', 'Noruega', 'Inglaterra', 'Sábado, 11 de julio 2026', '16:00'],
+  ['q4', 'Argentina', 'Suiza', 'Sábado, 11 de julio 2026', '20:00'],
 ];
 
 // Definición de rondas (orden cronológico). `minDate` (ISO) evita emparejar por

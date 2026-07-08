@@ -90,6 +90,7 @@ export const KNOCKOUT_ROUNDS = [
       ['q1', 'FRANCIA', 'Marruecos', 'Jue 9 jul · 15:00'],
       ['q2', 'España', 'Bélgica', 'Vie 10 jul · 14:00'],
       ['q3', 'Noruega', 'Inglaterra', 'Sáb 11 jul · 16:00'],
+      ['q4', 'Argentina', 'Suiza', 'Sáb 11 jul · 20:00'],
     ],
   },
 ].map((r) => ({ ...r, matches: r.matches.map(([id, teamA, teamB, when]) => ({ id, teamA, teamB, when })) }))
