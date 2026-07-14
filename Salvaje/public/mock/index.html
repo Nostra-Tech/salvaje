@@ -102,11 +102,11 @@
   <!-- ================= HERO (oscuro, con rayo) ================= -->
   <section class="relative w-full overflow-hidden text-salvaje-cream" style="background:#120A06;">
     <div class="absolute inset-0 z-0">
-      <div class="absolute inset-0" style="background: radial-gradient(circle at 50% 60%, rgba(212,82,26,0.10), transparent 60%);"></div>
+      <div class="absolute inset-0" style="background: radial-gradient(circle at 50% 60%, rgba(18,181,201,0.10), transparent 60%);"></div>
       <canvas id="lightning" class="absolute inset-0 h-full w-full"></canvas>
       <div class="absolute inset-0" style="background: linear-gradient(to bottom, rgba(18,10,6,0.35) 0%, rgba(18,10,6,0.05) 40%, rgba(18,10,6,0.7) 100%);"></div>
       <div class="pointer-events-none absolute left-1/2 top-[58%] h-[680px] w-[680px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl"
-           style="background: radial-gradient(circle at 50% 90%, rgba(232,115,42,0.22) 12%, rgba(18,10,6,0.0) 70%);"></div>
+           style="background: radial-gradient(circle at 50% 90%, rgba(18,181,201,0.20) 12%, rgba(18,10,6,0.0) 70%);"></div>
     </div>
 
     <!-- Video hero: fondo completo en móvil, panel derecho en desktop (misma animación de siempre) -->
@@ -371,8 +371,9 @@
     (function () {
       const canvas = document.getElementById('lightning'); if (!canvas) return
       const isMobile = () => window.matchMedia('(max-width: 767px)').matches
-      const HUE = 24, X_OFFSET = 0, SPEED = 1.6, SIZE = 2
-      let INTENSITY = isMobile() ? 1.7 : 1.0
+      // Corriente de agua: tono aqua, flujo lento y ondulado (antes: rayo naranja).
+      const HUE = 197, X_OFFSET = 0, SPEED = 0.55, SIZE = 2.6
+      let INTENSITY = isMobile() ? 1.6 : 1.0
       let gl, prog, uRes, uTime, uHue, uX, uSpeed, uInt, uSz, raf, start, lost = false
 
       canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); lost = true }, false)
@@ -391,7 +392,19 @@
         mat2 rotate2d(float t){ float c=cos(t),s=sin(t); return mat2(c,-s,s,c); }
         float noise(vec2 p){ vec2 ip=floor(p),fp=fract(p); float a=hash12(ip),b=hash12(ip+vec2(1.,0.)),c=hash12(ip+vec2(0.,1.)),d=hash12(ip+vec2(1.,1.)); vec2 t=smoothstep(0.,1.,fp); return mix(mix(a,b,t.x),mix(c,d,t.x),t.y); }
         float fbm(vec2 p){ float v=0.,a=.5; for(int i=0;i<OCTAVE_COUNT;++i){ v+=a*noise(p); p*=rotate2d(.45); p*=2.; a*=.5; } return v; }
-        void mainImage(out vec4 o,in vec2 fc){ vec2 uv=fc/iResolution.xy; uv=2.*uv-1.; uv.x*=iResolution.x/iResolution.y; uv.x+=uXOffset; uv+=2.*fbm(uv*uSize+0.8*iTime*uSpeed)-1.; float dist=abs(uv.x); vec3 base=hsv2rgb(vec3(uHue/360.,0.7,0.8)); vec3 col=base*pow(mix(0.0,0.07,hash11(iTime*uSpeed))/dist,1.0)*uIntensity; o=vec4(col,1.0); }
+        void mainImage(out vec4 o,in vec2 fc){
+          vec2 uv=fc/iResolution.xy; uv=2.*uv-1.; uv.x*=iResolution.x/iResolution.y; uv.x+=uXOffset;
+          // Flujo de agua: la corriente baja lentamente (desplazamiento vertical) y ondula.
+          uv+=2.*fbm(uv*uSize+vec2(0.0,-0.9*iTime*uSpeed))-1.;
+          float dist=abs(uv.x);
+          vec3 base=hsv2rgb(vec3(uHue/360.,0.62,0.85));
+          // Brillo estable con una respiración suave (sin parpadeo de relámpago).
+          float glow=0.045+0.012*sin(iTime*0.7)+0.006*sin(iTime*1.9+1.3);
+          vec3 col=base*pow(glow/max(dist,0.02),1.0)*uIntensity;
+          // Toque de espuma: aclara el núcleo de la corriente hacia blanco.
+          col+=vec3(0.35,0.5,0.55)*pow(glow*0.6/max(dist,0.02),2.0)*uIntensity;
+          o=vec4(col,1.0);
+        }
         void main(){ mainImage(gl_FragColor, gl_FragCoord.xy); }`
 
       function resize(){ const dpr=Math.min(window.devicePixelRatio||1,2); canvas.width=Math.max(1,canvas.clientWidth*dpr); canvas.height=Math.max(1,canvas.clientHeight*dpr) }
