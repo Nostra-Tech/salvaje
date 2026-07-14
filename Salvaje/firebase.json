@@ -9,12 +9,14 @@
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "redirects": [
       { "source": "/pollasalvaje", "destination": "/pollamundialistasalvaje", "type": 301 },
-      { "source": "/pollasalvaje/**", "destination": "/pollamundialistasalvaje", "type": 301 }
+      { "source": "/pollasalvaje/**", "destination": "/pollamundialistasalvaje", "type": 301 },
+      { "source": "/mock", "destination": "/splash", "type": 301 },
+      { "source": "/mock/:rest*", "destination": "/splash/:rest*", "type": 301 }
     ],
     "rewrites": [
       { "source": "/pollamundialistasalvaje", "destination": "/pollamundialistasalvaje/index.html" },
       { "source": "/pollamundialistasalvaje/**", "destination": "/pollamundialistasalvaje/index.html" },
-      { "source": "/mock/**", "destination": "/mock/index.html" },
+      { "source": "/splash/**", "destination": "/splash/index.html" },
       { "source": "**", "destination": "/index.html" }
     ],
     "headers": [
