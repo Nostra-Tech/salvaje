@@ -87,6 +87,47 @@
     }
     @media (min-width: 1024px) { #heroVideo { width: 54%; } }
 
+    /* Selector interactivo "Qué vas a vivir" — paneles que se expanden */
+    .exp-panel {
+      position: relative; overflow: hidden; cursor: pointer;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      background-size: cover; background-position: center;
+      border-radius: 18px; border: 2px solid rgba(44,24,16,0.08);
+      box-shadow: 0 10px 30px rgba(44,24,16,0.15);
+      flex: 1 1 0%; min-height: 56px; min-width: 0;
+      opacity: 0; transform: translateX(-60px);
+      transition: flex .7s cubic-bezier(.22,.61,.36,1), box-shadow .7s, border-color .7s,
+                  opacity .6s ease, transform .6s ease;
+      will-change: flex-grow, box-shadow;
+    }
+    .exp-panel.entered { opacity: 1; transform: translateX(0); }
+    .exp-panel.active {
+      flex: 7 1 0%; border-color: rgba(255,255,255,0.85);
+      box-shadow: 0 20px 60px rgba(44,24,16,0.35); z-index: 10;
+    }
+    .exp-shadow {
+      position: absolute; inset: auto 0 0 0; height: 130px; pointer-events: none;
+      background: linear-gradient(to top, rgba(10,20,24,0.85), transparent);
+      opacity: .55; transition: opacity .7s;
+    }
+    .exp-panel.active .exp-shadow { opacity: 1; }
+    .exp-label {
+      position: absolute; left: 0; right: 0; bottom: 16px; z-index: 2;
+      display: flex; align-items: center; gap: 12px; padding: 0 16px; pointer-events: none;
+    }
+    .exp-icon {
+      min-width: 44px; max-width: 44px; height: 44px; border-radius: 9999px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(10,20,24,0.72); backdrop-filter: blur(10px);
+      border: 2px solid rgba(255,255,255,0.35); color: #fff; flex-shrink: 0;
+    }
+    .exp-info { color: #fff; white-space: nowrap; overflow: hidden; }
+    .exp-info .main, .exp-info .sub {
+      opacity: 0; transform: translateX(25px);
+      transition: opacity .7s cubic-bezier(.22,.61,.36,1), transform .7s cubic-bezier(.22,.61,.36,1);
+    }
+    .exp-panel.active .exp-info .main, .exp-panel.active .exp-info .sub { opacity: 1; transform: translateX(0); }
+
     /* Logos de medios de pago */
     .paylogo { height: 26px; width: auto; object-fit: contain; }
     .paychip {
@@ -128,10 +169,10 @@
         <h1 class="reveal sr-only">SALVAJE SPLASH</h1>
         <img src="salvaje-logo-white.png" alt="SALVAJE" class="reveal h-28 w-auto object-contain drop-shadow-[0_4px_24px_rgba(0,0,0,0.5)] sm:h-40 lg:h-48" style="animation-delay:.18s" />
         <p class="reveal mt-3 pb-2 font-display text-6xl uppercase leading-[0.95] tracking-[0.22em] text-transparent sm:mt-5 sm:text-8xl lg:text-9xl"
-           style="animation-delay:.3s; background:linear-gradient(90deg,#E8732A,#D4521A,#C9A227); -webkit-background-clip:text; background-clip:text;">SPLASH</p>
+           style="animation-delay:.3s; background:linear-gradient(90deg,#8FE8F5,#14A0C9 45%,#0B5E86); -webkit-background-clip:text; background-clip:text;">SPLASH</p>
 
         <p class="reveal mt-5 max-w-2xl text-base font-medium leading-relaxed text-salvaje-cream/90 sm:text-lg" style="animation-delay:.42s">
-          Un día para <span class="text-salvaje-cream">mojarte, moverte y disfrutar</span> con la comunidad SALVAJE:
+          <span class="text-salvaje-cream">Llegó el momento más divertido del verano…</span>
           música y DJ en vivo, entrenamiento, <span class="text-salvaje-cream">pista jabonosa</span>, inflable,
           comida, premios y muchas sorpresas más.
         </p>
@@ -160,11 +201,13 @@
       <div class="io mb-10 px-5 text-center sm:px-8">
         <p class="font-display text-sm uppercase tracking-[5px] text-salvaje-orange">El plan</p>
         <h2 class="mt-2 font-display text-4xl uppercase tracking-wide text-salvaje-brown sm:text-5xl">Qué vas a vivir</h2>
-        <p class="mt-2 font-body text-sm text-salvaje-gray">Desliza para explorar · toca la flecha para ver el detalle</p>
+        <p class="mt-2 font-body text-sm text-salvaje-gray">Toca cada experiencia para descubrirla</p>
       </div>
 
-      <!-- Scroll horizontal automático + seleccionable -->
-      <div id="progScroller" class="io progscroll flex gap-5 overflow-x-auto px-5 pb-4 sm:px-8"></div>
+      <!-- Selector interactivo: paneles que se expanden al tocarlos -->
+      <div class="px-5 sm:px-8">
+        <div id="expSelector" class="io mx-auto flex h-[540px] max-w-5xl flex-col gap-2 md:h-[420px] md:flex-row"></div>
+      </div>
 
       <!-- Valor + CTA -->
       <div class="io mt-10 px-5 text-center sm:px-8">
@@ -343,29 +386,6 @@
     </p>
   </footer>
 
-  <!-- ============== Modal de detalle del programa ============== -->
-  <div id="progModal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
-    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" data-close></div>
-    <div class="relative z-10 w-full max-w-lg overflow-hidden rounded-3xl bg-white shadow-2xl">
-      <div class="relative h-52">
-        <img id="pmImg" class="h-full w-full object-cover" alt="" />
-        <div class="absolute inset-0" style="background:linear-gradient(to top, rgba(0,0,0,0.5), transparent 60%);"></div>
-        <button type="button" data-close aria-label="Cerrar" class="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur transition-colors hover:bg-black/60">
-          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
-        </button>
-      </div>
-      <div class="p-6 sm:p-8">
-        <p id="pmStats" class="font-display text-sm uppercase tracking-[4px] text-salvaje-orange"></p>
-        <h3 id="pmTitle" class="mt-1 font-display text-3xl uppercase tracking-wide text-salvaje-brown"></h3>
-        <p id="pmDesc" class="mt-3 font-body leading-relaxed text-salvaje-gray"></p>
-        <a data-pay href="#pago" data-close class="group mt-6 inline-flex items-center gap-2 rounded-full bg-salvaje-orange px-6 py-3 font-display text-sm uppercase tracking-widest text-white transition-colors hover:bg-salvaje-fire">
-          Paga aquí
-          <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 16 16" fill="none"><path d="M8 3L13 8L8 13M13 8H3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-      </div>
-    </div>
-  </div>
-
   <!-- ============== GOTAS DE AGUA (WebGL, hero) — se inicializa PRIMERO ============== -->
   <script>
     (function () {
@@ -460,112 +480,73 @@
     })()
   </script>
 
-  <!-- ============== Actividades · scroll horizontal automático + modal ============== -->
+  <!-- ============== "Qué vas a vivir" · selector interactivo de paneles ============== -->
   <script>
     (function () {
-      const scroller = document.getElementById('progScroller')
-      if (!scroller) return
+      const wrap = document.getElementById('expSelector')
+      if (!wrap) return
 
-      const FEATURES = [
-        { label: 'Música & DJ en vivo', stats: 'La fiesta suena todo el día', theme: '22,81%,54%',
-          img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=1200&auto=format&fit=crop',
-          desc: 'Un DJ en vivo pone el ritmo de toda la jornada: música, energía y buena vibra de principio a fin para que el ambiente nunca baje.' },
-        { label: 'Entrenamiento Salvaje', stats: 'Suda y disfruta', theme: '18,78%,47%',
-          img: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1200&auto=format&fit=crop',
-          desc: 'Un entrenamiento con el sello SALVAJE pensado para todos los niveles: llega, muévete y pásala increíble junto a la comunidad.' },
-        { label: 'Pista jabonosa', stats: 'Deslízate y mójate', theme: '190,80%,42%',
-          img: 'https://images.unsplash.com/photo-1530549387789-4c1017266635?q=80&w=1200&auto=format&fit=crop',
-          desc: 'La estrella refrescante del día: una pista jabonosa gigante para deslizarte, reírte y mojarte con todos. Pura adrenalina y diversión.' },
-        { label: 'Inflable gigante', stats: 'Salta sin parar', theme: '265,60%,58%',
-          img: 'https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=1200&auto=format&fit=crop',
-          desc: 'Inflable para saltar, competir y sacar el niño interior. Diversión asegurada para grandes y chicos.' },
-        { label: 'Comida & bebidas', stats: 'Recarga energía', theme: '32,90%,50%',
-          img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=1200&auto=format&fit=crop',
-          desc: 'Zona de comida y bebidas para recuperar fuerzas entre actividad y actividad. Ven con hambre.' },
-        { label: 'Premios y sorpresas', stats: 'Gánate lo mejor', theme: '45,67%,47%',
-          img: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1200&auto=format&fit=crop',
-          desc: 'Retos, dinámicas y sorpresas con premios para los más salvajes del día. Anímate a participar en todas las actividades.' },
+      const ICONS = {
+        music: '<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
+        dumbbell: '<path d="M14.4 14.4 9.6 9.6"/><path d="m21.5 21.5-1.4-1.4"/><path d="M3.9 3.9 2.5 2.5"/><path d="M6.404 12.768a3 3 0 1 1-4.243-4.243 3 3 0 0 1 4.243 4.243"/><path d="M17.596 11.232a3 3 0 1 1 4.243 4.243 3 3 0 0 1-4.243-4.243"/>',
+        droplets: '<path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"/>',
+        party: '<path d="M5.8 11.3 2 22l10.7-3.79"/><path d="M4 3h.01"/><path d="M22 8h.01"/><path d="M15 2h.01"/><path d="M22 20h.01"/><path d="m22 2-2.24.75a2.9 2.9 0 0 0-1.96 3.12c.1.86-.57 1.63-1.45 1.63h-.38c-.86 0-1.6.6-1.76 1.44L14 10"/><path d="m22 13-.82-.33c-.86-.34-1.82.2-1.98 1.11c-.11.7-.72 1.22-1.43 1.22H17"/><path d="m11 2 .33.82c.34.86-.2 1.82-1.11 1.98C9.52 4.9 9 5.52 9 6.23V7"/><path d="M11 13c1.93 1.93 2.83 4.17 2 5-.83.83-3.07-.07-5-2-1.93-1.93-2.83-4.17-2-5 .83-.83 3.07.07 5 2Z"/>',
+        food: '<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>',
+        trophy: '<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>',
+      }
+
+      const OPTIONS = [
+        { title: 'Música & DJ en vivo', desc: 'La fiesta suena todo el día', icon: 'music',
+          img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=1200&auto=format&fit=crop' },
+        { title: 'Entrenamiento Salvaje', desc: 'Suda y disfruta con la comunidad', icon: 'dumbbell',
+          img: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1200&auto=format&fit=crop' },
+        { title: 'Pista jabonosa', desc: 'Deslízate, mójate y ríete', icon: 'droplets',
+          img: 'https://images.unsplash.com/photo-1530549387789-4c1017266635?q=80&w=1200&auto=format&fit=crop' },
+        { title: 'Inflable gigante', desc: 'Salta sin parar', icon: 'party',
+          img: 'https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=1200&auto=format&fit=crop' },
+        { title: 'Comida & bebidas', desc: 'Recarga energía', icon: 'food',
+          img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=1200&auto=format&fit=crop' },
+        { title: 'Premios y sorpresas', desc: 'Gánate lo mejor del día', icon: 'trophy',
+          img: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1200&auto=format&fit=crop' },
       ]
 
-      // Modal
-      const modal = document.getElementById('progModal')
-      const pmImg = document.getElementById('pmImg')
-      const pmTitle = document.getElementById('pmTitle')
-      const pmStats = document.getElementById('pmStats')
-      const pmDesc = document.getElementById('pmDesc')
-      function openModal(f) {
-        if (!modal) return
-        pmImg.src = f.img; pmImg.alt = f.label
-        pmTitle.textContent = f.label
-        pmStats.textContent = f.stats
-        pmDesc.textContent = f.desc
-        modal.classList.remove('hidden'); modal.classList.add('flex')
-        document.body.style.overflow = 'hidden'
-      }
-      function closeModal() {
-        if (!modal) return
-        modal.classList.add('hidden'); modal.classList.remove('flex')
-        document.body.style.overflow = ''
-      }
-      if (modal) {
-        modal.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', closeModal))
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal() })
-      }
-
-      // Tarjeta: imagen arriba + panel sólido abajo (texto siempre legible)
-      function buildCard(f) {
-        const card = document.createElement('div')
-        card.className = 'progcard group flex h-[400px] w-[280px] flex-shrink-0 flex-col overflow-hidden rounded-2xl border border-salvaje-cream sm:w-[320px]'
-        card.style.boxShadow = '0 0 40px -15px hsl(' + f.theme + ' / 0.5)'
-        card.innerHTML =
-          '<div class="relative h-44 flex-shrink-0 overflow-hidden">' +
-            '<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style="background-image:url(' + f.img + ')"></div>' +
-            '<span class="absolute left-3 top-3 rounded-full px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.2em] text-white" style="background:hsl(' + f.theme + ' / 0.85)">Splash</span>' +
-            '<div class="absolute inset-x-0 bottom-0 h-10" style="background:linear-gradient(to top, hsl(' + f.theme + '), transparent)"></div>' +
-          '</div>' +
-          '<div class="flex flex-1 flex-col p-5 text-white" style="background:hsl(' + f.theme + ')">' +
-            '<h3 class="font-display text-2xl uppercase leading-[0.95] tracking-wide">' + f.label + '</h3>' +
-            '<p class="mt-1 text-sm font-medium text-white/85">' + f.stats + '</p>' +
-            '<button type="button" class="vermas mt-auto flex items-center justify-between rounded-lg border border-white/30 bg-white/10 px-4 py-3 transition-all hover:bg-white/20">' +
-              '<span class="font-display text-sm uppercase tracking-widest">Ver detalle</span>' +
-              '<svg class="arrow h-4 w-4 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>' +
-            '</button>' +
+      let active = 0
+      const panels = OPTIONS.map((o, i) => {
+        const p = document.createElement('div')
+        p.className = 'exp-panel' + (i === 0 ? ' active' : '')
+        p.style.backgroundImage = "url('" + o.img + "')"
+        p.innerHTML =
+          '<div class="exp-shadow"></div>' +
+          '<div class="exp-label">' +
+            '<div class="exp-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + ICONS[o.icon] + '</svg></div>' +
+            '<div class="exp-info">' +
+              '<div class="main font-display text-xl uppercase tracking-wide leading-none">' + o.title + '</div>' +
+              '<div class="sub mt-0.5 text-sm text-white/80">' + o.desc + '</div>' +
+            '</div>' +
           '</div>'
-        const btn = card.querySelector('.vermas')
-        const arrow = card.querySelector('.arrow')
-        btn.addEventListener('mouseenter', () => { arrow.style.transform = 'translateX(4px)' })
-        btn.addEventListener('mouseleave', () => { arrow.style.transform = '' })
-        btn.addEventListener('click', (e) => { e.stopPropagation(); openModal(f) })
-        return card
+        p.addEventListener('click', () => setActive(i, true))
+        wrap.appendChild(p)
+        return p
+      })
+
+      function setActive(i, byUser) {
+        if (i === active) return
+        panels[active].classList.remove('active')
+        active = i
+        panels[active].classList.add('active')
+        if (byUser) { userPaused = true; setTimeout(() => { userPaused = false }, 9000) }
       }
 
-      // Carrusel infinito: triplicamos las tarjetas para que el bucle no tenga saltos.
-      const COPIES = 3
-      for (let k = 0; k < COPIES; k++) FEATURES.map(buildCard).forEach((c) => scroller.appendChild(c))
+      // Entrada escalonada (como el original: fade + slide desde la izquierda).
+      panels.forEach((p, i) => setTimeout(() => p.classList.add('entered'), 180 * i))
 
-      let paused = false, raf
-      scroller.addEventListener('mouseenter', () => { paused = true })
-      scroller.addEventListener('mouseleave', () => { paused = false })
-      scroller.addEventListener('pointerdown', () => { paused = true })
-      window.addEventListener('pointerup', () => { setTimeout(() => { paused = false }, 900) })
-
-      let pos = 0, syncing = false
-      scroller.addEventListener('scroll', () => { if (!syncing) pos = scroller.scrollLeft })
-
-      function tick() {
-        if (!paused) {
-          const oneSet = scroller.scrollWidth / COPIES
-          if (oneSet > 0) {
-            pos += 0.7
-            if (pos >= oneSet) pos -= oneSet
-            syncing = true
-            scroller.scrollLeft = pos
-            syncing = false
-          }
-        }
-        raf = requestAnimationFrame(tick)
-      }
-      raf = requestAnimationFrame(tick)
+      // Rotación automática suave; se pausa al interactuar y al pasar el mouse.
+      let userPaused = false, hoverPaused = false
+      wrap.addEventListener('mouseenter', () => { hoverPaused = true })
+      wrap.addEventListener('mouseleave', () => { hoverPaused = false })
+      setInterval(() => {
+        if (!userPaused && !hoverPaused && !document.hidden) setActive((active + 1) % panels.length, false)
+      }, 4500)
     })()
   </script>
 
