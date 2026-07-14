@@ -128,6 +128,18 @@
     }
     .exp-panel.active .exp-info .main, .exp-panel.active .exp-info .sub { opacity: 1; transform: translateX(0); }
 
+    /* Móvil: mismo layout horizontal — tiras angostas; la etiqueta solo se ve en el panel activo. */
+    @media (max-width: 767px) {
+      .exp-panel { border-radius: 14px; }
+      .exp-label { padding: 0 10px; gap: 8px; bottom: 12px; opacity: 0; transition: opacity .5s ease .15s; }
+      .exp-panel.active .exp-label { opacity: 1; }
+      .exp-icon { min-width: 34px; max-width: 34px; height: 34px; }
+      .exp-icon svg { width: 17px; height: 17px; }
+      .exp-info { white-space: normal; }
+      .exp-info .main { font-size: 1rem; line-height: 1.05; }
+      .exp-info .sub { font-size: 0.75rem; }
+    }
+
     /* Logos de medios de pago */
     .paylogo { height: 26px; width: auto; object-fit: contain; }
     .paychip {
@@ -204,9 +216,9 @@
         <p class="mt-2 font-body text-sm text-salvaje-gray">Toca cada experiencia para descubrirla</p>
       </div>
 
-      <!-- Selector interactivo: paneles que se expanden al tocarlos -->
-      <div class="px-5 pb-8 sm:px-8">
-        <div id="expSelector" class="io mx-auto flex h-[540px] max-w-5xl flex-col gap-2 md:h-[420px] md:flex-row"></div>
+      <!-- Selector interactivo: paneles que se expanden al tocarlos (horizontal en todos los tamaños) -->
+      <div class="px-4 pb-8 sm:px-8">
+        <div id="expSelector" class="io mx-auto flex h-[360px] max-w-5xl flex-row gap-1.5 sm:gap-2 md:h-[420px]"></div>
       </div>
     </div>
   </section>
@@ -517,24 +529,33 @@
         return p
       })
 
+      let pauseTimer = null
       function setActive(i, byUser) {
         if (i === active) return
         panels[active].classList.remove('active')
         active = i
         panels[active].classList.add('active')
-        if (byUser) { userPaused = true; setTimeout(() => { userPaused = false }, 9000) }
+        if (byUser) {
+          userPaused = true
+          clearTimeout(pauseTimer)
+          pauseTimer = setTimeout(() => { userPaused = false }, 7000)
+        }
       }
 
       // Entrada escalonada (como el original: fade + slide desde la izquierda).
       panels.forEach((p, i) => setTimeout(() => p.classList.add('entered'), 180 * i))
 
-      // Rotación automática suave; se pausa al interactuar y al pasar el mouse.
+      // Rotación automática cada 3 s. Se pausa unos segundos si el usuario toca
+      // un panel y, SOLO en dispositivos con mouse real, mientras el cursor esté
+      // encima (en táctiles el hover "fantasma" congelaba la rotación).
       let userPaused = false, hoverPaused = false
-      wrap.addEventListener('mouseenter', () => { hoverPaused = true })
-      wrap.addEventListener('mouseleave', () => { hoverPaused = false })
+      if (window.matchMedia('(hover: hover)').matches) {
+        wrap.addEventListener('mouseenter', () => { hoverPaused = true })
+        wrap.addEventListener('mouseleave', () => { hoverPaused = false })
+      }
       setInterval(() => {
         if (!userPaused && !hoverPaused && !document.hidden) setActive((active + 1) % panels.length, false)
-      }, 4500)
+      }, 3000)
     })()
   </script>
 
