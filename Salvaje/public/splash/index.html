@@ -332,6 +332,10 @@
           Ir a la pasarela de pagos
           <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 16 16" fill="none"><path d="M8 3L13 8L8 13M13 8H3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
+        <p id="payRedirectNote" class="mt-3 hidden text-xs text-salvaje-gray">
+          Te llevaremos automáticamente a la pasarela segura de Bold en
+          <span id="paySecs" class="font-bold text-salvaje-dark">6</span> segundos…
+        </p>
         <p id="payFallback" class="mt-4 hidden text-sm text-salvaje-gray">
           Muy pronto te contactaremos por <span class="font-semibold text-salvaje-dark">WhatsApp</span> o
           <span class="font-semibold text-salvaje-dark"> correo</span> para completar tu pago.
@@ -589,7 +593,9 @@
   <!-- ============================================================= -->
   <script>
     (function () {
-      const PAYMENT_URL = ""; // <-- PEGA AQUÍ EL ENLACE DE PAGO
+      // Pasarela de pagos Bold (link de pago de monto fijo).
+      const PAYMENT_URL = "https://checkout.bold.co/payment/LNK_6V6HE4572Y";
+      window.SPLASH_PAYMENT_URL = PAYMENT_URL; // usado por el flujo post-registro
       document.querySelectorAll('[data-pay]').forEach((el) => {
         if (PAYMENT_URL) {
           el.setAttribute('href', PAYMENT_URL)
@@ -699,6 +705,27 @@
       openAuthModal()
     })
 
+    // Tras el registro: countdown de 6 s y redirección automática a la pasarela
+    // de Bold. El botón permite ir de inmediato (y cancela el temporizador).
+    function startPayRedirect() {
+      const url = window.SPLASH_PAYMENT_URL
+      if (!url) return
+      const note = document.getElementById('payRedirectNote')
+      const secsEl = document.getElementById('paySecs')
+      if (!note || !secsEl) return
+      note.classList.remove('hidden')
+      let s = 6
+      secsEl.textContent = s
+      const t = setInterval(() => {
+        s -= 1
+        secsEl.textContent = s
+        if (s <= 0) { clearInterval(t); window.location.href = url }
+      }, 1000)
+      successBox.querySelectorAll('[data-pay]').forEach((b) =>
+        b.addEventListener('click', () => { clearInterval(t); note.classList.add('hidden') })
+      )
+    }
+
     authAccept.addEventListener('click', async () => {
       if (!pendingData) { closeAuthModal(); return }
       authAccept.disabled = true; authAccept.textContent = 'Registrando…'
@@ -709,6 +736,7 @@
         closeAuthModal()
         form.classList.add('hidden'); successBox.classList.remove('hidden'); successBox.classList.add('visible')
         successBox.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        startPayRedirect()
       } catch (err) {
         console.error(err)
         closeAuthModal()
