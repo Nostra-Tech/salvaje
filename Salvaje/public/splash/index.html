@@ -213,8 +213,8 @@
         <p id="cdToday" class="reveal hidden font-display text-2xl uppercase tracking-[0.2em] text-salvaje-aqua-light" style="animation-delay:.52s">¡Es hoy! Nos vemos en Salvaje Splash</p>
 
         <div class="reveal mt-8 flex flex-col items-center gap-3" style="animation-delay:.6s">
-          <a data-pay href="#pago" class="group flex items-center gap-2 rounded-full bg-salvaje-orange px-8 py-4 font-display text-base uppercase tracking-widest text-white shadow-[0_0_30px_rgba(212,82,26,0.45)] transition-colors hover:bg-salvaje-fire">
-            Paga aquí
+          <a href="#inscripcion" class="js-open-form group flex items-center gap-2 rounded-full bg-salvaje-orange px-8 py-4 font-display text-base uppercase tracking-widest text-white shadow-[0_0_30px_rgba(212,82,26,0.45)] transition-colors hover:bg-salvaje-fire">
+            Inscríbete aquí
             <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 16 16" fill="none"><path d="M8 3L13 8L8 13M13 8H3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
           <a href="#programa" class="group flex items-center gap-2 rounded-full border border-white/25 bg-black/20 px-7 py-3 font-display text-sm uppercase tracking-widest text-salvaje-cream backdrop-blur-sm transition-colors hover:border-salvaje-gold/60 hover:text-salvaje-gold">
@@ -246,120 +246,18 @@
     </div>
   </section>
 
-  <!-- ================= PAGO · MEDIOS DE PAGO ================= -->
-  <section id="pago" class="relative scroll-mt-4 border-t border-salvaje-cream" style="background:#FAF6F0;">
-    <div class="mx-auto max-w-4xl px-5 py-16 sm:px-8 sm:py-20">
-      <!-- Encabezado + candado decorativo -->
-      <div class="io relative text-center">
-        <svg class="pointer-events-none absolute -right-4 -top-8 hidden h-48 w-48 md:block" viewBox="0 0 200 200" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="96" cy="96" r="80" stroke="#C9A227" stroke-opacity="0.35" stroke-width="2" stroke-dasharray="3 12"/>
-          <rect x="58" y="84" width="64" height="52" rx="12" stroke="#D4521A" stroke-opacity="0.4" stroke-width="4"/>
-          <path d="M70 84V68a20 20 0 0 1 40 0v16" stroke="#D4521A" stroke-opacity="0.4" stroke-width="4"/>
-          <circle cx="90" cy="106" r="6" stroke="#D4521A" stroke-opacity="0.4" stroke-width="4"/>
-          <path d="M90 112v10" stroke="#D4521A" stroke-opacity="0.4" stroke-width="4"/>
-          <path d="M146 112c13 0 22 7 22 7s-2 24-22 31c-20-7-22-31-22-31s9-7 22-7Z" fill="#FAF6F0" stroke="#C9A227" stroke-opacity="0.5" stroke-width="3.5"/>
-          <path d="m137 128 6 6 12-12" stroke="#C9A227" stroke-opacity="0.6" stroke-width="3.5"/>
-          <circle cx="48" cy="150" r="4" stroke="#C9A227" stroke-opacity="0.35" stroke-width="2"/>
-          <circle cx="160" cy="58" r="5" stroke="#D4521A" stroke-opacity="0.25" stroke-width="2"/>
-        </svg>
-
-        <p class="font-display text-sm uppercase tracking-[5px] text-salvaje-orange">Asegura tu cupo</p>
-        <h2 class="mt-2 font-display text-4xl uppercase tracking-wide text-salvaje-brown sm:text-5xl">Paga en línea</h2>
-        <p class="mx-auto mt-3 max-w-xl text-salvaje-gray">
-          Completa tu pago de forma <span class="font-semibold text-salvaje-dark">100% segura</span>.<br class="hidden sm:block" />
-          Al hacer clic serás redirigido a la pasarela de pago.
-        </p>
-
-        <a data-pay href="#" class="group mt-7 inline-flex items-center gap-2 rounded-full bg-salvaje-orange px-10 py-4 font-display text-xl uppercase tracking-widest text-white shadow-[0_8px_28px_rgba(212,82,26,0.35)] transition-colors hover:bg-salvaje-fire">
-          Paga aquí
-          <svg class="h-5 w-5 transition-transform group-hover:translate-x-1" viewBox="0 0 16 16" fill="none"><path d="M8 3L13 8L8 13M13 8H3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-      </div>
-
-      <!-- Medios de pago -->
-      <div class="io mt-10 rounded-3xl border border-salvaje-cream bg-white p-6 shadow-[0_16px_48px_rgba(44,24,16,0.10)] sm:p-8">
-        <div class="flex items-center justify-center gap-3">
-          <span class="hidden h-px w-10 bg-salvaje-orange/50 sm:block"></span>
-          <svg class="hidden h-3.5 w-3.5 text-salvaje-orange/70 sm:block" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <p class="text-center font-display text-sm uppercase tracking-[4px] text-salvaje-orange">Medios de pago aceptados</p>
-          <svg class="hidden h-3.5 w-3.5 text-salvaje-orange/70 sm:block" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M7 4 3 8l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span class="hidden h-px w-10 bg-salvaje-orange/50 sm:block"></span>
-        </div>
-
-        <div class="mt-6 space-y-6 text-left">
-          <div>
-            <p class="mb-3 text-[11px] font-semibold uppercase tracking-widest text-salvaje-gray">Tarjetas débito y crédito</p>
-            <div class="grid grid-cols-3 items-center justify-items-start gap-3 sm:flex sm:flex-wrap sm:gap-x-8 sm:gap-y-4">
-              <img class="paylogo" alt="Visa" src="img/medios de pago/visa.png" />
-              <img class="paylogo" alt="Mastercard" src="img/medios de pago/Mastercard-logo.png" />
-              <img class="paylogo" alt="American Express" src="img/medios de pago/americanexpress.png" />
-            </div>
-          </div>
-
-          <div>
-            <p class="mb-3 text-[11px] font-semibold uppercase tracking-widest text-salvaje-gray">Billeteras digitales</p>
-            <div class="flex flex-wrap items-center gap-x-8 gap-y-4">
-              <img class="paylogo" alt="Nequi" src="img/medios de pago/nequi.png" />
-              <img class="paylogo" alt="DaviPlata" src="img/medios de pago/daviplata.png" />
-            </div>
-          </div>
-
-          <div>
-            <p class="mb-3 text-[11px] font-semibold uppercase tracking-widest text-salvaje-gray">PSE y tarjetas de marca propia</p>
-            <div class="grid grid-cols-4 items-center justify-items-start gap-2 sm:flex sm:flex-wrap sm:gap-x-8 sm:gap-y-4">
-              <img class="paylogo" alt="PSE" src="img/medios de pago/PSE.png" />
-              <img class="paylogo" alt="Éxito" src="img/medios de pago/exito.png" />
-              <img class="paylogo" alt="Codensa" src="img/medios de pago/codensa.png" />
-              <img class="paylogo" alt="Olímpica" src="img/medios de pago/olimpica.png" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Barra de confianza -->
-      <div class="io mt-6 rounded-3xl border border-salvaje-cream bg-salvaje-light-alt/70 p-6 sm:p-8">
-        <div class="grid grid-cols-2 gap-x-4 gap-y-7 md:grid-cols-4 md:divide-x md:divide-salvaje-brown/10">
-          <div class="flex flex-col items-center px-2 text-center">
-            <svg class="h-8 w-8 text-salvaje-brown" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
-            <p class="mt-2.5 text-sm font-bold text-salvaje-dark">Pago 100% seguro</p>
-            <p class="mt-0.5 text-xs text-salvaje-gray">Tus datos están protegidos</p>
-          </div>
-          <div class="flex flex-col items-center px-2 text-center">
-            <svg class="h-8 w-8 text-salvaje-brown" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-            <p class="mt-2.5 text-sm font-bold text-salvaje-dark">Confirmación inmediata</p>
-            <p class="mt-0.5 text-xs text-salvaje-gray">Recibe tu comprobante al instante</p>
-          </div>
-          <div class="flex flex-col items-center px-2 text-center">
-            <svg class="h-8 w-8 text-salvaje-brown" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
-            <p class="mt-2.5 text-sm font-bold text-salvaje-dark">Múltiples medios de pago</p>
-            <p class="mt-0.5 text-xs text-salvaje-gray">Elige el que prefieras</p>
-          </div>
-          <div class="flex flex-col items-center px-2 text-center">
-            <svg class="h-8 w-8 text-salvaje-brown" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5a9 9 0 0 1 18 0v5a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/></svg>
-            <p class="mt-2.5 text-sm font-bold text-salvaje-dark">Soporte en línea</p>
-            <p class="mt-0.5 text-xs text-salvaje-gray">Estamos para ayudarte</p>
-          </div>
-        </div>
-      </div>
-
-      <p class="io mt-6 flex items-center justify-center gap-2 text-center text-sm text-salvaje-gray">
-        <svg class="h-4 w-4 shrink-0 text-salvaje-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        Con tecnología de pasarelas de pago líderes en seguridad.
-      </p>
-    </div>
-  </section>
-
   <!-- ================= INSCRIPCIÓN (crema + animación) ================= -->
   <section id="inscripcion" class="relative border-t border-salvaje-cream" style="background:#F0E8D8;">
     <div class="mx-auto max-w-6xl px-5 pb-16 pt-8 sm:px-8 sm:pb-20 sm:pt-10">
       <div class="io mb-8 text-center">
-        <p class="font-display text-sm uppercase tracking-[5px] text-salvaje-orange">¿Prefieres pagar después?</p>
-        <h2 class="mt-2 font-display text-4xl uppercase tracking-wide text-salvaje-brown sm:text-5xl">Separa tu cupo</h2>
+        <p class="font-display text-sm uppercase tracking-[5px] text-salvaje-orange">Inscripción</p>
+        <h2 class="mt-2 font-display text-4xl uppercase tracking-wide text-salvaje-brown sm:text-5xl">Inscríbete aquí</h2>
         <p class="mx-auto mt-3 max-w-2xl text-salvaje-gray">
           Déjanos tus datos y asegura tu lugar en <span class="text-salvaje-dark">Salvaje Splash</span>.
+          Al terminar tu registro pasarás a la <span class="font-semibold text-salvaje-dark">pasarela de pagos</span>.
         </p>
         <button id="openFormBtn" class="group mt-6 inline-flex items-center gap-2 rounded-full border-2 border-salvaje-orange bg-white px-8 py-3.5 font-display text-base uppercase tracking-widest text-salvaje-orange transition-colors hover:bg-salvaje-orange hover:text-white">
-          Separa tu cupo aquí
+          Comenzar mi inscripción
           <svg class="h-4 w-4 transition-transform group-hover:translate-y-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
         </button>
       </div>
@@ -425,15 +323,19 @@
         <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-salvaje-success/15 text-salvaje-success">
           <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
         </div>
-        <h3 class="mt-4 font-display text-3xl uppercase tracking-wide text-salvaje-brown">¡Cupo reservado!</h3>
+        <h3 class="mt-4 font-display text-3xl uppercase tracking-wide text-salvaje-brown">¡Registro exitoso!</h3>
         <p class="mt-2 text-salvaje-gray">
-          Ya casi es oficial. Completa tu <span class="text-salvaje-dark">pago en línea</span> para asegurar tu lugar en
-          <span class="text-salvaje-dark">Salvaje Splash</span>.
+          Tu cupo en <span class="text-salvaje-dark">Salvaje Splash</span> quedó reservado. Ahora completa tu
+          <span class="text-salvaje-dark"> pago</span> para confirmarlo.
         </p>
-        <a data-pay href="#pago" class="group mt-5 inline-flex items-center gap-2 rounded-full bg-salvaje-orange px-8 py-3.5 font-display text-base uppercase tracking-widest text-white shadow-[0_8px_24px_rgba(212,82,26,0.3)] transition-colors hover:bg-salvaje-fire">
-          Paga aquí
+        <a data-pay href="#" class="group mt-5 inline-flex items-center gap-2 rounded-full bg-salvaje-orange px-8 py-3.5 font-display text-base uppercase tracking-widest text-white shadow-[0_8px_24px_rgba(212,82,26,0.3)] transition-colors hover:bg-salvaje-fire">
+          Ir a la pasarela de pagos
           <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 16 16" fill="none"><path d="M8 3L13 8L8 13M13 8H3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
+        <p id="payFallback" class="mt-4 hidden text-sm text-salvaje-gray">
+          Muy pronto te contactaremos por <span class="font-semibold text-salvaje-dark">WhatsApp</span> o
+          <span class="font-semibold text-salvaje-dark"> correo</span> para completar tu pago.
+        </p>
       </div>
     </div>
   </section>
@@ -693,8 +595,13 @@
           el.setAttribute('href', PAYMENT_URL)
           el.setAttribute('target', '_blank')
           el.setAttribute('rel', 'noopener noreferrer')
+        } else {
+          // Sin URL de pasarela: se oculta el botón de pago y se muestra el
+          // aviso de contacto (WhatsApp/correo) en la confirmación.
+          el.classList.add('hidden')
+          const fb = document.getElementById('payFallback')
+          if (fb) fb.classList.remove('hidden')
         }
-        // Sin URL: los botones llevan a la sección de pago (#pago) como ancla.
       })
     })()
   </script>
@@ -718,15 +625,18 @@
     const errorEl = document.getElementById('formError')
     const successBox = document.getElementById('successBox')
 
-    // "O separa tu cupo": el formulario está oculto hasta tocar el botón.
+    // Inscripción: el formulario está oculto hasta tocar el botón (o el CTA del hero).
     const openFormBtn = document.getElementById('openFormBtn')
     const formWrap = document.getElementById('formWrap')
-    openFormBtn.addEventListener('click', () => {
+    function showForm(scroll) {
       openFormBtn.classList.add('hidden')
       formWrap.classList.remove('hidden')
       formWrap.classList.add('grid')
-      formWrap.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    })
+      if (scroll) formWrap.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+    openFormBtn.addEventListener('click', () => showForm(true))
+    // El botón "Inscríbete aquí" del hero también despliega el formulario.
+    document.querySelectorAll('.js-open-form').forEach((el) => el.addEventListener('click', () => showForm(false)))
 
     // Modal de autorización de contacto (compuerta antes de registrar).
     const authModal = document.getElementById('authModal')
