@@ -140,14 +140,9 @@
       .exp-info .sub { font-size: 0.75rem; }
     }
 
-    /* Logos de medios de pago */
-    .paylogo { height: 26px; width: auto; object-fit: contain; }
-    .paychip {
-      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-      min-height: 46px; padding: 8px 16px; border-radius: 12px;
-      background: #fff; border: 1px solid #F0E8D8;
-      box-shadow: 0 4px 14px rgba(44,24,16,0.06);
-    }
+    /* Logos de medios de pago — solo el logo, sin fondo ni recuadro */
+    .paylogo { height: 34px; width: auto; max-width: 120px; object-fit: contain; }
+    @media (max-width: 640px) { .paylogo { height: 28px; max-width: 96px; } }
   </style>
 </head>
 <body class="text-salvaje-dark overflow-x-hidden">
@@ -263,31 +258,31 @@
           <span class="hidden h-px w-10 bg-salvaje-orange/50 sm:block"></span>
         </div>
 
-        <div class="mt-6 space-y-5 text-left">
+        <div class="mt-6 space-y-6 text-left">
           <div>
-            <p class="mb-2 text-[11px] font-semibold uppercase tracking-widest text-salvaje-gray">Tarjetas débito y crédito</p>
-            <div class="flex flex-wrap gap-2.5">
-              <span class="paychip min-w-[92px]"><span class="font-display text-xl italic tracking-wide" style="color:#1A1F71;">VISA</span></span>
-              <span class="paychip min-w-[92px]"><img class="paylogo" alt="Mastercard" src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" onload="this.nextElementSibling.style.display='none'" onerror="this.style.display='none'" /><span class="text-sm font-bold text-salvaje-dark">Mastercard</span></span>
-              <span class="paychip min-w-[92px]"><img class="paylogo" alt="American Express" src="https://upload.wikimedia.org/wikipedia/commons/f/fa/American_Express_logo_%282018%29.svg" onload="this.nextElementSibling.style.display='none'" onerror="this.style.display='none'" /><span class="text-sm font-bold text-salvaje-dark">American Express</span></span>
+            <p class="mb-3 text-[11px] font-semibold uppercase tracking-widest text-salvaje-gray">Tarjetas débito y crédito</p>
+            <div class="flex flex-wrap items-center gap-x-8 gap-y-4">
+              <img class="paylogo" alt="Visa" src="img/medios de pago/visa.png" />
+              <img class="paylogo" alt="Mastercard" src="img/medios de pago/Mastercard-logo.png" />
+              <img class="paylogo" alt="American Express" src="img/medios de pago/americanexpress.png" />
             </div>
           </div>
 
           <div>
-            <p class="mb-2 text-[11px] font-semibold uppercase tracking-widest text-salvaje-gray">Billeteras digitales</p>
-            <div class="flex flex-wrap gap-2.5">
-              <span class="paychip min-w-[92px]" style="background:#200020;"><span class="text-sm font-bold" style="color:#fff;">Nequi</span></span>
-              <span class="paychip min-w-[92px]" style="background:#ED1C27;"><span class="text-sm font-bold" style="color:#fff;">DaviPlata</span></span>
+            <p class="mb-3 text-[11px] font-semibold uppercase tracking-widest text-salvaje-gray">Billeteras digitales</p>
+            <div class="flex flex-wrap items-center gap-x-8 gap-y-4">
+              <img class="paylogo" alt="Nequi" src="img/medios de pago/nequi.png" />
+              <img class="paylogo" alt="DaviPlata" src="img/medios de pago/daviplata.png" />
             </div>
           </div>
 
           <div>
-            <p class="mb-2 text-[11px] font-semibold uppercase tracking-widest text-salvaje-gray">PSE y tarjetas de marca propia</p>
-            <div class="flex flex-wrap gap-2.5">
-              <span class="paychip min-w-[92px]" style="background:#0F4B93;"><span class="text-sm font-bold" style="color:#fff;">PSE</span></span>
-              <span class="paychip min-w-[92px]" style="background:#FFDD00;"><span class="text-sm font-bold" style="color:#1A0F0A;">Éxito</span></span>
-              <span class="paychip min-w-[92px]" style="background:#F05A22;"><span class="text-sm font-bold" style="color:#fff;">Codensa</span></span>
-              <span class="paychip min-w-[92px]" style="background:#D31245;"><span class="text-sm font-bold" style="color:#fff;">Olímpica</span></span>
+            <p class="mb-3 text-[11px] font-semibold uppercase tracking-widest text-salvaje-gray">PSE y tarjetas de marca propia</p>
+            <div class="flex flex-wrap items-center gap-x-8 gap-y-4">
+              <img class="paylogo" alt="PSE" src="img/medios de pago/PSE.png" />
+              <img class="paylogo" alt="Éxito" src="img/medios de pago/exito.png" />
+              <img class="paylogo" alt="Codensa" src="img/medios de pago/codensa.png" />
+              <img class="paylogo" alt="Olímpica" src="img/medios de pago/olimpica.png" />
             </div>
           </div>
         </div>
@@ -331,7 +326,7 @@
     <div class="mx-auto max-w-6xl px-5 pb-16 pt-8 sm:px-8 sm:pb-20 sm:pt-10">
       <div class="io mb-8 text-center">
         <p class="font-display text-sm uppercase tracking-[5px] text-salvaje-orange">¿Prefieres pagar después?</p>
-        <h2 class="mt-2 font-display text-4xl uppercase tracking-wide text-salvaje-brown sm:text-5xl">O separa tu cupo</h2>
+        <h2 class="mt-2 font-display text-4xl uppercase tracking-wide text-salvaje-brown sm:text-5xl">Separa tu cupo</h2>
         <p class="mx-auto mt-3 max-w-2xl text-salvaje-gray">
           Déjanos tus datos y asegura tu lugar en <span class="text-salvaje-dark">Salvaje Splash</span>.
         </p>
@@ -558,13 +553,13 @@
 
       const OPTIONS = [
         { title: 'Música & DJ en vivo', desc: 'La fiesta suena todo el día', icon: 'music',
-          img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=1200&auto=format&fit=crop' },
+          img: 'img/dj en vivo.jpg' },
         { title: 'Entrenamiento Salvaje', desc: 'Suda y disfruta con la comunidad', icon: 'dumbbell',
-          img: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1200&auto=format&fit=crop' },
+          img: 'img/entrenamiento.jpg' },
         { title: 'Pista jabonosa', desc: 'Deslízate, mójate y ríete', icon: 'droplets',
-          img: 'https://images.unsplash.com/photo-1530549387789-4c1017266635?q=80&w=1200&auto=format&fit=crop' },
+          img: 'img/pistajabonosa.jpg' },
         { title: 'Inflable gigante', desc: 'Salta sin parar', icon: 'party',
-          img: 'https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=1200&auto=format&fit=crop' },
+          img: 'img/inflable.jpg' },
         { title: 'Comida & bebidas', desc: 'Recarga energía', icon: 'food',
           img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=1200&auto=format&fit=crop' },
         { title: 'Premios y sorpresas', desc: 'Gánate lo mejor del día', icon: 'trophy',
