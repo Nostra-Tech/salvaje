@@ -59,6 +59,7 @@ import { ConfigPaymentMethods } from './pages/superadmin/ConfigPaymentMethods'
 import { SuperAdminAnalytics } from './pages/superadmin/SuperAdminAnalytics'
 import { PollaSalvaje } from './pages/superadmin/PollaSalvaje'
 import { SalvajeMock } from './pages/superadmin/SalvajeMock'
+import { SalvajeSplash } from './pages/superadmin/SalvajeSplash'
 import { AdminPayrollHistory } from './pages/admin/AdminPayrollHistory'
 import { AdminVideos } from './pages/admin/AdminVideos'
 import { AdminEvents } from './pages/admin/AdminEvents'
@@ -149,6 +150,7 @@ export function AppRouter() {
         <Route path="/superadmin/analytics" element={<ProtectedRoute><RoleGuard allowedRoles={['superadmin']}><SuperAdminAnalytics /></RoleGuard></ProtectedRoute>} />
         <Route path="/superadmin/polla-mundialista-salvaje" element={<ProtectedRoute><RoleGuard allowedRoles={['superadmin']}><PollaSalvaje /></RoleGuard></ProtectedRoute>} />
         <Route path="/superadmin/salvaje-mock" element={<ProtectedRoute><RoleGuard allowedRoles={['superadmin']}><SalvajeMock /></RoleGuard></ProtectedRoute>} />
+        <Route path="/superadmin/salvaje-splash" element={<ProtectedRoute><RoleGuard allowedRoles={['superadmin']}><SalvajeSplash /></RoleGuard></ProtectedRoute>} />
 
         <Route path="/setup" element={<Setup />} />
         <Route path="/auth-action" element={<AuthAction />} />

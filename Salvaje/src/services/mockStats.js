@@ -103,6 +103,49 @@ export function downloadMockExcel(rows) {
   setTimeout(() => URL.revokeObjectURL(url), 1000)
 }
 
+/** Excel de inscritos a Salvaje Splash (columnas del formulario Splash). */
+export function downloadSplashExcel(rows) {
+  const COLS = [
+    ['Nombre', 'nombre'],
+    ['Correo', 'email'],
+    ['Celular', 'celular'],
+    ['Ciudad', 'ciudad'],
+    ['Contacto autorizado', (r) => (r.contactoAutorizado ? 'Sí' : 'No')],
+    ['Pagó', (r) => (r.paid ? 'Sí' : 'No')],
+    ['Comprobante', (r) => (r.comprobanteURL ? r.comprobanteURL : '')],
+    ['Fecha y hora', (r) => fmtExcelDate(r.createdAt)],
+  ]
+  const head = COLS.map(([h]) => `<th>${esc(h)}</th>`).join('')
+  const body = rows.map((r) => {
+    const tds = COLS.map(([, key]) => {
+      const val = typeof key === 'function' ? key(r) : r[key]
+      return `<td>${esc(val)}</td>`
+    }).join('')
+    return `<tr>${tds}</tr>`
+  }).join('')
+  const html =
+    '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">' +
+    '<head><meta charset="UTF-8" />' +
+    '<style>' +
+    'table{border-collapse:collapse;font-family:Calibri,Arial,sans-serif;font-size:11pt;}' +
+    'th,td{border:1px solid #000000;padding:6px 10px;vertical-align:top;}' +
+    'th{background:#0E7C8B;color:#FFFFFF;font-weight:bold;text-align:left;}' +
+    'tr:nth-child(even) td{background:#FAF6F0;}' +
+    '</style></head><body>' +
+    `<table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>` +
+    '</body></html>'
+  const blob = new Blob(['﻿' + html], { type: 'application/vnd.ms-excel;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  const stamp = new Date().toISOString().slice(0, 10)
+  a.href = url
+  a.download = `salvaje-splash-inscritos-${stamp}.xls`
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  setTimeout(() => URL.revokeObjectURL(url), 1000)
+}
+
 /**
  * Suscripción en tiempo real a las inscripciones del Mock. Llama a `onData`
  * con un array de inscripciones (ordenadas por fecha desc) cada vez que cambia.
@@ -139,20 +182,24 @@ async function createMockNotif(adminUid, inscriptionId, data) {
   const safe = String(inscriptionId).replace(/[^a-zA-Z0-9_-]/g, '_')
   const notifId = `mockreg_${safe}_${adminUid}`
   const name = data.nombre || data.email || 'Nuevo inscrito'
+  // Los registros nuevos vienen de la landing Salvaje Splash; los antiguos, del Mock.
+  const isSplash = data.source === 'landing-splash' || data.evento === 'Salvaje Splash'
   await setDoc(doc(db, 'notifications', notifId), {
     recipientId: adminUid,
     recipientRole: 'admin',
     senderId: null,
-    senderName: 'Salvaje Mock',
+    senderName: isSplash ? 'Salvaje Splash' : 'Salvaje Mock',
     senderRole: 'system',
     senderPhotoURL: null,
     type: 'mock_registration',
-    title: 'Nueva inscripción · Salvaje Mock',
-    body: `${name} se inscribió a la Mock Competition (${data.formato || 'sin formato'}).`,
+    title: isSplash ? 'Nueva inscripción · Salvaje Splash' : 'Nueva inscripción · Salvaje Mock',
+    body: isSplash
+      ? `${name} separó su cupo en Salvaje Splash.`
+      : `${name} se inscribió a la Mock Competition (${data.formato || 'sin formato'}).`,
     relatedId: inscriptionId,
     relatedCollection: 'mock_inscriptions',
     actionType: 'view',
-    actionUrl: '/superadmin/salvaje-mock',
+    actionUrl: isSplash ? '/superadmin/salvaje-splash' : '/superadmin/salvaje-mock',
     isRead: false,
     sentAt: serverTimestamp(),
     readAt: null,
