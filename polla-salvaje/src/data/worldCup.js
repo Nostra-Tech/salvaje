@@ -188,6 +188,16 @@ const S4_RAW = [
   ['s2', 'Inglaterra', 'Argentina', 'Miércoles, 15 de julio 2026', '14:00'],
 ];
 
+// Tercer puesto (3ª posición).
+const P3_RAW = [
+  ['t1', 'FRANCIA', 'Inglaterra', 'Sábado, 18 de julio 2026', '16:00'],
+];
+
+// La Final.
+const F_RAW = [
+  ['f1', 'España', 'Argentina', 'Domingo, 19 de julio 2026', '14:00'],
+];
+
 // Definición de rondas (orden cronológico). `minDate` (ISO) evita emparejar por
 // error con un partido anterior entre las mismas selecciones al sincronizar los
 // resultados oficiales desde la API.
@@ -196,6 +206,8 @@ const KNOCKOUT_ROUND_DEFS = [
   { key: 'R16', label: 'Octavos de final', short: '1/8', minDate: '2026-07-04', raw: O16_RAW },
   { key: 'R8', label: 'Cuartos de final', short: '1/4', minDate: '2026-07-09', raw: Q8_RAW },
   { key: 'R4', label: 'Semifinales', short: '1/2', minDate: '2026-07-14', raw: S4_RAW },
+  { key: 'P3', label: 'Tercer puesto', short: '3ª posición', minDate: '2026-07-18', raw: P3_RAW },
+  { key: 'F', label: 'La Final', short: 'Final', minDate: '2026-07-19', raw: F_RAW },
 ];
 
 function buildKnockoutRound(def) {

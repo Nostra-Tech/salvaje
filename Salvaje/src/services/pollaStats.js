@@ -100,6 +100,18 @@ export const KNOCKOUT_ROUNDS = [
       ['s2', 'Inglaterra', 'Argentina', 'Mié 15 jul · 14:00'],
     ],
   },
+  {
+    key: 'P3', label: 'Tercer puesto', short: '3ª posición',
+    matches: [
+      ['t1', 'FRANCIA', 'Inglaterra', 'Sáb 18 jul · 16:00'],
+    ],
+  },
+  {
+    key: 'F', label: 'La Final', short: 'Final',
+    matches: [
+      ['f1', 'España', 'Argentina', 'Dom 19 jul · 14:00'],
+    ],
+  },
 ].map((r) => ({ ...r, matches: r.matches.map(([id, teamA, teamB, when]) => ({ id, teamA, teamB, when })) }))
 
 export const KNOCKOUT_MATCHES = KNOCKOUT_ROUNDS.flatMap((r) => r.matches)
