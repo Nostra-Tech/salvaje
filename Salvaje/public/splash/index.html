@@ -142,7 +142,8 @@
 
     /* Logos de medios de pago — solo el logo, sin fondo ni recuadro */
     .paylogo { height: 34px; width: auto; max-width: 120px; object-fit: contain; }
-    @media (max-width: 640px) { .paylogo { height: 28px; max-width: 96px; } }
+    /* Móvil: cada logo se ajusta al ancho de su celda para que todos quepan en una fila. */
+    @media (max-width: 640px) { .paylogo { height: 26px; width: auto; max-width: 100%; } }
   </style>
 </head>
 <body class="text-salvaje-dark overflow-x-hidden">
@@ -288,7 +289,7 @@
         <div class="mt-6 space-y-6 text-left">
           <div>
             <p class="mb-3 text-[11px] font-semibold uppercase tracking-widest text-salvaje-gray">Tarjetas débito y crédito</p>
-            <div class="flex flex-wrap items-center gap-x-8 gap-y-4">
+            <div class="grid grid-cols-3 items-center justify-items-start gap-3 sm:flex sm:flex-wrap sm:gap-x-8 sm:gap-y-4">
               <img class="paylogo" alt="Visa" src="img/medios de pago/visa.png" />
               <img class="paylogo" alt="Mastercard" src="img/medios de pago/Mastercard-logo.png" />
               <img class="paylogo" alt="American Express" src="img/medios de pago/americanexpress.png" />
@@ -305,7 +306,7 @@
 
           <div>
             <p class="mb-3 text-[11px] font-semibold uppercase tracking-widest text-salvaje-gray">PSE y tarjetas de marca propia</p>
-            <div class="flex flex-wrap items-center gap-x-8 gap-y-4">
+            <div class="grid grid-cols-4 items-center justify-items-start gap-2 sm:flex sm:flex-wrap sm:gap-x-8 sm:gap-y-4">
               <img class="paylogo" alt="PSE" src="img/medios de pago/PSE.png" />
               <img class="paylogo" alt="Éxito" src="img/medios de pago/exito.png" />
               <img class="paylogo" alt="Codensa" src="img/medios de pago/codensa.png" />
