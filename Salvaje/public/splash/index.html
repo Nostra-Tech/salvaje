@@ -184,7 +184,34 @@
           comida, premios y muchas sorpresas más.
         </p>
 
-        <div class="reveal mt-8 flex flex-col items-center gap-3" style="animation-delay:.54s">
+        <!-- Fecha del evento -->
+        <div class="reveal mt-6 inline-flex items-center gap-2 rounded-full border border-salvaje-aqua-light/40 bg-white/5 px-5 py-2 backdrop-blur-sm" style="animation-delay:.48s">
+          <svg class="h-4 w-4 text-salvaje-aqua-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+          <span class="font-display text-base uppercase tracking-[0.2em] text-salvaje-aqua-light sm:text-lg">Sábado 1 de agosto · 2026</span>
+        </div>
+
+        <!-- Countdown (hora Colombia, UTC-05:00) -->
+        <div id="countdown" class="reveal mt-4 flex items-stretch gap-2 sm:gap-3" style="animation-delay:.52s">
+          <div class="flex min-w-[64px] flex-col items-center rounded-2xl border border-white/15 bg-white/5 px-3 py-2.5 backdrop-blur-sm sm:min-w-[80px] sm:px-4 sm:py-3">
+            <span id="cdDays" class="font-display text-3xl leading-none text-salvaje-cream sm:text-4xl">--</span>
+            <span class="mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-salvaje-cream/60">Días</span>
+          </div>
+          <div class="flex min-w-[64px] flex-col items-center rounded-2xl border border-white/15 bg-white/5 px-3 py-2.5 backdrop-blur-sm sm:min-w-[80px] sm:px-4 sm:py-3">
+            <span id="cdHours" class="font-display text-3xl leading-none text-salvaje-cream sm:text-4xl">--</span>
+            <span class="mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-salvaje-cream/60">Horas</span>
+          </div>
+          <div class="flex min-w-[64px] flex-col items-center rounded-2xl border border-white/15 bg-white/5 px-3 py-2.5 backdrop-blur-sm sm:min-w-[80px] sm:px-4 sm:py-3">
+            <span id="cdMins" class="font-display text-3xl leading-none text-salvaje-cream sm:text-4xl">--</span>
+            <span class="mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-salvaje-cream/60">Min</span>
+          </div>
+          <div class="flex min-w-[64px] flex-col items-center rounded-2xl border border-salvaje-aqua-light/30 bg-white/5 px-3 py-2.5 backdrop-blur-sm sm:min-w-[80px] sm:px-4 sm:py-3">
+            <span id="cdSecs" class="font-display text-3xl leading-none text-salvaje-aqua-light sm:text-4xl">--</span>
+            <span class="mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-salvaje-cream/60">Seg</span>
+          </div>
+        </div>
+        <p id="cdToday" class="reveal hidden font-display text-2xl uppercase tracking-[0.2em] text-salvaje-aqua-light" style="animation-delay:.52s">¡Es hoy! Nos vemos en Salvaje Splash</p>
+
+        <div class="reveal mt-8 flex flex-col items-center gap-3" style="animation-delay:.6s">
           <a data-pay href="#pago" class="group flex items-center gap-2 rounded-full bg-salvaje-orange px-8 py-4 font-display text-base uppercase tracking-widest text-white shadow-[0_0_30px_rgba(212,82,26,0.45)] transition-colors hover:bg-salvaje-fire">
             Paga aquí
             <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 16 16" fill="none"><path d="M8 3L13 8L8 13M13 8H3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -612,6 +639,39 @@
       setInterval(() => {
         if (!userPaused && !hoverPaused && !document.hidden) setActive((active + 1) % panels.length, false)
       }, 3000)
+    })()
+  </script>
+
+  <!-- ============== Countdown al evento (1 de agosto de 2026, UTC-05:00) ============== -->
+  <script>
+    (function () {
+      // El offset -05:00 fija el instante en hora Colombia sin importar
+      // desde qué país/huso horario se abra la página.
+      const TARGET = new Date('2026-08-01T00:00:00-05:00').getTime()
+      const elD = document.getElementById('cdDays')
+      const elH = document.getElementById('cdHours')
+      const elM = document.getElementById('cdMins')
+      const elS = document.getElementById('cdSecs')
+      const box = document.getElementById('countdown')
+      const today = document.getElementById('cdToday')
+      if (!elD || !box) return
+      const pad = (n) => String(n).padStart(2, '0')
+      function tick() {
+        const diff = TARGET - Date.now()
+        if (diff <= 0) {
+          box.classList.add('hidden')
+          today.classList.remove('hidden')
+          clearInterval(timer)
+          return
+        }
+        const s = Math.floor(diff / 1000)
+        elD.textContent = String(Math.floor(s / 86400))
+        elH.textContent = pad(Math.floor((s % 86400) / 3600))
+        elM.textContent = pad(Math.floor((s % 3600) / 60))
+        elS.textContent = pad(s % 60)
+      }
+      tick()
+      const timer = setInterval(tick, 1000)
     })()
   </script>
 
