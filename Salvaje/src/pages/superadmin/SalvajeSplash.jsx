@@ -133,6 +133,9 @@ export function SalvajeSplash() {
                       <div className="flex items-center gap-2 flex-wrap">
                         <p className="font-display text-xl uppercase text-salvaje-dark truncate">{r.nombre || 'Sin nombre'}</p>
                         <span className={`text-[10px] font-body font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full ${r.paid ? 'bg-salvaje-success/15 text-salvaje-success' : 'bg-salvaje-danger/10 text-salvaje-danger'}`}>{r.paid ? 'Pagó' : 'Sin pagar'}</span>
+                        {r.paidVia === 'bold-webhook' && (
+                          <span className="text-[10px] font-body font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-salvaje-success/15 text-salvaje-success">Verificado Bold</span>
+                        )}
                         {r.contactoAutorizado && (
                           <span className="text-[10px] font-body font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-salvaje-gold/15 text-salvaje-gold">Contacto autorizado</span>
                         )}
@@ -145,6 +148,19 @@ export function SalvajeSplash() {
                     </div>
                     <span className="inline-flex items-center gap-1.5 text-xs font-body text-salvaje-gray whitespace-nowrap"><Calendar size={14} />{fmtDate(r.createdAt)}</span>
                   </div>
+
+                  {/* Comprobante Bold (adjuntado automáticamente por el webhook) */}
+                  {r.boldPaymentId && (
+                    <div className="mt-3 pt-3 border-t border-salvaje-cream">
+                      <p className="text-[11px] font-body font-semibold uppercase tracking-wide text-salvaje-gray">Comprobante Bold</p>
+                      <p className="font-body text-sm text-salvaje-dark mt-0.5">
+                        ID <span className="font-mono">{r.boldPaymentId}</span>
+                        {r.boldAmount ? ` · $${Number(r.boldAmount).toLocaleString('es-CO')}` : ''}
+                        {r.boldMethod ? ` · ${r.boldMethod}` : ''}
+                        {r.paidAt ? ` · ${fmtDate(r.paidAt)}` : ''}
+                      </p>
+                    </div>
+                  )}
 
                   {/* Acciones */}
                   <div className="mt-3 pt-3 border-t border-salvaje-cream flex flex-wrap items-center gap-2">

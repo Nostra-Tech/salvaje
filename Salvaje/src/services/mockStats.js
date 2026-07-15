@@ -112,6 +112,8 @@ export function downloadSplashExcel(rows) {
     ['Ciudad', 'ciudad'],
     ['Contacto autorizado', (r) => (r.contactoAutorizado ? 'Sí' : 'No')],
     ['Pagó', (r) => (r.paid ? 'Sí' : 'No')],
+    ['Pago Bold (ID)', (r) => r.boldPaymentId || ''],
+    ['Monto Bold', (r) => (r.boldAmount != null ? r.boldAmount : '')],
     ['Comprobante', (r) => (r.comprobanteURL ? r.comprobanteURL : '')],
     ['Fecha y hora', (r) => fmtExcelDate(r.createdAt)],
   ]
