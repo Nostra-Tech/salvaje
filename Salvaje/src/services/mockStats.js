@@ -4,8 +4,7 @@
  * gestiona las notificaciones de nuevo registro para los admins.
  */
 import { collection, onSnapshot, getDocs, doc, setDoc, updateDoc, deleteDoc, serverTimestamp, query, where } from 'firebase/firestore'
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { db, storage, auth } from './firebase'
+import { db } from './firebase'
 
 /** Marca una inscripción como pagada / no pagada. */
 export async function setMockPaid(id, paid) {
@@ -21,24 +20,48 @@ export async function deleteMockInscription(id) {
 }
 
 /**
- * Sube el comprobante de pago y guarda su URL en la inscripción.
- * Usa la ruta `payment_receipts/{adminUid}/...` ya permitida por las storage.rules
- * vigentes (write si el uid de la ruta == uid autenticado; los admins pueden leer).
+ * Adjunta el comprobante de pago a la inscripción.
+ *
+ * NOTA: el proyecto no tiene bucket de Firebase Storage aprovisionado (requiere
+ * plan Blaze), así que la imagen se comprime en el navegador y se guarda como
+ * data URL dentro del documento de Firestore (límite de doc: 1 MB).
  */
 export async function uploadMockComprobante(id, file) {
-  const uid = auth.currentUser?.uid
-  if (!uid) throw new Error('No autenticado')
-  const safe = (file.name || 'comprobante').replace(/[^a-zA-Z0-9._-]/g, '_')
-  const path = `payment_receipts/${uid}/mock_${id}_${Date.now()}_${safe}`
-  const r = ref(storage, path)
-  await uploadBytes(r, file)
-  const url = await getDownloadURL(r)
+  const dataUrl = await compressReceipt(file)
   await updateDoc(doc(db, 'mock_inscriptions', id), {
-    comprobanteURL: url,
+    comprobanteData: dataUrl,
     comprobanteName: file.name || 'comprobante',
     comprobanteAt: serverTimestamp(),
   })
-  return url
+  return dataUrl
+}
+
+/** Comprime una imagen a JPEG (máx 1200px) hasta que quepa en Firestore. */
+function compressReceipt(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => {
+      const img = new Image()
+      img.onload = () => {
+        const MAX = 1200
+        const scale = Math.min(1, MAX / Math.max(img.width, img.height))
+        const canvas = document.createElement('canvas')
+        canvas.width = Math.round(img.width * scale)
+        canvas.height = Math.round(img.height * scale)
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height)
+        // Baja la calidad hasta caber holgado en el límite de 1 MB del documento.
+        for (const q of [0.82, 0.7, 0.55, 0.4, 0.28]) {
+          const out = canvas.toDataURL('image/jpeg', q)
+          if (out.length < 700_000) return resolve(out)
+        }
+        reject(new Error('La imagen es demasiado grande. Usa una captura más pequeña.'))
+      }
+      img.onerror = () => reject(new Error('No se pudo leer la imagen.'))
+      img.src = reader.result
+    }
+    reader.onerror = () => reject(new Error('No se pudo leer el archivo.'))
+    reader.readAsDataURL(file)
+  })
 }
 
 /**
@@ -128,7 +151,7 @@ export function downloadSplashExcel(rows) {
     ['Pagó', (r) => (r.paid ? 'Sí' : 'No')],
     ['Pago Bold (ID)', (r) => r.boldPaymentId || ''],
     ['Monto Bold', (r) => (r.boldAmount != null ? r.boldAmount : '')],
-    ['Comprobante', (r) => (r.comprobanteURL ? r.comprobanteURL : '')],
+    ['Comprobante', (r) => (r.comprobanteData ? 'Adjunto (ver en panel)' : r.comprobanteURL ? r.comprobanteURL : '')],
     ['Enlace comprobante', (r) => (r.comprobanteLinkURL ? r.comprobanteLinkURL : '')],
     ['Fecha y hora', (r) => fmtExcelDate(r.createdAt)],
   ]

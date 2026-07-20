@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
 import {
   Droplets, Users, Mail, Phone, MapPin, Calendar, MessageCircle,
-  Download, Trash2, Paperclip, FileText, CheckCircle2, Circle, Loader2, ShieldCheck, Link2,
+  Download, Trash2, Paperclip, FileText, CheckCircle2, Circle, Loader2, ShieldCheck, Link2, X,
 } from 'lucide-react'
 import { AdminShell } from '../../components/layout/AdminShell'
 import {
@@ -37,7 +37,8 @@ function waLink(phone) {
 
 export function SalvajeSplash() {
   const [state, setState] = useState({ loading: true, rows: [] })
-  const [busy, setBusy] = useState({}) // id -> 'pay' | 'upload' | 'delete'
+  const [busy, setBusy] = useState({}) // id -> 'pay' | 'upload' | 'delete' | 'link'
+  const [viewing, setViewing] = useState(null) // inscrito cuyo comprobante se muestra
   const fileInputs = useRef({})
 
   useEffect(() => {
@@ -209,12 +210,19 @@ export function SalvajeSplash() {
                       className="hidden" onChange={(e) => handleFile(r, e)}
                     />
 
-                    {r.comprobanteURL && (
+                    {r.comprobanteData ? (
+                      <button
+                        onClick={() => setViewing(r)}
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-salvaje-gold/10 px-3 py-1.5 text-xs font-body font-semibold text-salvaje-gold hover:bg-salvaje-gold/20 transition"
+                      >
+                        <FileText size={14} /> Ver comprobante
+                      </button>
+                    ) : r.comprobanteURL ? (
                       <a href={r.comprobanteURL} target="_blank" rel="noopener noreferrer"
                         className="inline-flex items-center gap-1.5 rounded-lg bg-salvaje-gold/10 px-3 py-1.5 text-xs font-body font-semibold text-salvaje-gold hover:bg-salvaje-gold/20 transition">
                         <FileText size={14} /> Ver comprobante
                       </a>
-                    )}
+                    ) : null}
 
                     <button
                       onClick={() => handleLink(r)} disabled={!!b}
@@ -244,6 +252,32 @@ export function SalvajeSplash() {
           </motion.div>
         )}
       </motion.div>
+
+      {/* Visor de comprobante (imagen guardada en el registro) */}
+      {viewing && (
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4" onClick={() => setViewing(null)}>
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+          <div
+            className="relative z-10 max-h-[88vh] w-full max-w-lg overflow-auto rounded-salvaje bg-white p-4 shadow-salvaje-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <p className="font-display text-xl uppercase text-salvaje-dark truncate">Comprobante · {viewing.nombre || 'Inscrito'}</p>
+              <button onClick={() => setViewing(null)} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-salvaje-gray hover:bg-salvaje-light-alt transition">
+                <X size={18} />
+              </button>
+            </div>
+            <img src={viewing.comprobanteData} alt="Comprobante de pago" className="w-full rounded-lg" />
+            <a
+              href={viewing.comprobanteData}
+              download={`comprobante-${(viewing.nombre || 'inscrito').replace(/\s+/g, '_')}.jpg`}
+              className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-salvaje-orange/10 px-3 py-1.5 text-xs font-body font-semibold text-salvaje-orange hover:bg-salvaje-orange/20 transition"
+            >
+              <Download size={14} /> Descargar
+            </a>
+          </div>
+        </div>
+      )}
     </AdminShell>
   )
 }
