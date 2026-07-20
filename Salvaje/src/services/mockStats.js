@@ -41,6 +41,20 @@ export async function uploadMockComprobante(id, file) {
   return url
 }
 
+/**
+ * Guarda un ENLACE externo como comprobante de la inscripción (p. ej. la URL
+ * del recibo de Bold). Pasar url vacía elimina el enlace guardado.
+ */
+export async function setMockComprobanteLink(id, url) {
+  const clean = String(url || '').trim()
+  if (clean && !/^https?:\/\/.+/i.test(clean)) throw new Error('URL inválida')
+  await updateDoc(doc(db, 'mock_inscriptions', id), {
+    comprobanteLinkURL: clean || null,
+    comprobanteLinkAt: clean ? serverTimestamp() : null,
+  })
+  return clean
+}
+
 const fmtExcelDate = (ts) => {
   if (!ts) return ''
   let d
@@ -115,6 +129,7 @@ export function downloadSplashExcel(rows) {
     ['Pago Bold (ID)', (r) => r.boldPaymentId || ''],
     ['Monto Bold', (r) => (r.boldAmount != null ? r.boldAmount : '')],
     ['Comprobante', (r) => (r.comprobanteURL ? r.comprobanteURL : '')],
+    ['Enlace comprobante', (r) => (r.comprobanteLinkURL ? r.comprobanteLinkURL : '')],
     ['Fecha y hora', (r) => fmtExcelDate(r.createdAt)],
   ]
   const head = COLS.map(([h]) => `<th>${esc(h)}</th>`).join('')

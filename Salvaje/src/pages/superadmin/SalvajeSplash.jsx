@@ -3,12 +3,12 @@ import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
 import {
   Droplets, Users, Mail, Phone, MapPin, Calendar, MessageCircle,
-  Download, Trash2, Paperclip, FileText, CheckCircle2, Circle, Loader2, ShieldCheck,
+  Download, Trash2, Paperclip, FileText, CheckCircle2, Circle, Loader2, ShieldCheck, Link2,
 } from 'lucide-react'
 import { AdminShell } from '../../components/layout/AdminShell'
 import {
   subscribeMockInscriptions, setMockPaid, deleteMockInscription,
-  uploadMockComprobante, downloadSplashExcel,
+  uploadMockComprobante, setMockComprobanteLink, downloadSplashExcel,
 } from '../../services/mockStats'
 
 const container = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.06 } } }
@@ -78,6 +78,22 @@ export function SalvajeSplash() {
     mark(r.id, 'upload')
     try { await uploadMockComprobante(r.id, file); toast.success('Comprobante adjuntado') }
     catch (err) { console.error(err); toast.error('No se pudo subir el comprobante') } finally { mark(r.id, null) }
+  }
+
+  const handleLink = async (r) => {
+    const url = window.prompt(
+      'Pega el enlace del comprobante (p. ej. el recibo de Bold).\nDeja vacío y acepta para quitar el enlace.',
+      r.comprobanteLinkURL || '',
+    )
+    if (url === null) return // canceló
+    mark(r.id, 'link')
+    try {
+      await setMockComprobanteLink(r.id, url)
+      toast.success(url.trim() ? 'Enlace de comprobante guardado' : 'Enlace eliminado')
+    } catch (err) {
+      console.error(err)
+      toast.error(err?.message === 'URL inválida' ? 'La URL debe empezar por http:// o https://' : 'No se pudo guardar el enlace')
+    } finally { mark(r.id, null) }
   }
 
   return (
@@ -197,6 +213,21 @@ export function SalvajeSplash() {
                       <a href={r.comprobanteURL} target="_blank" rel="noopener noreferrer"
                         className="inline-flex items-center gap-1.5 rounded-lg bg-salvaje-gold/10 px-3 py-1.5 text-xs font-body font-semibold text-salvaje-gold hover:bg-salvaje-gold/20 transition">
                         <FileText size={14} /> Ver comprobante
+                      </a>
+                    )}
+
+                    <button
+                      onClick={() => handleLink(r)} disabled={!!b}
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-salvaje-brown/10 px-3 py-1.5 text-xs font-body font-semibold text-salvaje-brown hover:bg-salvaje-brown/20 transition disabled:opacity-50"
+                    >
+                      {b === 'link' ? <Loader2 size={14} className="animate-spin" /> : <Link2 size={14} />}
+                      {r.comprobanteLinkURL ? 'Editar enlace' : 'Enlace de comprobante'}
+                    </button>
+
+                    {r.comprobanteLinkURL && (
+                      <a href={r.comprobanteLinkURL} target="_blank" rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-salvaje-gold/10 px-3 py-1.5 text-xs font-body font-semibold text-salvaje-gold hover:bg-salvaje-gold/20 transition">
+                        <Link2 size={14} /> Ver enlace
                       </a>
                     )}
 
