@@ -15,6 +15,15 @@
   <meta property="og:image" content="/Favicon.png" />
   <meta property="og:type" content="website" />
 
+  <!-- Rutas por sección (/splash/etapas, /splash/inscripcion, …): normaliza la
+       URL (sin slash final) ANTES de que carguen los assets relativos. -->
+  <script>
+    (function () {
+      var m = location.pathname.match(/^\/splash\/(.+?)\/+$/)
+      if (m) history.replaceState(null, '', '/splash/' + m[1] + location.search + location.hash)
+    })()
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
@@ -645,6 +654,53 @@
     })()
   </script>
 
+  <!-- ============== Rutas por sección (/splash/<seccion>) ============== -->
+  <script>
+    (function () {
+      // Slug de URL -> id de sección en la página (con alias amigables).
+      var ROUTES = {
+        experiencias: 'programa', plan: 'programa', vivir: 'programa',
+        etapas: 'preventa', precios: 'preventa', preventa: 'preventa', 'compra': 'preventa',
+        inscripcion: 'inscripcion', inscribete: 'inscripcion', registro: 'inscripcion', cupo: 'inscripcion',
+      }
+      // id de sección -> slug canónico (para escribir la URL al navegar).
+      var CANONICAL = { programa: 'experiencias', preventa: 'etapas', inscripcion: 'inscripcion' }
+
+      var norm = function (s) {
+        return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+      }
+
+      // 1) Deep link de entrada: /splash/<slug> aterriza en su sección.
+      var m = location.pathname.match(/^\/splash\/([^/]+)$/)
+      var slug = m ? norm(decodeURIComponent(m[1])) : ''
+      var targetId = ROUTES[slug] || ''
+      if (targetId === 'inscripcion') window.__openFormOnLoad = true
+
+      function goTo(id, instant) {
+        var el = document.getElementById(id)
+        if (el) el.scrollIntoView({ behavior: instant ? 'auto' : 'smooth', block: 'start' })
+      }
+      if (targetId) {
+        window.addEventListener('DOMContentLoaded', function () {
+          // Doble intento: al cargar y tras el primer layout (imágenes/fuentes).
+          goTo(targetId, true)
+          setTimeout(function () { goTo(targetId, true) }, 250)
+        })
+      }
+
+      // 2) Al navegar con los botones internos, la URL refleja la sección.
+      window.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+          a.addEventListener('click', function () {
+            var id = (a.getAttribute('href') || '').slice(1)
+            var canon = CANONICAL[id]
+            if (canon) history.replaceState(null, '', '/splash/' + canon)
+          })
+        })
+      })
+    })()
+  </script>
+
   <!-- ============== Countdown al evento (1 de agosto de 2026, UTC-05:00) ============== -->
   <script>
     (function () {
@@ -740,6 +796,8 @@
     openFormBtn.addEventListener('click', () => showForm(true))
     // El botón "Inscríbete aquí" del hero también despliega el formulario.
     document.querySelectorAll('.js-open-form').forEach((el) => el.addEventListener('click', () => showForm(false)))
+    // Deep link /splash/inscripcion: llega con el formulario ya desplegado.
+    if (window.__openFormOnLoad) showForm(true)
 
     // Modal de autorización de contacto (compuerta antes de registrar).
     const authModal = document.getElementById('authModal')
