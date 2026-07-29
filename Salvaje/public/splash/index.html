@@ -440,6 +440,10 @@
           Te estamos llevando a la <span class="text-salvaje-dark">pasarela segura de Bold</span> para
           completar tu pago y confirmar tu inscripción…
         </p>
+        <!-- Botón de Pagos Bold embebido (modo pruebas) -->
+        <div id="boldBtnContainer" class="mt-5 flex justify-center"></div>
+        <p id="boldTestNote" class="mt-2 hidden text-[11px] font-semibold uppercase tracking-wide text-salvaje-gold">Modo pruebas · no se cobra dinero real</p>
+
         <a data-pay href="#" class="group mt-5 inline-flex items-center gap-2 rounded-full bg-salvaje-orange px-8 py-3.5 font-display text-base uppercase tracking-widest text-white shadow-[0_8px_24px_rgba(212,82,26,0.3)] transition-colors hover:bg-salvaje-fire">
           Ir a pagar ahora
           <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 16 16" fill="none"><path d="M8 3L13 8L8 13M13 8H3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -775,9 +779,23 @@
   <!-- ============================================================= -->
   <script>
     (function () {
-      // Pasarela de pagos Bold (link de pago de monto fijo).
+      // Pasarela de pagos Bold (link de pago de monto fijo) — flujo de PRODUCCIÓN.
       const PAYMENT_URL = "https://checkout.bold.co/payment/LNK_J0JDWPE1PQ";
       window.SPLASH_PAYMENT_URL = PAYMENT_URL; // usado por el flujo post-registro
+
+      // ── MODO PRUEBAS · Botón de Pagos Bold embebido ─────────────────────────
+      // Llaves del AMBIENTE DE PRUEBAS de Bold (no mueven dinero real).
+      // ⚠️ NUNCA poner aquí llaves de producción: la llave secreta quedaría
+      // expuesta. En producción la firma se genera en el servidor.
+      // Para volver al link de producción: enabled: false.
+      window.SPLASH_BOLD_TEST = {
+        enabled: true,
+        apiKey: '7JT3MBvFL2sGegJJr2Sm0NvjZyJl3njf8mjcTFGHhtw',
+        secret: 'Lcopt18oRcSMy7WDSSHFTA',
+        amount: 59900,
+        currency: 'COP',
+        description: 'Entrada Salvaje Splash · Splash Early',
+      };
       document.querySelectorAll('[data-pay]').forEach((el) => {
         if (PAYMENT_URL) {
           // Misma pestaña: el pago es la continuación obligatoria del flujo.
@@ -797,7 +815,7 @@
   <!-- ============== Firebase (Firestore) ============== -->
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'
-    import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js'
+    import { getFirestore, collection, addDoc, doc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js'
     const firebaseConfig = {
       apiKey: 'AIzaSyCVAmWO1xnvbKJT14rAtRPe48Ee0x4mqII',
       authDomain: 'salvaje-app.firebaseapp.com',
@@ -892,22 +910,59 @@
       openAuthModal()
     })
 
-    // Al aceptar: se guardan los datos (queda "Sin pagar" en el panel) y la
-    // persona pasa DE INMEDIATO a la pasarela de Bold, en la misma pestaña.
-    // El pago es el cierre obligatorio del flujo: no hay pantalla de "listo"
-    // sin pagar. Si abandona en Bold, el registro queda como no pagado.
+    // ── Botón de Pagos Bold embebido (modo pruebas) ─────────────────────────
+    const sha256hex = async (str) => {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str))
+      return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('')
+    }
+
+    // Monta el botón oficial de Bold ligado al registro (order-id = id del doc)
+    // y lo pulsa automáticamente para abrir el checkout sin clics extra.
+    async function launchBoldCheckout(orderId) {
+      const cfg = window.SPLASH_BOLD_TEST
+      const sig = await sha256hex(orderId + cfg.amount + cfg.currency + cfg.secret)
+      const s = document.createElement('script')
+      s.src = 'https://checkout.bold.co/library/boldPaymentButton.js'
+      s.setAttribute('data-bold-button', 'dark-L')
+      s.setAttribute('data-api-key', cfg.apiKey)
+      s.setAttribute('data-order-id', orderId)
+      s.setAttribute('data-amount', String(cfg.amount))
+      s.setAttribute('data-currency', cfg.currency)
+      s.setAttribute('data-integrity-signature', sig)
+      s.setAttribute('data-description', cfg.description)
+      s.setAttribute('data-redirection-url', location.origin + '/splash')
+      document.getElementById('boldBtnContainer').appendChild(s)
+      document.getElementById('boldTestNote').classList.remove('hidden')
+      // Oculta el botón del link estático: en pruebas se paga con el embebido.
+      successBox.querySelectorAll('[data-pay]').forEach((b) => b.classList.add('hidden'))
+      // Auto-clic cuando Bold renderice su botón (máx ~6 s de espera).
+      let tries = 0
+      const t = setInterval(() => {
+        const boldBtn = document.querySelector('#boldBtnContainer button')
+        if (boldBtn) { clearInterval(t); boldBtn.click() }
+        else if (++tries > 30) clearInterval(t)
+      }, 200)
+    }
+
+    // Al aceptar: se guardan los datos (quedan "Sin pagar" en el panel) y la
+    // persona pasa DE INMEDIATO al pago. El pago es el cierre obligatorio del
+    // flujo; si abandona en Bold, el registro queda como no pagado.
     authAccept.addEventListener('click', async () => {
       if (!pendingData) { closeAuthModal(); return }
       authAccept.disabled = true; authAccept.textContent = 'Guardando…'
       btn.disabled = true; btn.textContent = 'Enviando…'
       try {
-        await addDoc(collection(db, 'mock_inscriptions'), pendingData)
+        const ref = await addDoc(collection(db, 'mock_inscriptions'), pendingData)
         pendingData = null
         closeAuthModal()
         form.classList.add('hidden'); successBox.classList.remove('hidden'); successBox.classList.add('visible')
         successBox.scrollIntoView({ behavior: 'smooth', block: 'center' })
-        const url = window.SPLASH_PAYMENT_URL
-        if (url) setTimeout(() => { window.location.href = url }, 900)
+        if (window.SPLASH_BOLD_TEST?.enabled) {
+          await launchBoldCheckout('SPLASH-' + ref.id)
+        } else {
+          const url = window.SPLASH_PAYMENT_URL
+          if (url) setTimeout(() => { window.location.href = url }, 900)
+        }
       } catch (err) {
         console.error(err)
         closeAuthModal()
@@ -918,6 +973,36 @@
         authAccept.disabled = false; authAccept.textContent = 'Acepto · Ir a pagar'
       }
     })
+
+    // ── Retorno desde Bold: ?bold-order-id=SPLASH-<docId>&bold-tx-status=… ──
+    // Marca el registro según el resultado y muestra un aviso. (En producción
+    // esta confirmación vendrá del webhook de Bold, no de la URL.)
+    ;(async function handleBoldReturn() {
+      const params = new URLSearchParams(location.search)
+      const orderId = params.get('bold-order-id')
+      const status = (params.get('bold-tx-status') || '').toLowerCase()
+      if (!orderId || !orderId.startsWith('SPLASH-')) return
+      const docId = orderId.slice('SPLASH-'.length)
+      const approved = status === 'approved'
+      try {
+        await updateDoc(doc(db, 'mock_inscriptions', docId), {
+          paid: approved,
+          paymentStatus: 'bold_test_' + (status || 'desconocido'),
+          boldOrderId: orderId,
+          ...(approved ? { paidAt: serverTimestamp(), paidVia: 'bold-boton-pruebas' } : {}),
+        })
+      } catch (e) { console.warn('No se pudo actualizar el registro con el resultado de Bold:', e) }
+      // Banner de resultado
+      const ok = approved
+      const banner = document.createElement('div')
+      banner.className = 'fixed inset-x-0 top-0 z-[130] p-3 text-center text-sm font-bold text-white ' + (ok ? 'bg-salvaje-success' : 'bg-salvaje-danger')
+      banner.textContent = ok
+        ? '✔ Pago de prueba APROBADO — tu inscripción quedó confirmada (modo pruebas, sin cobro real).'
+        : 'Pago de prueba ' + (status === 'rejected' ? 'RECHAZADO' : 'NO COMPLETADO') + ' — puedes intentarlo de nuevo desde la inscripción.'
+      document.body.appendChild(banner)
+      setTimeout(() => banner.remove(), 12000)
+      history.replaceState(null, '', '/splash')
+    })()
   </script>
 </body>
 </html>
