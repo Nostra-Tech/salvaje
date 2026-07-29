@@ -3,7 +3,7 @@
  * Lee la colección `mock_inscriptions` (la que escribe la landing /mock) y
  * gestiona las notificaciones de nuevo registro para los admins.
  */
-import { collection, onSnapshot, getDocs, doc, setDoc, updateDoc, deleteDoc, serverTimestamp, query, where } from 'firebase/firestore'
+import { collection, onSnapshot, getDocs, doc, setDoc, updateDoc, deleteDoc, serverTimestamp, increment, query, where } from 'firebase/firestore'
 import { db } from './firebase'
 
 /** Marca una inscripción como pagada / no pagada. */
@@ -24,6 +24,17 @@ export async function setMockCheckedIn(id) {
   await updateDoc(doc(db, 'mock_inscriptions', id), {
     checkedIn: true,
     checkedInAt: serverTimestamp(),
+  })
+}
+
+/**
+ * Redime UNA clase de la tarjeta de regalo (máx. 3). El contador queda en el
+ * registro del inscrito: giftClassesRedeemed 0..3.
+ */
+export async function redeemGiftClass(id) {
+  await updateDoc(doc(db, 'mock_inscriptions', id), {
+    giftClassesRedeemed: increment(1),
+    giftLastRedeemedAt: serverTimestamp(),
   })
 }
 

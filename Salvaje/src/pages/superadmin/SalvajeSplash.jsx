@@ -6,17 +6,19 @@ import { jsPDF } from 'jspdf'
 import {
   Droplets, Users, Mail, Phone, MapPin, Calendar, MessageCircle,
   Download, Trash2, Paperclip, FileText, CheckCircle2, Circle, Loader2, ShieldCheck, Link2, X,
-  Ticket, QrCode, AlertTriangle,
+  Ticket, QrCode, AlertTriangle, Gift,
 } from 'lucide-react'
 import { AdminShell } from '../../components/layout/AdminShell'
 import {
   subscribeMockInscriptions, setMockPaid, deleteMockInscription,
-  uploadMockComprobante, setMockComprobanteLink, setMockCheckedIn, downloadSplashExcel,
+  uploadMockComprobante, setMockComprobanteLink, setMockCheckedIn, redeemGiftClass, downloadSplashExcel,
 } from '../../services/mockStats'
 
-// URL que codifica el QR de cada entrada: al escanearlo, un admin logueado
-// aterriza en este panel con la validación abierta.
+// URLs que codifican los QR: al escanearlos, un admin logueado aterriza en
+// este panel con la validación abierta.
 const TICKET_BASE = 'https://salvaje-app.web.app/superadmin/salvaje-splash?ticket='
+const GIFT_BASE = 'https://salvaje-app.web.app/superadmin/salvaje-splash?gift='
+const GIFT_TOTAL = 3 // clases incluidas en la tarjeta de regalo
 
 const container = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.06 } } }
 const item = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4 } } }
@@ -47,18 +49,23 @@ export function SalvajeSplash() {
   const [busy, setBusy] = useState({}) // id -> 'pay' | 'upload' | 'delete' | 'link' | 'checkin'
   const [viewing, setViewing] = useState(null) // inscrito cuyo comprobante se muestra
   const [ticketFor, setTicketFor] = useState(null) // inscrito cuya entrada se genera
-  const [validating, setValidating] = useState(null) // { row } | { missingId } al escanear un QR
+  const [giftFor, setGiftFor] = useState(null) // inscrito cuya tarjeta de regalo se genera
+  const [validating, setValidating] = useState(null) // { row|missingId, mode:'ticket'|'gift' }
   const ticketHandled = useRef(false)
   const fileInputs = useRef({})
 
-  // Validación por QR: si la URL trae ?ticket=<id>, abre el verificador.
+  // Validación por QR: ?ticket=<id> (entrada) o ?gift=<id> (tarjeta de regalo).
   useEffect(() => {
     if (ticketHandled.current || state.loading) return
-    const t = new URLSearchParams(window.location.search).get('ticket')
+    const sp = new URLSearchParams(window.location.search)
+    const t = sp.get('ticket')
+    const g = sp.get('gift')
     ticketHandled.current = true
-    if (!t) return
-    const row = state.rows.find((r) => r.id === t)
-    setValidating(row ? { row } : { missingId: t })
+    if (!t && !g) return
+    const id = t || g
+    const mode = t ? 'ticket' : 'gift'
+    const row = state.rows.find((r) => r.id === id)
+    setValidating(row ? { row, mode } : { missingId: id, mode })
     window.history.replaceState(null, '', window.location.pathname)
   }, [state])
 
@@ -70,6 +77,18 @@ export function SalvajeSplash() {
     } catch (e) {
       console.error(e)
       toast.error('No se pudo registrar el ingreso')
+    }
+  }
+
+  const handleRedeemGift = async (r) => {
+    try {
+      await redeemGiftClass(r.id)
+      const n = (r.giftClassesRedeemed || 0) + 1
+      toast.success(`Clase redimida (${n}/${GIFT_TOTAL})`)
+      setValidating(null)
+    } catch (e) {
+      console.error(e)
+      toast.error('No se pudo redimir la clase')
     }
   }
 
@@ -188,6 +207,9 @@ export function SalvajeSplash() {
                         {r.checkedIn && (
                           <span className="text-[10px] font-body font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-salvaje-brown/15 text-salvaje-brown">Ingresó</span>
                         )}
+                        {(r.giftClassesRedeemed || 0) > 0 && (
+                          <span className="text-[10px] font-body font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-salvaje-gold/15 text-salvaje-gold">Regalo {Math.min(r.giftClassesRedeemed, GIFT_TOTAL)}/{GIFT_TOTAL}</span>
+                        )}
                         {r.contactoAutorizado && (
                           <span className="text-[10px] font-body font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-salvaje-gold/15 text-salvaje-gold">Contacto autorizado</span>
                         )}
@@ -231,6 +253,15 @@ export function SalvajeSplash() {
                         className="inline-flex items-center gap-1.5 rounded-lg bg-salvaje-gold/10 px-3 py-1.5 text-xs font-body font-semibold text-salvaje-gold hover:bg-salvaje-gold/20 transition"
                       >
                         <Ticket size={14} /> Entrada
+                      </button>
+                    )}
+
+                    {r.paid && (
+                      <button
+                        onClick={() => setGiftFor(r)}
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-salvaje-fire/10 px-3 py-1.5 text-xs font-body font-semibold text-salvaje-fire hover:bg-salvaje-fire/20 transition"
+                      >
+                        <Gift size={14} /> Regalo
                       </button>
                     )}
 
@@ -323,12 +354,20 @@ export function SalvajeSplash() {
         </div>
       )}
 
-      {/* Generador de entrada (PNG brandeado con QR) */}
+      {/* Generador de entrada (PDF vertical con QR) */}
       {ticketFor && <TicketModal row={ticketFor} onClose={() => setTicketFor(null)} />}
 
-      {/* Validación de entrada (llegada por QR: ?ticket=<id>) */}
+      {/* Generador de tarjeta de regalo (PDF vertical con QR propio) */}
+      {giftFor && <GiftCardModal row={giftFor} onClose={() => setGiftFor(null)} />}
+
+      {/* Validación por QR (?ticket= entrada · ?gift= tarjeta de regalo) */}
       {validating && (
-        <ValidationModal data={validating} onClose={() => setValidating(null)} onCheckIn={handleCheckIn} />
+        <ValidationModal
+          data={validating}
+          onClose={() => setValidating(null)}
+          onCheckIn={handleCheckIn}
+          onRedeemGift={handleRedeemGift}
+        />
       )}
     </AdminShell>
   )
@@ -482,53 +521,231 @@ function TicketModal({ row, onClose }) {
   )
 }
 
-/** Verificador de entradas: se abre al escanear el QR (?ticket=<id>). */
-function ValidationModal({ data, onClose, onCheckIn }) {
+/** Verificador por QR: entradas (?ticket=) y tarjetas de regalo (?gift=). */
+function ValidationModal({ data, onClose, onCheckIn, onRedeemGift }) {
   const r = data.row
-  const valid = r && r.paid && !r.checkedIn
-  const already = r && r.paid && r.checkedIn
+  const isGift = data.mode === 'gift'
   const fmtIn = (ts) => {
     if (!ts) return ''
     const d = typeof ts.toDate === 'function' ? ts.toDate() : ts.seconds ? new Date(ts.seconds * 1000) : new Date(ts)
     return Number.isNaN(d.getTime()) ? '' : d.toLocaleString('es-CO', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
   }
+
+  let tone = 'danger', Icon = AlertTriangle, title = '', sub = '', action = null
+  if (!r) {
+    title = isGift ? 'Tarjeta no encontrada' : 'Entrada no encontrada'
+    sub = ''
+  } else if (isGift) {
+    const redeemed = Math.min(r.giftClassesRedeemed || 0, GIFT_TOTAL)
+    const left = GIFT_TOTAL - redeemed
+    if (!r.paid) { tone = 'danger'; Icon = AlertTriangle; title = 'Tarjeta no válida'; sub = 'No tiene pago registrado' }
+    else if (left <= 0) { tone = 'gold'; Icon = Gift; title = 'Tarjeta agotada'; sub = `Ya redimió las ${GIFT_TOTAL} clases · última: ${fmtIn(r.giftLastRedeemedAt)}` }
+    else {
+      tone = 'success'; Icon = Gift; title = 'Tarjeta válida'
+      sub = `${redeemed}/${GIFT_TOTAL} redimidas · le quedan ${left} ${left === 1 ? 'clase' : 'clases'}`
+      action = (
+        <button
+          onClick={() => onRedeemGift(r)}
+          className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-salvaje-success px-6 py-3.5 font-display text-base uppercase tracking-widest text-white hover:opacity-90 active:scale-95 transition"
+        >
+          <Gift size={18} /> Redimir 1 clase
+        </button>
+      )
+    }
+  } else {
+    const valid = r.paid && !r.checkedIn
+    const already = r.paid && r.checkedIn
+    if (valid) {
+      tone = 'success'; Icon = CheckCircle2; title = 'Entrada válida'; sub = 'Pago confirmado · puede ingresar'
+      action = (
+        <button
+          onClick={() => onCheckIn(r)}
+          className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-salvaje-success px-6 py-3.5 font-display text-base uppercase tracking-widest text-white hover:opacity-90 active:scale-95 transition"
+        >
+          <CheckCircle2 size={18} /> Registrar ingreso
+        </button>
+      )
+    } else if (already) { tone = 'gold'; Icon = QrCode; title = 'Ya registró ingreso'; sub = `Ingreso: ${fmtIn(r.checkedInAt)}` }
+    else { tone = 'danger'; Icon = AlertTriangle; title = 'Entrada no válida'; sub = 'No tiene pago registrado' }
+  }
+
+  const toneBg = { success: 'bg-salvaje-success/15 text-salvaje-success', gold: 'bg-salvaje-gold/15 text-salvaje-gold', danger: 'bg-salvaje-danger/10 text-salvaje-danger' }[tone]
+  const toneText = { success: 'text-salvaje-success', gold: 'text-salvaje-gold', danger: 'text-salvaje-danger' }[tone]
+
   return (
     <div className="fixed inset-0 z-[125] flex items-center justify-center p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
       <div className="relative z-10 w-full max-w-md rounded-salvaje bg-white p-6 text-center shadow-salvaje-lg sm:p-8" onClick={(e) => e.stopPropagation()}>
+        <p className="font-body text-[11px] font-semibold uppercase tracking-widest text-salvaje-gray">
+          {isGift ? 'Tarjeta de regalo · 3 clases' : 'Entrada · Salvaje Splash'}
+        </p>
+        <div className={`mx-auto mt-3 flex h-16 w-16 items-center justify-center rounded-full ${toneBg}`}><Icon size={30} /></div>
+        <h3 className={`mt-4 font-display text-3xl uppercase ${toneText}`}>{title}</h3>
+        {sub && <p className="mt-1 font-body text-xs uppercase tracking-wide text-salvaje-gray">{sub}</p>}
         {!r ? (
-          <>
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-salvaje-danger/10 text-salvaje-danger"><AlertTriangle size={30} /></div>
-            <h3 className="mt-4 font-display text-3xl uppercase text-salvaje-danger">Entrada no encontrada</h3>
-            <p className="mt-2 font-body text-sm text-salvaje-gray">No existe ningún registro con el ID<br /><span className="font-mono text-salvaje-dark">{data.missingId}</span></p>
-          </>
+          <p className="mt-2 font-body text-sm text-salvaje-gray">No existe ningún registro con el ID<br /><span className="font-mono text-salvaje-dark">{data.missingId}</span></p>
         ) : (
-          <>
-            <div className={`mx-auto flex h-16 w-16 items-center justify-center rounded-full ${valid ? 'bg-salvaje-success/15 text-salvaje-success' : already ? 'bg-salvaje-gold/15 text-salvaje-gold' : 'bg-salvaje-danger/10 text-salvaje-danger'}`}>
-              {valid ? <CheckCircle2 size={32} /> : already ? <QrCode size={30} /> : <AlertTriangle size={30} />}
-            </div>
-            <h3 className={`mt-4 font-display text-3xl uppercase ${valid ? 'text-salvaje-success' : already ? 'text-salvaje-gold' : 'text-salvaje-danger'}`}>
-              {valid ? 'Entrada válida' : already ? 'Ya registró ingreso' : 'Entrada no válida'}
-            </h3>
-            <p className="mt-1 font-body text-xs uppercase tracking-wide text-salvaje-gray">
-              {valid ? 'Pago confirmado · puede ingresar' : already ? `Ingreso: ${fmtIn(r.checkedInAt)}` : 'No tiene pago registrado'}
-            </p>
-            <div className="mt-4 rounded-xl border border-salvaje-cream bg-salvaje-light p-4 text-left">
-              <p className="font-display text-2xl uppercase leading-none text-salvaje-dark">{r.nombre || 'Sin nombre'}</p>
-              <p className="mt-1 font-body text-sm text-salvaje-gray">{r.email}</p>
-              {r.celular && <p className="font-body text-sm text-salvaje-gray">{r.celular}</p>}
-            </div>
-            {valid && (
-              <button
-                onClick={() => onCheckIn(r)}
-                className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-salvaje-success px-6 py-3.5 font-display text-base uppercase tracking-widest text-white hover:opacity-90 active:scale-95 transition"
-              >
-                <CheckCircle2 size={18} /> Registrar ingreso
-              </button>
-            )}
-          </>
+          <div className="mt-4 rounded-xl border border-salvaje-cream bg-salvaje-light p-4 text-left">
+            <p className="font-display text-2xl uppercase leading-none text-salvaje-dark">{r.nombre || 'Sin nombre'}</p>
+            <p className="mt-1 font-body text-sm text-salvaje-gray">{r.email}</p>
+            {r.celular && <p className="font-body text-sm text-salvaje-gray">{r.celular}</p>}
+          </div>
         )}
+        {action}
         <button onClick={onClose} className="mt-4 text-sm font-semibold text-salvaje-gray hover:text-salvaje-brown transition-colors">Cerrar</button>
+      </div>
+    </div>
+  )
+}
+
+/** Tarjeta de regalo (3 clases) en VERTICAL (1000×1600), descargable como PDF. */
+function GiftCardModal({ row, onClose }) {
+  const canvasRef = useRef(null)
+  const [ready, setReady] = useState(false)
+
+  useEffect(() => {
+    let alive = true
+    const loadImage = (src) =>
+      new Promise((resolve, reject) => {
+        const i = new Image()
+        i.onload = () => resolve(i)
+        i.onerror = reject
+        i.src = src
+      })
+
+    ;(async () => {
+      const canvas = canvasRef.current
+      if (!canvas) return
+      const ctx = canvas.getContext('2d')
+      const W = 1000, H = 1600
+      try { await document.fonts.ready } catch {}
+
+      // Fondo blanco
+      ctx.fillStyle = '#FFFFFF'
+      ctx.fillRect(0, 0, W, H)
+
+      // ── Mitad superior oscura ──
+      ctx.fillStyle = '#120A06'
+      ctx.fillRect(0, 0, W, 800)
+
+      try {
+        const logo = await loadImage('/splash/salvajesplashlogo.png')
+        const lw = 460, lh = lw * (logo.height / logo.width)
+        ctx.drawImage(logo, (W - lw) / 2, 50, lw, lh)
+      } catch {}
+
+      ctx.textAlign = 'center'
+      ctx.fillStyle = '#C9A227'
+      ctx.font = 'bold 62px "Bebas Neue", Arial'
+      ctx.fillText('TARJETA DE REGALO', W / 2, 640)
+      ctx.fillStyle = '#F5ECD7'
+      ctx.font = 'bold 34px Arial'
+      ctx.fillText('3 CLASES GRATIS · SALVAJE', W / 2, 700)
+
+      // Divisor punteado con muescas
+      ctx.strokeStyle = '#C9A227'
+      ctx.lineWidth = 3
+      ctx.setLineDash([16, 12])
+      ctx.beginPath(); ctx.moveTo(40, 800); ctx.lineTo(W - 40, 800); ctx.stroke()
+      ctx.setLineDash([])
+      ctx.fillStyle = '#F0E8D8'
+      ctx.beginPath(); ctx.arc(0, 800, 26, 0, Math.PI * 2); ctx.fill()
+      ctx.beginPath(); ctx.arc(W, 800, 26, 0, Math.PI * 2); ctx.fill()
+
+      // ── Mitad inferior ──
+      ctx.fillStyle = '#D4521A'
+      ctx.font = 'bold 26px Arial'
+      ctx.fillText('UN REGALO POR LAS MOLESTIAS', W / 2, 860)
+
+      const nombre = (row.nombre || 'Asistente').toUpperCase()
+      let size = 66
+      ctx.font = `bold ${size}px "Bebas Neue", Arial`
+      while (ctx.measureText(nombre).width > W - 120 && size > 32) {
+        size -= 4
+        ctx.font = `bold ${size}px "Bebas Neue", Arial`
+      }
+      ctx.fillStyle = '#2C1810'
+      ctx.fillText(nombre, W / 2, 935)
+      ctx.fillStyle = '#6B5C52'
+      ctx.font = '26px Arial'
+      ctx.fillText(row.email || '', W / 2, 975)
+
+      // Las 3 clases (círculos numerados)
+      const cy = 1055
+      const positions = [W / 2 - 130, W / 2, W / 2 + 130]
+      positions.forEach((cx, i) => {
+        ctx.beginPath(); ctx.arc(cx, cy, 42, 0, Math.PI * 2)
+        ctx.strokeStyle = '#12B5C9'; ctx.lineWidth = 5; ctx.stroke()
+        ctx.fillStyle = '#0E7C8B'
+        ctx.font = 'bold 40px "Bebas Neue", Arial'
+        ctx.fillText(String(i + 1), cx, cy + 14)
+      })
+      ctx.fillStyle = '#6B5C52'
+      ctx.font = 'bold 18px Arial'
+      ctx.fillText('C L A S E S   I N C L U I D A S', W / 2, 1135)
+
+      // QR de redención (distinto al de la entrada: ?gift=<id>)
+      const qrData = await QRCode.toDataURL(GIFT_BASE + row.id, {
+        width: 300, margin: 1, color: { dark: '#120A06', light: '#FFFFFF' },
+      })
+      const qrImg = await loadImage(qrData)
+      const qx = (W - 280) / 2, qy = 1170
+      ctx.fillStyle = '#FFFFFF'
+      ctx.fillRect(qx, qy, 280, 280)
+      ctx.strokeStyle = '#C9A227'
+      ctx.lineWidth = 6
+      ctx.strokeRect(qx, qy, 280, 280)
+      ctx.drawImage(qrImg, qx + 10, qy + 10, 260, 260)
+
+      ctx.fillStyle = '#8a6d1a'
+      ctx.font = 'bold 24px Arial'
+      ctx.fillText('ESCANEA PARA REDIMIR', W / 2, 1495)
+      ctx.fillStyle = '#6B5C52'
+      ctx.font = '20px Arial'
+      ctx.fillText('Preséntala en recepción · una clase por visita', W / 2, 1528)
+      ctx.font = '16px Courier New'
+      ctx.fillText(row.id, W / 2, 1556)
+
+      // Barras de acento inferiores (dorado + naranja)
+      ctx.fillStyle = '#C9A227'
+      ctx.fillRect(0, H - 26, W, 8)
+      ctx.fillStyle = '#D4521A'
+      ctx.fillRect(0, H - 18, W, 18)
+
+      if (alive) setReady(true)
+    })()
+    return () => { alive = false }
+  }, [row])
+
+  const downloadPdf = () => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const img = canvas.toDataURL('image/png')
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'px', format: [500, 800] })
+    pdf.addImage(img, 'PNG', 0, 0, 500, 800)
+    pdf.save(`tarjeta-regalo-salvaje-${(row.nombre || 'asistente').trim().replace(/\s+/g, '-').toLowerCase()}.pdf`)
+  }
+
+  return (
+    <div className="fixed inset-0 z-[120] flex items-center justify-center p-4" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+      <div className="relative z-10 flex max-h-[92vh] w-full max-w-md flex-col rounded-salvaje bg-white p-5 shadow-salvaje-lg" onClick={(e) => e.stopPropagation()}>
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <p className="font-display text-xl uppercase text-salvaje-dark truncate">Tarjeta de regalo · {row.nombre}</p>
+          <button onClick={onClose} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-salvaje-gray hover:bg-salvaje-light-alt transition"><X size={18} /></button>
+        </div>
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          <canvas ref={canvasRef} width={1000} height={1600} className="mx-auto w-full max-w-[340px] rounded-xl border border-salvaje-cream" />
+        </div>
+        <div className="mt-4 flex items-center justify-between gap-3 flex-wrap">
+          <p className="font-body text-xs text-salvaje-gray">El QR redime las clases en este panel (queda registrado 1/3, 2/3, 3/3).</p>
+          <button
+            onClick={downloadPdf} disabled={!ready}
+            className="inline-flex items-center gap-2 rounded-xl bg-salvaje-orange px-5 py-2.5 font-display uppercase tracking-widest text-sm text-white hover:opacity-90 active:scale-95 transition disabled:opacity-40"
+          >
+            <Download size={16} /> Descargar PDF
+          </button>
+        </div>
       </div>
     </div>
   )
