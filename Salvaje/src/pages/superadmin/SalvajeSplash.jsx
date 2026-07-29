@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
 import QRCode from 'qrcode'
+import { jsPDF } from 'jspdf'
 import {
   Droplets, Users, Mail, Phone, MapPin, Calendar, MessageCircle,
   Download, Trash2, Paperclip, FileText, CheckCircle2, Circle, Loader2, ShieldCheck, Link2, X,
@@ -333,7 +334,7 @@ export function SalvajeSplash() {
   )
 }
 
-/** Dibuja y descarga la entrada oficial (canvas 1500×600 con QR de validación). */
+/** Dibuja la entrada oficial en VERTICAL (1000×1600) y la descarga como PDF. */
 function TicketModal({ row, onClose }) {
   const canvasRef = useRef(null)
   const [ready, setReady] = useState(false)
@@ -352,132 +353,128 @@ function TicketModal({ row, onClose }) {
       const canvas = canvasRef.current
       if (!canvas) return
       const ctx = canvas.getContext('2d')
-      const W = 1500, H = 600
+      const W = 1000, H = 1600
       try { await document.fonts.ready } catch {}
 
-      // Fondo blanco + marco
+      // Fondo blanco
       ctx.fillStyle = '#FFFFFF'
       ctx.fillRect(0, 0, W, H)
 
-      // Panel izquierdo oscuro (marca)
+      // ── Mitad superior oscura (marca) ──
       ctx.fillStyle = '#120A06'
-      ctx.fillRect(0, 0, 560, H)
+      ctx.fillRect(0, 0, W, 860)
 
-      // Logo
+      // Logo grande centrado
       try {
         const logo = await loadImage('/splash/salvajesplashlogo.png')
-        const lw = 400, lh = lw * (logo.height / logo.width)
-        ctx.drawImage(logo, (560 - lw) / 2, 40, lw, lh)
+        const lw = 560, lh = lw * (logo.height / logo.width)
+        ctx.drawImage(logo, (W - lw) / 2, 60, lw, lh)
       } catch {}
 
-      // Fecha del evento
+      // Fecha + tagline
       ctx.textAlign = 'center'
       ctx.fillStyle = '#7FE3EF'
-      ctx.font = 'bold 34px "Bebas Neue", Arial'
-      ctx.fillText('SÁBADO 22 DE AGOSTO · 2026', 280, 505)
+      ctx.font = 'bold 46px "Bebas Neue", Arial'
+      ctx.fillText('SÁBADO 22 DE AGOSTO · 2026', W / 2, 730)
       ctx.fillStyle = '#F5ECD7'
-      ctx.font = '20px Arial'
-      ctx.fillText('La fiesta más refrescante del verano', 280, 540)
+      ctx.font = '26px Arial'
+      ctx.fillText('La fiesta más refrescante del verano', W / 2, 775)
 
-      // Divisor punteado tipo boleta
+      // Divisor punteado horizontal tipo boleta (con muescas laterales)
       ctx.strokeStyle = '#C9A227'
       ctx.lineWidth = 3
-      ctx.setLineDash([14, 12])
-      ctx.beginPath(); ctx.moveTo(560, 30); ctx.lineTo(560, H - 30); ctx.stroke()
+      ctx.setLineDash([16, 12])
+      ctx.beginPath(); ctx.moveTo(40, 860); ctx.lineTo(W - 40, 860); ctx.stroke()
       ctx.setLineDash([])
+      ctx.fillStyle = '#F0E8D8'
+      ctx.beginPath(); ctx.arc(0, 860, 26, 0, Math.PI * 2); ctx.fill()
+      ctx.beginPath(); ctx.arc(W, 860, 26, 0, Math.PI * 2); ctx.fill()
 
-      // Lado derecho: datos del asistente
-      ctx.textAlign = 'left'
+      // ── Mitad inferior: datos del asistente ──
       ctx.fillStyle = '#D4521A'
-      ctx.font = 'bold 26px Arial'
-      ctx.fillText('E N T R A D A   O F I C I A L', 620, 90)
+      ctx.font = 'bold 30px Arial'
+      ctx.fillText('E N T R A D A   O F I C I A L', W / 2, 930)
 
       // Nombre (reduce la fuente si es muy largo)
       const nombre = (row.nombre || 'Asistente').toUpperCase()
-      let size = 64
+      let size = 74
       ctx.font = `bold ${size}px "Bebas Neue", Arial`
-      while (ctx.measureText(nombre).width > 520 && size > 30) {
+      while (ctx.measureText(nombre).width > W - 120 && size > 34) {
         size -= 4
         ctx.font = `bold ${size}px "Bebas Neue", Arial`
       }
       ctx.fillStyle = '#2C1810'
-      ctx.fillText(nombre, 620, 175)
+      ctx.fillText(nombre, W / 2, 1010)
 
       ctx.fillStyle = '#6B5C52'
-      ctx.font = '26px Arial'
-      ctx.fillText(row.email || '', 620, 220)
+      ctx.font = '28px Arial'
+      ctx.fillText(row.email || '', W / 2, 1055)
 
-      // Línea separadora
-      ctx.strokeStyle = '#F0E8D8'
-      ctx.lineWidth = 2
-      ctx.beginPath(); ctx.moveTo(620, 255); ctx.lineTo(1130, 255); ctx.stroke()
-
-      ctx.fillStyle = '#6B5C52'
-      ctx.font = 'bold 18px Arial'
-      ctx.fillText('ID DE ENTRADA', 620, 300)
-      ctx.font = '20px Courier New'
+      ctx.font = 'bold 20px Arial'
+      ctx.fillText('ID DE ENTRADA', W / 2, 1105)
+      ctx.font = '22px Courier New'
       ctx.fillStyle = '#2C1810'
-      ctx.fillText(row.id, 620, 330)
-
-      ctx.fillStyle = '#6B5C52'
-      ctx.font = '20px Arial'
-      ctx.fillText('Presenta este código QR en el ingreso.', 620, 400)
-      ctx.fillText('Válido para una (1) persona · intransferible.', 620, 430)
+      ctx.fillText(row.id, W / 2, 1135)
 
       // QR de validación (apunta al panel admin con ?ticket=<id>)
       const qrData = await QRCode.toDataURL(TICKET_BASE + row.id, {
-        width: 300, margin: 1, color: { dark: '#120A06', light: '#FFFFFF' },
+        width: 320, margin: 1, color: { dark: '#120A06', light: '#FFFFFF' },
       })
       const qrImg = await loadImage(qrData)
+      const qx = (W - 300) / 2, qy = 1165
       ctx.fillStyle = '#FFFFFF'
-      ctx.fillRect(1160, 130, 300, 300)
+      ctx.fillRect(qx, qy, 300, 300)
       ctx.strokeStyle = '#12B5C9'
       ctx.lineWidth = 6
-      ctx.strokeRect(1160, 130, 300, 300)
-      ctx.drawImage(qrImg, 1170, 140, 280, 280)
-      ctx.textAlign = 'center'
+      ctx.strokeRect(qx, qy, 300, 300)
+      ctx.drawImage(qrImg, qx + 10, qy + 10, 280, 280)
+
       ctx.fillStyle = '#0E7C8B'
-      ctx.font = 'bold 20px Arial'
-      ctx.fillText('ESCANEA PARA VALIDAR', 1310, 465)
+      ctx.font = 'bold 24px Arial'
+      ctx.fillText('ESCANEA PARA VALIDAR', W / 2, 1508)
+      ctx.fillStyle = '#6B5C52'
+      ctx.font = '20px Arial'
+      ctx.fillText('Válido para una (1) persona · intransferible', W / 2, 1542)
 
       // Barras de acento inferiores
       ctx.fillStyle = '#12B5C9'
-      ctx.fillRect(560, H - 22, W - 560, 8)
+      ctx.fillRect(0, H - 26, W, 8)
       ctx.fillStyle = '#D4521A'
-      ctx.fillRect(560, H - 14, W - 560, 14)
+      ctx.fillRect(0, H - 18, W, 18)
 
       if (alive) setReady(true)
     })()
     return () => { alive = false }
   }, [row])
 
-  const download = () => {
+  const downloadPdf = () => {
     const canvas = canvasRef.current
     if (!canvas) return
-    const a = document.createElement('a')
-    a.href = canvas.toDataURL('image/png')
-    a.download = `entrada-salvaje-splash-${(row.nombre || 'asistente').trim().replace(/\s+/g, '-').toLowerCase()}.png`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
+    const img = canvas.toDataURL('image/png')
+    // PDF vertical con la misma proporción del lienzo (1000×1600 → 500×800 px).
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'px', format: [500, 800] })
+    pdf.addImage(img, 'PNG', 0, 0, 500, 800)
+    pdf.save(`entrada-salvaje-splash-${(row.nombre || 'asistente').trim().replace(/\s+/g, '-').toLowerCase()}.pdf`)
   }
 
   return (
     <div className="fixed inset-0 z-[120] flex items-center justify-center p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-      <div className="relative z-10 w-full max-w-3xl rounded-salvaje bg-white p-5 shadow-salvaje-lg" onClick={(e) => e.stopPropagation()}>
+      <div className="relative z-10 flex max-h-[92vh] w-full max-w-md flex-col rounded-salvaje bg-white p-5 shadow-salvaje-lg" onClick={(e) => e.stopPropagation()}>
         <div className="mb-3 flex items-center justify-between gap-3">
           <p className="font-display text-xl uppercase text-salvaje-dark truncate">Entrada · {row.nombre}</p>
           <button onClick={onClose} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-salvaje-gray hover:bg-salvaje-light-alt transition"><X size={18} /></button>
         </div>
-        <canvas ref={canvasRef} width={1500} height={600} className="w-full rounded-xl border border-salvaje-cream" />
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          <canvas ref={canvasRef} width={1000} height={1600} className="mx-auto w-full max-w-[340px] rounded-xl border border-salvaje-cream" />
+        </div>
         <div className="mt-4 flex items-center justify-between gap-3 flex-wrap">
           <p className="font-body text-xs text-salvaje-gray">El QR abre la validación en este panel (requiere sesión de admin).</p>
           <button
-            onClick={download} disabled={!ready}
+            onClick={downloadPdf} disabled={!ready}
             className="inline-flex items-center gap-2 rounded-xl bg-salvaje-orange px-5 py-2.5 font-display uppercase tracking-widest text-sm text-white hover:opacity-90 active:scale-95 transition disabled:opacity-40"
           >
-            <Download size={16} /> Descargar PNG
+            <Download size={16} /> Descargar PDF
           </button>
         </div>
       </div>
