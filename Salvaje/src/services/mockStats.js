@@ -3,7 +3,7 @@
  * Lee la colección `mock_inscriptions` (la que escribe la landing /mock) y
  * gestiona las notificaciones de nuevo registro para los admins.
  */
-import { collection, onSnapshot, getDocs, doc, setDoc, updateDoc, deleteDoc, serverTimestamp, increment, query, where } from 'firebase/firestore'
+import { collection, onSnapshot, getDocs, doc, setDoc, addDoc, updateDoc, deleteDoc, serverTimestamp, increment, query, where } from 'firebase/firestore'
 import { db } from './firebase'
 
 /** Marca una inscripción como pagada / no pagada. */
@@ -17,6 +17,29 @@ export async function setMockPaid(id, paid) {
 /** Elimina una inscripción. */
 export async function deleteMockInscription(id) {
   await deleteDoc(doc(db, 'mock_inscriptions', id))
+}
+
+/**
+ * Crea una ENTRADA ADICIONAL para un inscrito que pagó más de un cupo:
+ * duplica su registro como pagado. Al ser un documento nuevo, obtiene su
+ * propio id y por lo tanto su propio QR de entrada, independiente del original.
+ */
+export async function duplicateMockInscription(row, sequence = 2) {
+  const ref = await addDoc(collection(db, 'mock_inscriptions'), {
+    nombre: `${row.nombre || 'Inscrito'} · Entrada ${sequence}`,
+    email: row.email || '',
+    celular: row.celular || '',
+    ciudad: row.ciudad || '',
+    evento: row.evento || 'Salvaje Splash',
+    source: row.source || 'landing-splash',
+    contactoAutorizado: !!row.contactoAutorizado,
+    paid: true,
+    paidAt: serverTimestamp(),
+    paymentStatus: 'entrada_adicional',
+    duplicateOf: row.id,
+    createdAt: serverTimestamp(),
+  })
+  return ref.id
 }
 
 /** Registra el INGRESO al evento (validación del QR de la entrada). */

@@ -6,12 +6,13 @@ import { jsPDF } from 'jspdf'
 import {
   Droplets, Users, Mail, Phone, MapPin, Calendar, MessageCircle,
   Download, Trash2, Paperclip, FileText, CheckCircle2, Circle, Loader2, ShieldCheck, Link2, X,
-  Ticket, QrCode, AlertTriangle, Gift,
+  Ticket, QrCode, AlertTriangle, Gift, CopyPlus,
 } from 'lucide-react'
 import { AdminShell } from '../../components/layout/AdminShell'
 import {
   subscribeMockInscriptions, setMockPaid, deleteMockInscription,
-  uploadMockComprobante, setMockComprobanteLink, setMockCheckedIn, redeemGiftClass, downloadSplashExcel,
+  uploadMockComprobante, setMockComprobanteLink, setMockCheckedIn, redeemGiftClass,
+  duplicateMockInscription, downloadSplashExcel,
 } from '../../services/mockStats'
 
 // URLs que codifican los QR: al escanearlos, un admin logueado aterriza en
@@ -130,6 +131,21 @@ export function SalvajeSplash() {
     mark(r.id, 'upload')
     try { await uploadMockComprobante(r.id, file); toast.success('Comprobante adjuntado') }
     catch (err) { console.error(err); toast.error('No se pudo subir el comprobante') } finally { mark(r.id, null) }
+  }
+
+  // Entrada adicional: para quien pagó más de un cupo con el mismo registro.
+  // Crea un duplicado pagado con su propio id => QR de entrada independiente.
+  const handleDuplicate = async (r) => {
+    const seq = rows.filter((x) => x.duplicateOf === r.id).length + 2
+    if (!window.confirm(`Crear una entrada adicional para ${r.nombre || 'este inscrito'} (Entrada ${seq}).\nSe creará un registro pagado con su propio QR. ¿Continuar?`)) return
+    mark(r.id, 'dup')
+    try {
+      await duplicateMockInscription(r, seq)
+      toast.success(`Entrada ${seq} creada — genera su PDF con el botón "Entrada" del nuevo registro`)
+    } catch (e) {
+      console.error(e)
+      toast.error('No se pudo crear la entrada adicional')
+    } finally { mark(r.id, null) }
   }
 
   const handleLink = async (r) => {
@@ -262,6 +278,17 @@ export function SalvajeSplash() {
                         className="inline-flex items-center gap-1.5 rounded-lg bg-salvaje-fire/10 px-3 py-1.5 text-xs font-body font-semibold text-salvaje-fire hover:bg-salvaje-fire/20 transition"
                       >
                         <Gift size={14} /> Regalo
+                      </button>
+                    )}
+
+                    {r.paid && !r.duplicateOf && (
+                      <button
+                        onClick={() => handleDuplicate(r)} disabled={!!b}
+                        title="Para quien pagó más de un cupo: crea otra entrada con su propio QR"
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-salvaje-gold/10 px-3 py-1.5 text-xs font-body font-semibold text-salvaje-gold hover:bg-salvaje-gold/20 transition disabled:opacity-50"
+                      >
+                        {b === 'dup' ? <Loader2 size={14} className="animate-spin" /> : <CopyPlus size={14} />}
+                        Entrada adicional
                       </button>
                     )}
 
