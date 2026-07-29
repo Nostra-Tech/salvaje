@@ -19,6 +19,14 @@ export async function deleteMockInscription(id) {
   await deleteDoc(doc(db, 'mock_inscriptions', id))
 }
 
+/** Registra el INGRESO al evento (validación del QR de la entrada). */
+export async function setMockCheckedIn(id) {
+  await updateDoc(doc(db, 'mock_inscriptions', id), {
+    checkedIn: true,
+    checkedInAt: serverTimestamp(),
+  })
+}
+
 /**
  * Adjunta el comprobante de pago a la inscripción.
  *

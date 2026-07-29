@@ -1,15 +1,21 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
+import QRCode from 'qrcode'
 import {
   Droplets, Users, Mail, Phone, MapPin, Calendar, MessageCircle,
   Download, Trash2, Paperclip, FileText, CheckCircle2, Circle, Loader2, ShieldCheck, Link2, X,
+  Ticket, QrCode, AlertTriangle,
 } from 'lucide-react'
 import { AdminShell } from '../../components/layout/AdminShell'
 import {
   subscribeMockInscriptions, setMockPaid, deleteMockInscription,
-  uploadMockComprobante, setMockComprobanteLink, downloadSplashExcel,
+  uploadMockComprobante, setMockComprobanteLink, setMockCheckedIn, downloadSplashExcel,
 } from '../../services/mockStats'
+
+// URL que codifica el QR de cada entrada: al escanearlo, un admin logueado
+// aterriza en este panel con la validación abierta.
+const TICKET_BASE = 'https://salvaje-app.web.app/superadmin/salvaje-splash?ticket='
 
 const container = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.06 } } }
 const item = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4 } } }
@@ -37,9 +43,34 @@ function waLink(phone) {
 
 export function SalvajeSplash() {
   const [state, setState] = useState({ loading: true, rows: [] })
-  const [busy, setBusy] = useState({}) // id -> 'pay' | 'upload' | 'delete' | 'link'
+  const [busy, setBusy] = useState({}) // id -> 'pay' | 'upload' | 'delete' | 'link' | 'checkin'
   const [viewing, setViewing] = useState(null) // inscrito cuyo comprobante se muestra
+  const [ticketFor, setTicketFor] = useState(null) // inscrito cuya entrada se genera
+  const [validating, setValidating] = useState(null) // { row } | { missingId } al escanear un QR
+  const ticketHandled = useRef(false)
   const fileInputs = useRef({})
+
+  // Validación por QR: si la URL trae ?ticket=<id>, abre el verificador.
+  useEffect(() => {
+    if (ticketHandled.current || state.loading) return
+    const t = new URLSearchParams(window.location.search).get('ticket')
+    ticketHandled.current = true
+    if (!t) return
+    const row = state.rows.find((r) => r.id === t)
+    setValidating(row ? { row } : { missingId: t })
+    window.history.replaceState(null, '', window.location.pathname)
+  }, [state])
+
+  const handleCheckIn = async (r) => {
+    try {
+      await setMockCheckedIn(r.id)
+      toast.success('Ingreso registrado')
+      setValidating(null)
+    } catch (e) {
+      console.error(e)
+      toast.error('No se pudo registrar el ingreso')
+    }
+  }
 
   useEffect(() => {
     const unsub = subscribeMockInscriptions(
@@ -153,6 +184,9 @@ export function SalvajeSplash() {
                         {r.paidVia === 'bold-webhook' && (
                           <span className="text-[10px] font-body font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-salvaje-success/15 text-salvaje-success">Verificado Bold</span>
                         )}
+                        {r.checkedIn && (
+                          <span className="text-[10px] font-body font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-salvaje-brown/15 text-salvaje-brown">Ingresó</span>
+                        )}
                         {r.contactoAutorizado && (
                           <span className="text-[10px] font-body font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-salvaje-gold/15 text-salvaje-gold">Contacto autorizado</span>
                         )}
@@ -188,6 +222,15 @@ export function SalvajeSplash() {
                       >
                         <MessageCircle size={14} /> WhatsApp
                       </a>
+                    )}
+
+                    {r.paid && (
+                      <button
+                        onClick={() => setTicketFor(r)}
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-salvaje-gold/10 px-3 py-1.5 text-xs font-body font-semibold text-salvaje-gold hover:bg-salvaje-gold/20 transition"
+                      >
+                        <Ticket size={14} /> Entrada
+                      </button>
                     )}
 
                     <button
@@ -278,7 +321,219 @@ export function SalvajeSplash() {
           </div>
         </div>
       )}
+
+      {/* Generador de entrada (PNG brandeado con QR) */}
+      {ticketFor && <TicketModal row={ticketFor} onClose={() => setTicketFor(null)} />}
+
+      {/* Validación de entrada (llegada por QR: ?ticket=<id>) */}
+      {validating && (
+        <ValidationModal data={validating} onClose={() => setValidating(null)} onCheckIn={handleCheckIn} />
+      )}
     </AdminShell>
+  )
+}
+
+/** Dibuja y descarga la entrada oficial (canvas 1500×600 con QR de validación). */
+function TicketModal({ row, onClose }) {
+  const canvasRef = useRef(null)
+  const [ready, setReady] = useState(false)
+
+  useEffect(() => {
+    let alive = true
+    const loadImage = (src) =>
+      new Promise((resolve, reject) => {
+        const i = new Image()
+        i.onload = () => resolve(i)
+        i.onerror = reject
+        i.src = src
+      })
+
+    ;(async () => {
+      const canvas = canvasRef.current
+      if (!canvas) return
+      const ctx = canvas.getContext('2d')
+      const W = 1500, H = 600
+      try { await document.fonts.ready } catch {}
+
+      // Fondo blanco + marco
+      ctx.fillStyle = '#FFFFFF'
+      ctx.fillRect(0, 0, W, H)
+
+      // Panel izquierdo oscuro (marca)
+      ctx.fillStyle = '#120A06'
+      ctx.fillRect(0, 0, 560, H)
+
+      // Logo
+      try {
+        const logo = await loadImage('/splash/salvajesplashlogo.png')
+        const lw = 400, lh = lw * (logo.height / logo.width)
+        ctx.drawImage(logo, (560 - lw) / 2, 40, lw, lh)
+      } catch {}
+
+      // Fecha del evento
+      ctx.textAlign = 'center'
+      ctx.fillStyle = '#7FE3EF'
+      ctx.font = 'bold 34px "Bebas Neue", Arial'
+      ctx.fillText('SÁBADO 22 DE AGOSTO · 2026', 280, 505)
+      ctx.fillStyle = '#F5ECD7'
+      ctx.font = '20px Arial'
+      ctx.fillText('La fiesta más refrescante del verano', 280, 540)
+
+      // Divisor punteado tipo boleta
+      ctx.strokeStyle = '#C9A227'
+      ctx.lineWidth = 3
+      ctx.setLineDash([14, 12])
+      ctx.beginPath(); ctx.moveTo(560, 30); ctx.lineTo(560, H - 30); ctx.stroke()
+      ctx.setLineDash([])
+
+      // Lado derecho: datos del asistente
+      ctx.textAlign = 'left'
+      ctx.fillStyle = '#D4521A'
+      ctx.font = 'bold 26px Arial'
+      ctx.fillText('E N T R A D A   O F I C I A L', 620, 90)
+
+      // Nombre (reduce la fuente si es muy largo)
+      const nombre = (row.nombre || 'Asistente').toUpperCase()
+      let size = 64
+      ctx.font = `bold ${size}px "Bebas Neue", Arial`
+      while (ctx.measureText(nombre).width > 520 && size > 30) {
+        size -= 4
+        ctx.font = `bold ${size}px "Bebas Neue", Arial`
+      }
+      ctx.fillStyle = '#2C1810'
+      ctx.fillText(nombre, 620, 175)
+
+      ctx.fillStyle = '#6B5C52'
+      ctx.font = '26px Arial'
+      ctx.fillText(row.email || '', 620, 220)
+
+      // Línea separadora
+      ctx.strokeStyle = '#F0E8D8'
+      ctx.lineWidth = 2
+      ctx.beginPath(); ctx.moveTo(620, 255); ctx.lineTo(1130, 255); ctx.stroke()
+
+      ctx.fillStyle = '#6B5C52'
+      ctx.font = 'bold 18px Arial'
+      ctx.fillText('ID DE ENTRADA', 620, 300)
+      ctx.font = '20px Courier New'
+      ctx.fillStyle = '#2C1810'
+      ctx.fillText(row.id, 620, 330)
+
+      ctx.fillStyle = '#6B5C52'
+      ctx.font = '20px Arial'
+      ctx.fillText('Presenta este código QR en el ingreso.', 620, 400)
+      ctx.fillText('Válido para una (1) persona · intransferible.', 620, 430)
+
+      // QR de validación (apunta al panel admin con ?ticket=<id>)
+      const qrData = await QRCode.toDataURL(TICKET_BASE + row.id, {
+        width: 300, margin: 1, color: { dark: '#120A06', light: '#FFFFFF' },
+      })
+      const qrImg = await loadImage(qrData)
+      ctx.fillStyle = '#FFFFFF'
+      ctx.fillRect(1160, 130, 300, 300)
+      ctx.strokeStyle = '#12B5C9'
+      ctx.lineWidth = 6
+      ctx.strokeRect(1160, 130, 300, 300)
+      ctx.drawImage(qrImg, 1170, 140, 280, 280)
+      ctx.textAlign = 'center'
+      ctx.fillStyle = '#0E7C8B'
+      ctx.font = 'bold 20px Arial'
+      ctx.fillText('ESCANEA PARA VALIDAR', 1310, 465)
+
+      // Barras de acento inferiores
+      ctx.fillStyle = '#12B5C9'
+      ctx.fillRect(560, H - 22, W - 560, 8)
+      ctx.fillStyle = '#D4521A'
+      ctx.fillRect(560, H - 14, W - 560, 14)
+
+      if (alive) setReady(true)
+    })()
+    return () => { alive = false }
+  }, [row])
+
+  const download = () => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const a = document.createElement('a')
+    a.href = canvas.toDataURL('image/png')
+    a.download = `entrada-salvaje-splash-${(row.nombre || 'asistente').trim().replace(/\s+/g, '-').toLowerCase()}.png`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+  }
+
+  return (
+    <div className="fixed inset-0 z-[120] flex items-center justify-center p-4" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+      <div className="relative z-10 w-full max-w-3xl rounded-salvaje bg-white p-5 shadow-salvaje-lg" onClick={(e) => e.stopPropagation()}>
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <p className="font-display text-xl uppercase text-salvaje-dark truncate">Entrada · {row.nombre}</p>
+          <button onClick={onClose} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-salvaje-gray hover:bg-salvaje-light-alt transition"><X size={18} /></button>
+        </div>
+        <canvas ref={canvasRef} width={1500} height={600} className="w-full rounded-xl border border-salvaje-cream" />
+        <div className="mt-4 flex items-center justify-between gap-3 flex-wrap">
+          <p className="font-body text-xs text-salvaje-gray">El QR abre la validación en este panel (requiere sesión de admin).</p>
+          <button
+            onClick={download} disabled={!ready}
+            className="inline-flex items-center gap-2 rounded-xl bg-salvaje-orange px-5 py-2.5 font-display uppercase tracking-widest text-sm text-white hover:opacity-90 active:scale-95 transition disabled:opacity-40"
+          >
+            <Download size={16} /> Descargar PNG
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/** Verificador de entradas: se abre al escanear el QR (?ticket=<id>). */
+function ValidationModal({ data, onClose, onCheckIn }) {
+  const r = data.row
+  const valid = r && r.paid && !r.checkedIn
+  const already = r && r.paid && r.checkedIn
+  const fmtIn = (ts) => {
+    if (!ts) return ''
+    const d = typeof ts.toDate === 'function' ? ts.toDate() : ts.seconds ? new Date(ts.seconds * 1000) : new Date(ts)
+    return Number.isNaN(d.getTime()) ? '' : d.toLocaleString('es-CO', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
+  }
+  return (
+    <div className="fixed inset-0 z-[125] flex items-center justify-center p-4" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+      <div className="relative z-10 w-full max-w-md rounded-salvaje bg-white p-6 text-center shadow-salvaje-lg sm:p-8" onClick={(e) => e.stopPropagation()}>
+        {!r ? (
+          <>
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-salvaje-danger/10 text-salvaje-danger"><AlertTriangle size={30} /></div>
+            <h3 className="mt-4 font-display text-3xl uppercase text-salvaje-danger">Entrada no encontrada</h3>
+            <p className="mt-2 font-body text-sm text-salvaje-gray">No existe ningún registro con el ID<br /><span className="font-mono text-salvaje-dark">{data.missingId}</span></p>
+          </>
+        ) : (
+          <>
+            <div className={`mx-auto flex h-16 w-16 items-center justify-center rounded-full ${valid ? 'bg-salvaje-success/15 text-salvaje-success' : already ? 'bg-salvaje-gold/15 text-salvaje-gold' : 'bg-salvaje-danger/10 text-salvaje-danger'}`}>
+              {valid ? <CheckCircle2 size={32} /> : already ? <QrCode size={30} /> : <AlertTriangle size={30} />}
+            </div>
+            <h3 className={`mt-4 font-display text-3xl uppercase ${valid ? 'text-salvaje-success' : already ? 'text-salvaje-gold' : 'text-salvaje-danger'}`}>
+              {valid ? 'Entrada válida' : already ? 'Ya registró ingreso' : 'Entrada no válida'}
+            </h3>
+            <p className="mt-1 font-body text-xs uppercase tracking-wide text-salvaje-gray">
+              {valid ? 'Pago confirmado · puede ingresar' : already ? `Ingreso: ${fmtIn(r.checkedInAt)}` : 'No tiene pago registrado'}
+            </p>
+            <div className="mt-4 rounded-xl border border-salvaje-cream bg-salvaje-light p-4 text-left">
+              <p className="font-display text-2xl uppercase leading-none text-salvaje-dark">{r.nombre || 'Sin nombre'}</p>
+              <p className="mt-1 font-body text-sm text-salvaje-gray">{r.email}</p>
+              {r.celular && <p className="font-body text-sm text-salvaje-gray">{r.celular}</p>}
+            </div>
+            {valid && (
+              <button
+                onClick={() => onCheckIn(r)}
+                className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-salvaje-success px-6 py-3.5 font-display text-base uppercase tracking-widest text-white hover:opacity-90 active:scale-95 transition"
+              >
+                <CheckCircle2 size={18} /> Registrar ingreso
+              </button>
+            )}
+          </>
+        )}
+        <button onClick={onClose} className="mt-4 text-sm font-semibold text-salvaje-gray hover:text-salvaje-brown transition-colors">Cerrar</button>
+      </div>
+    </div>
   )
 }
 
