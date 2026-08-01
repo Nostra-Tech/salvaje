@@ -28,28 +28,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            salvaje: {
-              brown: '#2C1810', cream: '#F5ECD7', dark: '#1A0F0A',
-              orange: '#D4521A', fire: '#E8732A', gold: '#C9A227',
-              success: '#2D7A4F', danger: '#8B1A1A', gray: '#6B5C52',
-              light: '#FAF6F0', 'light-alt': '#F0E8D8',
-              aqua: '#12B5C9', 'aqua-deep': '#0E7C8B', 'aqua-light': '#7FE3EF',
-            },
-          },
-          fontFamily: {
-            display: ['"Bebas Neue"', 'sans-serif'],
-            body: ['"DM Sans"', 'sans-serif'],
-          },
-        },
-      },
-    }
-  </script>
+  <!-- Tailwind AUTO-HOSPEDADO (antes venía del CDN, que al caerse rompía los
+       estilos). Si editas clases en este archivo, regenera el CSS con:
+       npx tailwindcss -c tailwind.splash.config.js -i tailwind.splash.input.css -o public/splash/tailwind.css --minify -->
+  <link rel="stylesheet" href="tailwind.css?v=1">
   <style>
     html { scroll-behavior: smooth; }
     body { font-family: 'DM Sans', sans-serif; background: #FAF6F0; }
