@@ -247,7 +247,7 @@
           Preventa activa
         </p>
         <h2 class="mt-3 font-display text-4xl uppercase tracking-wide text-salvaje-brown sm:text-5xl">Compra ahora</h2>
-        <p class="mx-auto mt-3 max-w-2xl text-salvaje-gray">
+        <p id="preventaIntro" class="mx-auto mt-3 max-w-2xl text-salvaje-gray">
           Asegura tu entrada en la etapa <span class="font-semibold text-salvaje-dark">Splash Early</span>
           al mejor precio, disponible <span class="font-semibold text-salvaje-dark">hasta el 31 de julio</span>.
           Después, el precio <span class="font-semibold text-salvaje-dark">sube</span>.
@@ -256,21 +256,21 @@
 
       <!-- Móvil: carrusel horizontal con snap · Desktop: grilla de 3 -->
       <div class="io progscroll mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-1 pb-4 pt-4 md:grid md:grid-cols-3 md:items-stretch md:overflow-visible md:px-0 md:pb-0">
-        <!-- Etapa 1 · Splash Early — ACTIVA -->
-        <div class="relative flex w-[82vw] max-w-[320px] shrink-0 snap-center flex-col rounded-3xl border-2 border-salvaje-orange bg-white p-6 shadow-[0_20px_60px_rgba(212,82,26,0.25)] md:-my-2 md:w-auto md:max-w-none md:shrink">
-          <span class="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-salvaje-orange px-4 py-1 font-display text-xs uppercase tracking-[3px] text-white shadow">Disponible ahora</span>
+        <!-- Etapa 1 · Splash Early — ACTIVA (hasta el 31 de julio; luego el JS la finaliza) -->
+        <div id="cardEarly" class="relative flex w-[82vw] max-w-[320px] shrink-0 snap-center flex-col rounded-3xl border-2 border-salvaje-orange bg-white p-6 shadow-[0_20px_60px_rgba(212,82,26,0.25)] md:-my-2 md:w-auto md:max-w-none md:shrink">
+          <span id="badgeEarly" class="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-salvaje-orange px-4 py-1 font-display text-xs uppercase tracking-[3px] text-white shadow">Disponible ahora</span>
           <div class="flex items-center gap-2.5">
             <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-salvaje-aqua/10 text-salvaje-aqua-deep">
               <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"/></svg>
             </span>
             <div>
               <p class="font-display text-2xl uppercase leading-none text-salvaje-brown">Splash Early</p>
-              <p class="text-xs font-semibold text-salvaje-danger">Hasta el 31 de julio</p>
+              <p id="subEarly" class="text-xs font-semibold text-salvaje-danger">Hasta el 31 de julio</p>
             </div>
           </div>
-          <p class="mt-5 font-display text-5xl uppercase leading-none text-salvaje-brown">$59.900</p>
+          <p id="priceEarly" class="mt-5 font-display text-5xl uppercase leading-none text-salvaje-brown">$59.900</p>
           <p class="text-sm text-salvaje-gray">por persona</p>
-          <a href="#inscripcion" class="js-open-form group mt-6 flex items-center justify-center gap-2 rounded-xl bg-salvaje-orange px-6 py-3.5 font-display text-lg uppercase tracking-widest text-white shadow-[0_8px_24px_rgba(212,82,26,0.3)] transition-colors hover:bg-salvaje-fire">
+          <a id="ctaEarly" href="#inscripcion" class="js-open-form group mt-6 flex items-center justify-center gap-2 rounded-xl bg-salvaje-orange px-6 py-3.5 font-display text-lg uppercase tracking-widest text-white shadow-[0_8px_24px_rgba(212,82,26,0.3)] transition-colors hover:bg-salvaje-fire">
             Comprar ahora
             <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 16 16" fill="none"><path d="M8 3L13 8L8 13M13 8H3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
@@ -282,9 +282,9 @@
           </div>
         </div>
 
-        <!-- Etapa 2 · Salvaje Pass — BLOQUEADA -->
-        <div class="relative flex w-[82vw] max-w-[320px] shrink-0 snap-center flex-col rounded-3xl border-2 border-dashed border-salvaje-gray/30 bg-white/60 p-6 opacity-80 md:w-auto md:max-w-none md:shrink">
-          <span class="absolute -top-3.5 left-1/2 flex -translate-x-1/2 items-center gap-1.5 whitespace-nowrap rounded-full bg-salvaje-gray px-4 py-1 font-display text-xs uppercase tracking-[3px] text-white">
+        <!-- Etapa 2 · Salvaje Pass — BLOQUEADA (se activa sola el 1 de agosto 00:00) -->
+        <div id="cardPass" class="relative flex w-[82vw] max-w-[320px] shrink-0 snap-center flex-col rounded-3xl border-2 border-dashed border-salvaje-gray/30 bg-white/60 p-6 opacity-80 md:w-auto md:max-w-none md:shrink">
+          <span id="badgePass" class="absolute -top-3.5 left-1/2 flex -translate-x-1/2 items-center gap-1.5 whitespace-nowrap rounded-full bg-salvaje-gray px-4 py-1 font-display text-xs uppercase tracking-[3px] text-white">
             <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
             Bloqueada
           </span>
@@ -297,9 +297,9 @@
               <p class="text-xs font-semibold text-salvaje-gray">Segunda etapa</p>
             </div>
           </div>
-          <p class="mt-5 font-display text-5xl uppercase leading-none text-salvaje-gray">$69.900</p>
+          <p id="pricePass" class="mt-5 font-display text-5xl uppercase leading-none text-salvaje-gray">$69.900</p>
           <p class="text-sm text-salvaje-gray">por persona</p>
-          <div class="mt-6 flex items-center justify-center gap-2 rounded-xl border border-salvaje-gray/20 bg-salvaje-light-alt px-6 py-3.5 font-display text-lg uppercase tracking-widest text-salvaje-gray">
+          <div id="ctaPass" class="mt-6 flex items-center justify-center gap-2 rounded-xl border border-salvaje-gray/20 bg-salvaje-light-alt px-6 py-3.5 font-display text-lg uppercase tracking-widest text-salvaje-gray">
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
             Próximamente
           </div>
@@ -732,6 +732,7 @@
           stageTimer.textContent = 'Etapa finalizada'
           if (stageNote) stageNote.textContent = 'Continúa la siguiente etapa'
           clearInterval(stageInt)
+          activateStage2()
           return
         }
         const s = Math.floor(diff / 1000)
@@ -742,6 +743,58 @@
       }
       stageTick()
       const stageInt = setInterval(stageTick, 1000)
+
+      // ── Cambio AUTOMÁTICO de etapa (1 de agosto 00:00, hora Colombia) ─────
+      // Finaliza la tarjeta Splash Early y activa Salvaje Pass con su botón de
+      // compra. Corre al cargar si ya pasó la fecha, o en vivo a la medianoche.
+      let stage2Done = false
+      function activateStage2() {
+        if (stage2Done) return
+        stage2Done = true
+        const cardEarly = document.getElementById('cardEarly')
+        const cardPass = document.getElementById('cardPass')
+        if (!cardEarly || !cardPass) return
+
+        // Splash Early → finalizada (gris, sin botón de compra)
+        cardEarly.classList.remove('border-salvaje-orange', 'shadow-[0_20px_60px_rgba(212,82,26,0.25)]', 'md:-my-2')
+        cardEarly.classList.add('border-dashed', 'border-salvaje-gray/30', 'bg-white/60', 'opacity-80')
+        const badgeEarly = document.getElementById('badgeEarly')
+        badgeEarly.textContent = 'Finalizada'
+        badgeEarly.classList.remove('bg-salvaje-orange')
+        badgeEarly.classList.add('bg-salvaje-gray')
+        document.getElementById('priceEarly').classList.replace('text-salvaje-brown', 'text-salvaje-gray')
+        const subEarly = document.getElementById('subEarly')
+        if (subEarly) subEarly.textContent = 'Etapa finalizada'
+        document.getElementById('ctaEarly').outerHTML =
+          '<div class="mt-6 flex items-center justify-center gap-2 rounded-xl border border-salvaje-gray/20 bg-salvaje-light-alt px-6 py-3.5 font-display text-lg uppercase tracking-widest text-salvaje-gray">Finalizada</div>'
+
+        // Salvaje Pass → activa (naranja, con botón de compra)
+        cardPass.classList.remove('border-dashed', 'border-salvaje-gray/30', 'bg-white/60', 'opacity-80')
+        cardPass.classList.add('border-salvaje-orange', 'bg-white', 'shadow-[0_20px_60px_rgba(212,82,26,0.25)]', 'md:-my-2')
+        const badgePass = document.getElementById('badgePass')
+        badgePass.textContent = 'Disponible ahora'
+        badgePass.classList.remove('bg-salvaje-gray')
+        badgePass.classList.add('bg-salvaje-orange', 'shadow')
+        document.getElementById('pricePass').classList.replace('text-salvaje-gray', 'text-salvaje-brown')
+        const ctaPass = document.getElementById('ctaPass')
+        ctaPass.outerHTML =
+          '<a href="#inscripcion" class="js-open-form group mt-6 flex items-center justify-center gap-2 rounded-xl bg-salvaje-orange px-6 py-3.5 font-display text-lg uppercase tracking-widest text-white shadow-[0_8px_24px_rgba(212,82,26,0.3)] transition-colors hover:bg-salvaje-fire">Comprar ahora</a>'
+        // El nuevo botón también debe abrir el formulario de inscripción.
+        const newCta = cardPass.querySelector('.js-open-form')
+        if (newCta) newCta.addEventListener('click', () => {
+          const btn = document.getElementById('openFormBtn')
+          const wrap = document.getElementById('formWrap')
+          if (btn && wrap) { btn.classList.add('hidden'); wrap.classList.remove('hidden'); wrap.classList.add('grid') }
+        })
+
+        // Copy de la sección acorde a la nueva etapa
+        const intro = document.getElementById('preventaIntro')
+        if (intro) intro.innerHTML =
+          'Estás en la etapa <span class="font-semibold text-salvaje-dark">Salvaje Pass</span>, disponible ' +
+          '<span class="font-semibold text-salvaje-dark">del 1 al 11 de agosto</span>. ' +
+          'Después, el precio <span class="font-semibold text-salvaje-dark">sube</span>.'
+      }
+      if (Date.now() >= STAGE_END) activateStage2()
     })()
   </script>
 
@@ -757,21 +810,21 @@
   <!-- ============================================================= -->
   <script>
     (function () {
-      // Pasarela de pagos Bold (link de pago de monto fijo).
-      const PAYMENT_URL = "https://checkout.bold.co/payment/LNK_J0JDWPE1PQ";
-      window.SPLASH_PAYMENT_URL = PAYMENT_URL; // usado por el flujo post-registro
+      // Pasarela de pagos Bold — el link cambia AUTOMÁTICAMENTE por etapa.
+      // Desde el 1 de agosto de 2026 a las 00:00 (hora Colombia, UTC-05:00)
+      // rige el link de Salvaje Pass. La URL se evalúa en el momento del clic
+      // (no al cargar), así el cambio aplica aunque la página lleve abierta.
+      const STAGE2_START_MS = new Date('2026-08-01T00:00:00-05:00').getTime()
+      const PAY_URL_EARLY  = "https://checkout.bold.co/payment/LNK_J0JDWPE1PQ"  // Splash Early · $59.900
+      const PAY_URL_STAGE2 = "https://checkout.bold.co/payment/LNK_BRZ6H1YX3G" // Salvaje Pass · $69.900
+      function currentPayUrl() { return Date.now() >= STAGE2_START_MS ? PAY_URL_STAGE2 : PAY_URL_EARLY }
+      window.SPLASH_PAY_URL_FN = currentPayUrl
+      window.SPLASH_PAYMENT_URL = currentPayUrl() // compatibilidad
       document.querySelectorAll('[data-pay]').forEach((el) => {
-        if (PAYMENT_URL) {
-          // Misma pestaña: el pago es la continuación obligatoria del flujo.
-          el.setAttribute('href', PAYMENT_URL)
-          el.setAttribute('rel', 'noopener noreferrer')
-        } else {
-          // Sin URL de pasarela: se oculta el botón de pago y se muestra el
-          // aviso de contacto (WhatsApp/correo) en la confirmación.
-          el.classList.add('hidden')
-          const fb = document.getElementById('payFallback')
-          if (fb) fb.classList.remove('hidden')
-        }
+        // Misma pestaña: el pago es la continuación obligatoria del flujo.
+        el.setAttribute('href', currentPayUrl())
+        el.setAttribute('rel', 'noopener noreferrer')
+        el.addEventListener('click', () => el.setAttribute('href', currentPayUrl()))
       })
     })()
   </script>
@@ -888,7 +941,8 @@
         closeAuthModal()
         form.classList.add('hidden'); successBox.classList.remove('hidden'); successBox.classList.add('visible')
         successBox.scrollIntoView({ behavior: 'smooth', block: 'center' })
-        const url = window.SPLASH_PAYMENT_URL
+        // URL evaluada en este instante: respeta el cambio de etapa automático.
+        const url = window.SPLASH_PAY_URL_FN ? window.SPLASH_PAY_URL_FN() : window.SPLASH_PAYMENT_URL
         if (url) setTimeout(() => { window.location.href = url }, 900)
       } catch (err) {
         console.error(err)
