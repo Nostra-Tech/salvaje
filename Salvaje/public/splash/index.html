@@ -725,10 +725,12 @@
             stM = document.getElementById('stM'), stS = document.getElementById('stS')
       const stageTimer = document.getElementById('stageTimer')
       const stageNote = document.getElementById('stageNote')
-      // stageInt se declara ANTES de la primera llamada a stageTick(): si la
-      // etapa ya venció al cargar, clearInterval(null) es inofensivo (antes,
-      // con const, lanzaba ReferenceError y rompía el cambio de tarjetas).
+      // stageInt y stage2Done se declaran ANTES de la primera llamada a
+      // stageTick(): si la etapa ya venció al cargar, ese primer tick llama a
+      // activateStage2(), que lee stage2Done — declararlo después provocaba un
+      // ReferenceError (TDZ) que impedía el cambio de tarjetas.
       let stageInt = null
+      let stage2Done = false
       function stageTick() {
         if (!stageTimer) return
         const diff = STAGE_END - Date.now()
@@ -751,7 +753,6 @@
       // ── Cambio AUTOMÁTICO de etapa (1 de agosto 00:00, hora Colombia) ─────
       // Finaliza la tarjeta Splash Early y activa Salvaje Pass con su botón de
       // compra. Corre al cargar si ya pasó la fecha, o en vivo a la medianoche.
-      let stage2Done = false
       function activateStage2() {
         if (stage2Done) return
         stage2Done = true
