@@ -334,7 +334,7 @@
       <p class="text-center text-xs text-salvaje-gray md:hidden">Desliza para ver todas las etapas</p>
 
       <p class="io mt-6 text-center text-sm font-semibold text-salvaje-brown md:mt-8">
-        El precio sube en cada etapa. <span class="text-salvaje-danger">Asegura hoy tu entrada Splash Early.</span>
+        El precio sube en cada etapa. <span id="urgencyLine" class="text-salvaje-danger">Asegura hoy tu entrada Splash Early.</span>
       </p>
     </div>
   </section>
@@ -725,13 +725,17 @@
             stM = document.getElementById('stM'), stS = document.getElementById('stS')
       const stageTimer = document.getElementById('stageTimer')
       const stageNote = document.getElementById('stageNote')
+      // stageInt se declara ANTES de la primera llamada a stageTick(): si la
+      // etapa ya venció al cargar, clearInterval(null) es inofensivo (antes,
+      // con const, lanzaba ReferenceError y rompía el cambio de tarjetas).
+      let stageInt = null
       function stageTick() {
         if (!stageTimer) return
         const diff = STAGE_END - Date.now()
         if (diff <= 0) {
-          stageTimer.textContent = 'Etapa finalizada'
-          if (stageNote) stageNote.textContent = 'Continúa la siguiente etapa'
-          clearInterval(stageInt)
+          stageTimer.textContent = 'Etapa agotada'
+          if (stageNote) stageNote.textContent = 'Continúa Salvaje Pass'
+          if (stageInt) clearInterval(stageInt)
           activateStage2()
           return
         }
@@ -742,7 +746,7 @@
         stS.textContent = pad(s % 60)
       }
       stageTick()
-      const stageInt = setInterval(stageTick, 1000)
+      if (STAGE_END - Date.now() > 0) stageInt = setInterval(stageTick, 1000)
 
       // ── Cambio AUTOMÁTICO de etapa (1 de agosto 00:00, hora Colombia) ─────
       // Finaliza la tarjeta Splash Early y activa Salvaje Pass con su botón de
@@ -759,14 +763,15 @@
         cardEarly.classList.remove('border-salvaje-orange', 'shadow-[0_20px_60px_rgba(212,82,26,0.25)]', 'md:-my-2')
         cardEarly.classList.add('border-dashed', 'border-salvaje-gray/30', 'bg-white/60', 'opacity-80')
         const badgeEarly = document.getElementById('badgeEarly')
-        badgeEarly.textContent = 'Finalizada'
+        badgeEarly.textContent = 'Agotado'
         badgeEarly.classList.remove('bg-salvaje-orange')
         badgeEarly.classList.add('bg-salvaje-gray')
         document.getElementById('priceEarly').classList.replace('text-salvaje-brown', 'text-salvaje-gray')
         const subEarly = document.getElementById('subEarly')
-        if (subEarly) subEarly.textContent = 'Etapa finalizada'
-        document.getElementById('ctaEarly').outerHTML =
-          '<div class="mt-6 flex items-center justify-center gap-2 rounded-xl border border-salvaje-gray/20 bg-salvaje-light-alt px-6 py-3.5 font-display text-lg uppercase tracking-widest text-salvaje-gray">Finalizada</div>'
+        if (subEarly) subEarly.textContent = 'Agotado'
+        const ctaEarly = document.getElementById('ctaEarly')
+        if (ctaEarly) ctaEarly.outerHTML =
+          '<div class="mt-6 flex items-center justify-center gap-2 rounded-xl border border-salvaje-gray/20 bg-salvaje-light-alt px-6 py-3.5 font-display text-lg uppercase tracking-widest text-salvaje-gray">Agotado</div>'
 
         // Salvaje Pass → activa (naranja, con botón de compra)
         cardPass.classList.remove('border-dashed', 'border-salvaje-gray/30', 'bg-white/60', 'opacity-80')
@@ -790,9 +795,12 @@
         // Copy de la sección acorde a la nueva etapa
         const intro = document.getElementById('preventaIntro')
         if (intro) intro.innerHTML =
-          'Estás en la etapa <span class="font-semibold text-salvaje-dark">Salvaje Pass</span>, disponible ' +
+          'La etapa Splash Early se <span class="font-semibold text-salvaje-danger">agotó</span>. Estás en ' +
+          '<span class="font-semibold text-salvaje-dark">Salvaje Pass</span>, disponible ' +
           '<span class="font-semibold text-salvaje-dark">del 1 al 11 de agosto</span>. ' +
           'Después, el precio <span class="font-semibold text-salvaje-dark">sube</span>.'
+        const urgency = document.getElementById('urgencyLine')
+        if (urgency) urgency.textContent = 'Asegura hoy tu entrada Salvaje Pass.'
       }
       if (Date.now() >= STAGE_END) activateStage2()
     })()
