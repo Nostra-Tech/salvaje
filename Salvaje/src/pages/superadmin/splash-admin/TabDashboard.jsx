@@ -55,6 +55,58 @@ export function TabDashboard({ stats, suggestions, daysMap }) {
         </p>
       </div>
 
+      {/* Meta diaria: 5 boletas/día desde el 4 de agosto */}
+      <div className="bg-white rounded-salvaje p-5 shadow-salvaje">
+        <div className="flex items-center justify-between gap-3 flex-wrap mb-3">
+          <p className="font-body text-sm font-semibold text-salvaje-dark">
+            Meta diaria · <b className="text-salvaje-orange">{s.dailyGoal} boletas/día</b> desde el 4 de agosto
+          </p>
+          <div className="flex items-center gap-3">
+            <span className="font-body text-xs text-salvaje-gray">
+              Acumulado: <b className="text-salvaje-dark">{s.ventasCampana}</b> de {s.diasCampana * s.dailyGoal} esperadas
+            </span>
+            <span className={`rounded-full px-3 py-1 font-display text-sm ${s.cumplimiento >= 1 ? 'bg-salvaje-success/15 text-salvaje-success' : s.cumplimiento >= 0.5 ? 'bg-salvaje-gold/15 text-salvaje-gold' : 'bg-salvaje-danger/10 text-salvaje-danger'}`}>
+              {Math.round(s.cumplimiento * 100)}% cumplimiento
+            </span>
+          </div>
+        </div>
+
+        <div className="relative">
+          {/* Línea de meta (5) */}
+          {(() => {
+            const maxScale = Math.max(s.dailyGoal * 1.4, ...s.metaDiaria.map((d) => d.ventas))
+            const goalPct = (s.dailyGoal / maxScale) * 100
+            return (
+              <>
+                <div className="absolute inset-x-0 border-t-2 border-dashed border-salvaje-orange/60 z-10 pointer-events-none" style={{ bottom: `calc(${goalPct}% + 34px)` }}>
+                  <span className="absolute -top-4 right-0 font-mono text-[9px] font-bold text-salvaje-orange">meta {s.dailyGoal}</span>
+                </div>
+                <div className="flex items-end gap-2 overflow-x-auto pb-1">
+                  {s.metaDiaria.map((d) => {
+                    const h = Math.max(3, (d.ventas / maxScale) * 100)
+                    const color = d.pct >= 100 ? 'bg-salvaje-success' : d.pct >= 50 ? 'bg-salvaje-gold' : 'bg-salvaje-danger'
+                    const isToday = d.key === s.metaDiaria[s.metaDiaria.length - 1].key
+                    return (
+                      <div key={d.key} className="flex min-w-[52px] flex-1 flex-col items-center" title={`${d.key}: ${d.ventas}/${s.dailyGoal} boletas (${d.pct}%)`}>
+                        <span className={`font-display text-sm leading-none mb-1 ${d.pct >= 100 ? 'text-salvaje-success' : d.pct >= 50 ? 'text-salvaje-gold' : 'text-salvaje-danger'}`}>{d.pct}%</span>
+                        <div className="w-full h-24 flex items-end rounded-lg bg-salvaje-light-alt/60 overflow-hidden">
+                          <div className={`w-full rounded-t ${color} transition-all`} style={{ height: `${h}%` }} />
+                        </div>
+                        <span className="mt-1 font-mono text-[9px] text-salvaje-gray leading-none whitespace-nowrap">{shortDay(d.key)}</span>
+                        <span className={`font-body text-[10px] leading-tight ${isToday ? 'font-bold text-salvaje-dark' : 'text-salvaje-gray'}`}>{d.ventas}/{s.dailyGoal}{isToday ? ' · hoy' : ''}</span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </>
+            )
+          })()}
+        </div>
+        <p className="mt-2 font-body text-[11px] text-salvaje-gray">
+          Verde = meta cumplida (≥100%) · Amarillo = a mitad de camino (≥50%) · Rojo = por debajo. La línea punteada marca las {s.dailyGoal} boletas del día.
+        </p>
+      </div>
+
       <div className="grid md:grid-cols-2 gap-4">
         {/* Ventas por día */}
         <div className="bg-white rounded-salvaje p-5 shadow-salvaje">

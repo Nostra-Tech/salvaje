@@ -19,6 +19,9 @@ import { db } from './firebase'
 // ── Configuración de campaña ────────────────────────────────────────────────
 export const EVENT_MS = new Date('2026-08-22T00:00:00-05:00').getTime()
 export const META_ENTRADAS = 100
+// Meta diaria de la campaña: 5 boletas/día desde el arranque (4 de agosto).
+export const CAMPAIGN_START_MS = new Date('2026-08-04T00:00:00-05:00').getTime()
+export const DAILY_GOAL = 5
 export const LANDING_URL = 'https://salvaje-app.web.app/splash'
 export const PAY_URL = 'https://checkout.bold.co/payment/LNK_BRZ6H1YX3G'
 
@@ -153,6 +156,20 @@ export function computeStats(rows, daysMap) {
   const cpa = spend > 0 && paid.length > 0 ? spend / paid.length : null
   const roas = spend > 0 ? ingresos / spend : null
 
+  // Meta diaria: 5 boletas/día desde el 4 de agosto, con % de cumplimiento
+  // por día y acumulado de campaña.
+  const metaDiaria = []
+  const hoy = todayKey()
+  for (let ms = CAMPAIGN_START_MS; metaDiaria.length < 30; ms += 86400000) {
+    const k = dayKey(ms)
+    if (k > hoy) break
+    const v = ventasPorDia[k] || 0
+    metaDiaria.push({ key: k, ventas: v, goal: DAILY_GOAL, pct: Math.round((v / DAILY_GOAL) * 100) })
+  }
+  const diasCampana = metaDiaria.length
+  const ventasCampana = metaDiaria.reduce((a, d) => a + d.ventas, 0)
+  const cumplimiento = diasCampana > 0 ? ventasCampana / (diasCampana * DAILY_GOAL) : 0
+
   // Semáforo por ritmo (ritmo real de la última semana vs necesario).
   const ratio = paceNeeded > 0 ? ritmo7 / paceNeeded : 1
   const semaforo = ratio >= 0.9 ? 'verde' : ratio >= 0.45 ? 'amarillo' : 'rojo'
@@ -164,6 +181,7 @@ export function computeStats(rows, daysMap) {
     ventasHoy, registrosHoy, leads: leads.length, sinContactar, conversion, ingresos,
     last14, spend, impressions, clicks, ctr, cpc, cpm, cpa, roas, semaforo, ratio,
     stage: currentStage(),
+    metaDiaria, diasCampana, ventasCampana, cumplimiento, dailyGoal: DAILY_GOAL,
   }
 }
 
