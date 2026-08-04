@@ -340,5 +340,16 @@ service cloud.firestore {
       allow create: if true;
       allow read, update, delete: if isAdmin();
     }
+
+    // ─────────────────────────────────────────────────────────────────────
+    // SALVAJE SPLASH ADMIN — mission control interno del equipo organizador.
+    // splash_admin_days: métricas manuales de pauta, checklist y notas por día.
+    // ─────────────────────────────────────────────────────────────────────
+    match /splash_admin_days/{dayId} {
+      allow read, write: if isAdmin();
+    }
+    match /splash_admin/{docId} {
+      allow read, write: if isAdmin();
+    }
   }
 }

@@ -2,7 +2,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, Users, Dumbbell, Calendar, CreditCard, DollarSign,
   ClipboardList, Settings, LogOut, Shield, BarChart3, History, Bell,
-  TrendingUp, MessageSquare, Tag, Bot, Clock, Star, Trophy, Droplets,
+  TrendingUp, MessageSquare, Tag, Bot, Clock, Star, Trophy, Droplets, Rocket,
 } from 'lucide-react'
 import { TopBar } from './TopBar'
 import { BottomNav } from './BottomNav'
@@ -72,6 +72,7 @@ const navGroups = [
     items: [
       { to: '/superadmin/polla-mundialista-salvaje',   icon: Trophy,      label: 'Polla Mundialista Salvaje' },
       { to: '/superadmin/salvaje-splash',  icon: Droplets,    label: 'Salvaje Splash' },
+      { to: '/superadmin/splash-admin',    icon: Rocket,      label: 'Splash Admin' },
       // Salvaje Mock oculto del panel administrativo (la ruta sigue existiendo por URL directa).
       { to: '/superadmin/analytics',       icon: BarChart3,   label: 'Analytics avanzado' },
       { to: '/superadmin/app-settings',    icon: Settings,    label: 'Configuración global' },
