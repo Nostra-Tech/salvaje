@@ -787,6 +787,9 @@
         // Salvaje Pass → activa (naranja, con botón de compra)
         cardPass.classList.remove('border-dashed', 'border-salvaje-gray/30', 'bg-white/60', 'opacity-80')
         cardPass.classList.add('border-salvaje-orange', 'bg-white', 'shadow-[0_20px_60px_rgba(212,82,26,0.25)]', 'md:-my-2')
+        // Móvil: la etapa ACTIVA sale de primera en el carrusel (las demás con
+        // scroll horizontal). Desktop conserva el orden cronológico.
+        cardPass.classList.add('order-first', 'md:order-none')
         const badgePass = document.getElementById('badgePass')
         badgePass.textContent = 'Disponible ahora'
         badgePass.classList.remove('bg-salvaje-gray')
