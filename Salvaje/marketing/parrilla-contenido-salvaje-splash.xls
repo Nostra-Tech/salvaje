@@ -1,0 +1,571 @@
+﻿<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="UTF-8" />
+<style>
+  table{border-collapse:collapse;font-family:Calibri,Arial,sans-serif;font-size:10.5pt;}
+  th,td{border:1px solid #C9A227;padding:6px 10px;vertical-align:top;}
+  .title td{background:#120A06;color:#7FE3EF;font-size:16pt;font-weight:bold;border:1px solid #120A06;letter-spacing:2px;}
+  .subtitle td{background:#12B5C9;color:#FFFFFF;font-weight:bold;border:1px solid #12B5C9;}
+  th{background:#D4521A;color:#FFFFFF;font-weight:bold;text-align:left;white-space:nowrap;}
+  .day td{background:#2C1810;color:#F5ECD7;font-weight:bold;letter-spacing:1px;}
+  tr:nth-child(even) td{background:#FAF6F0;}
+  .c{text-align:center;white-space:nowrap;font-weight:bold;color:#D4521A;}
+  .nota{color:#6B5C52;}
+  .link{background:#FFF7E6;min-width:220px;}
+</style></head><body>
+<table>
+  <tr class="title"><td colspan="8">SALVAJE SPLASH — PARRILLA DE CONTENIDO · 5 AL 22 DE AGOSTO 2026</td></tr>
+  <tr class="subtitle"><td colspan="8">"No es un entrenamiento. Es un parche." · Meta: 100 entradas · Salvaje Box Llanogrande · Pegar en la columna ENLACE el link de cada pieza (Drive/Canva) cuando esté lista</td></tr>
+  <tr>
+    <th>Fecha</th><th>Día</th><th>Hora</th><th>Canal</th><th>Tipo de post</th><th>Pieza / Tema</th><th>Gancho / Nota</th><th>Enlace a la pieza</th>
+  </tr>
+  <tr class="day"><td colspan="8">MIÉRCOLES 05/08/2026 — FASE VOLUMEN</td></tr><tr>
+    <td>05/08/2026</td><td>Miércoles</td><td class="c">08:00</td>
+    <td>Instagram</td><td><b>Historia</b></td><td>Historia apertura del día — tema: Infografía "Problemas de un parche en Medellín" (arte YA diseñado — pieza adjunta)</td>
+    <td class="nota">Buenos días + teaser de la pieza del día</td><td class="link"></td>
+  </tr><tr>
+    <td>05/08/2026</td><td>Miércoles</td><td class="c">12:00</td>
+    <td>Instagram</td><td><b>Historia + Post feed</b></td><td>Infografía "Problemas de un parche en Medellín" (arte YA diseñado — pieza adjunta)</td>
+    <td class="nota">Gancho: QUE ESTA VEZ SÍ PASE. El 22 de agosto el parche es real 🌊</td><td class="link"></td>
+  </tr><tr>
+    <td>05/08/2026</td><td>Miércoles</td><td class="c">12:30</td>
+    <td>TikTok</td><td><b>Video</b></td><td>Cruce de la pieza del día a TikTok (adaptar gancho a tendencia)</td>
+    <td class="nota">Subir también la infografía como foto-slideshow</td><td class="link"></td>
+  </tr><tr>
+    <td>05/08/2026</td><td>Miércoles</td><td class="c">13:00</td>
+    <td>Facebook</td><td><b>Post</b></td><td>Replicar pieza del día en Facebook (página + grupos locales)</td>
+    <td class="nota">Copy con link directo a la landing</td><td class="link"></td>
+  </tr><tr>
+    <td>05/08/2026</td><td>Miércoles</td><td class="c">17:00</td>
+    <td>Instagram</td><td><b>Historia interactiva</b></td><td>Historia con sticker (encuesta / quiz / caja de preguntas) sobre el tema del día</td>
+    <td class="nota">Objetivo: respuestas para abrir conversación por DM</td><td class="link"></td>
+  </tr><tr>
+    <td>05/08/2026</td><td>Miércoles</td><td class="c">19:00</td>
+    <td>WhatsApp</td><td><b>Difusión + estados</b></td><td>Mensaje del día a la base + estados del equipo con la pieza</td>
+    <td class="nota">Usar generador del Centro IA (Splash Admin)</td><td class="link"></td>
+  </tr><tr>
+    <td>05/08/2026</td><td>Miércoles</td><td class="c">20:30</td>
+    <td>Instagram</td><td><b>Historia CTA</b></td><td>Historia de cierre con CTA directo a la landing</td>
+    <td class="nota">Link sticker a /splash</td><td class="link"></td>
+  </tr><tr>
+    <td>05/08/2026</td><td>Miércoles</td><td class="c">16:00</td>
+    <td>Instagram / TikTok</td><td><b>Colab influencer</b></td><td>Publicación del influencer aliado (2 historias + 1 reel) — coordinar entrega de material</td>
+    <td class="nota">Entrada de cortesía a cambio de contenido</td><td class="link"></td>
+  </tr><tr class="day"><td colspan="8">JUEVES 06/08/2026 — FASE VOLUMEN</td></tr><tr>
+    <td>06/08/2026</td><td>Jueves</td><td class="c">08:00</td>
+    <td>Instagram</td><td><b>Historia</b></td><td>Historia apertura del día — tema: Reel tour del lugar</td>
+    <td class="nota">Buenos días + teaser de la pieza del día</td><td class="link"></td>
+  </tr><tr>
+    <td>06/08/2026</td><td>Jueves</td><td class="c">12:00</td>
+    <td>Instagram</td><td><b>Reel</b></td><td>Reel tour del lugar: "Esto es Salvaje Splash" (Salvaje Box Llanogrande)</td>
+    <td class="nota">Gancho: Aquí va a pasar TODO: pista jabonosa, DJ, inflable, premios</td><td class="link"></td>
+  </tr><tr>
+    <td>06/08/2026</td><td>Jueves</td><td class="c">12:30</td>
+    <td>TikTok</td><td><b>Video</b></td><td>Cruce de la pieza del día a TikTok (adaptar gancho a tendencia)</td>
+    <td class="nota">Mismo material, texto nativo TikTok</td><td class="link"></td>
+  </tr><tr>
+    <td>06/08/2026</td><td>Jueves</td><td class="c">13:00</td>
+    <td>Facebook</td><td><b>Post</b></td><td>Replicar pieza del día en Facebook (página + grupos locales)</td>
+    <td class="nota">Copy con link directo a la landing</td><td class="link"></td>
+  </tr><tr>
+    <td>06/08/2026</td><td>Jueves</td><td class="c">17:00</td>
+    <td>Instagram</td><td><b>Historia interactiva</b></td><td>Historia con sticker (encuesta / quiz / caja de preguntas) sobre el tema del día</td>
+    <td class="nota">Objetivo: respuestas para abrir conversación por DM</td><td class="link"></td>
+  </tr><tr>
+    <td>06/08/2026</td><td>Jueves</td><td class="c">19:00</td>
+    <td>WhatsApp</td><td><b>Difusión + estados</b></td><td>Mensaje del día a la base + estados del equipo con la pieza</td>
+    <td class="nota">Usar generador del Centro IA (Splash Admin)</td><td class="link"></td>
+  </tr><tr>
+    <td>06/08/2026</td><td>Jueves</td><td class="c">20:30</td>
+    <td>Instagram</td><td><b>Historia CTA</b></td><td>Historia de cierre con CTA directo a la landing</td>
+    <td class="nota">Link sticker a /splash</td><td class="link"></td>
+  </tr><tr class="day"><td colspan="8">VIERNES 07/08/2026 — FASE VOLUMEN</td></tr><tr>
+    <td>07/08/2026</td><td>Viernes</td><td class="c">08:00</td>
+    <td>Instagram</td><td><b>Historia</b></td><td>Historia apertura del día — tema: Reel UGC testimonio</td>
+    <td class="nota">Buenos días + teaser de la pieza del día</td><td class="link"></td>
+  </tr><tr>
+    <td>07/08/2026</td><td>Viernes</td><td class="c">12:00</td>
+    <td>Instagram</td><td><b>Reel</b></td><td>Reel UGC testimonio: comprador contando por qué va</td>
+    <td class="nota">Gancho: "Hace rato no hacía algo diferente con mis amigos"</td><td class="link"></td>
+  </tr><tr>
+    <td>07/08/2026</td><td>Viernes</td><td class="c">12:30</td>
+    <td>TikTok</td><td><b>Video</b></td><td>Cruce de la pieza del día a TikTok (adaptar gancho a tendencia)</td>
+    <td class="nota">Mismo material, texto nativo TikTok</td><td class="link"></td>
+  </tr><tr>
+    <td>07/08/2026</td><td>Viernes</td><td class="c">13:00</td>
+    <td>Facebook</td><td><b>Post</b></td><td>Replicar pieza del día en Facebook (página + grupos locales)</td>
+    <td class="nota">Copy con link directo a la landing</td><td class="link"></td>
+  </tr><tr>
+    <td>07/08/2026</td><td>Viernes</td><td class="c">17:00</td>
+    <td>Instagram</td><td><b>Historia interactiva</b></td><td>Historia con sticker (encuesta / quiz / caja de preguntas) sobre el tema del día</td>
+    <td class="nota">Objetivo: respuestas para abrir conversación por DM</td><td class="link"></td>
+  </tr><tr>
+    <td>07/08/2026</td><td>Viernes</td><td class="c">19:00</td>
+    <td>WhatsApp</td><td><b>Difusión + estados</b></td><td>Mensaje del día a la base + estados del equipo con la pieza</td>
+    <td class="nota">Usar generador del Centro IA (Splash Admin)</td><td class="link"></td>
+  </tr><tr>
+    <td>07/08/2026</td><td>Viernes</td><td class="c">20:30</td>
+    <td>Instagram</td><td><b>Historia CTA</b></td><td>Historia de cierre con CTA directo a la landing</td>
+    <td class="nota">Link sticker a /splash</td><td class="link"></td>
+  </tr><tr>
+    <td>07/08/2026</td><td>Viernes</td><td class="c">16:00</td>
+    <td>WhatsApp / Instagram</td><td><b>Activación</b></td><td>Activación "parche completo": empujar compra en grupo (3+ amigos) con los compradores actuales</td>
+    <td class="nota">Pedir a cada comprador 1 historia etiquetando</td><td class="link"></td>
+  </tr><tr class="day"><td colspan="8">SÁBADO 08/08/2026 — FASE VOLUMEN</td></tr><tr>
+    <td>08/08/2026</td><td>Sábado</td><td class="c">08:00</td>
+    <td>Instagram</td><td><b>Historia</b></td><td>Historia apertura del día — tema: Reel POV pista jabonosa (demo/referencia + reacción)</td>
+    <td class="nota">Buenos días + teaser de la pieza del día</td><td class="link"></td>
+  </tr><tr>
+    <td>08/08/2026</td><td>Sábado</td><td class="c">12:00</td>
+    <td>Instagram</td><td><b>Reel</b></td><td>Reel POV pista jabonosa (demo/referencia + reacción)</td>
+    <td class="nota">Gancho: POV: le dijiste "hágale" al parche del 22</td><td class="link"></td>
+  </tr><tr>
+    <td>08/08/2026</td><td>Sábado</td><td class="c">12:30</td>
+    <td>TikTok</td><td><b>Video</b></td><td>Cruce de la pieza del día a TikTok (adaptar gancho a tendencia)</td>
+    <td class="nota">Mismo material, texto nativo TikTok</td><td class="link"></td>
+  </tr><tr>
+    <td>08/08/2026</td><td>Sábado</td><td class="c">13:00</td>
+    <td>Facebook</td><td><b>Post</b></td><td>Replicar pieza del día en Facebook (página + grupos locales)</td>
+    <td class="nota">Copy con link directo a la landing</td><td class="link"></td>
+  </tr><tr>
+    <td>08/08/2026</td><td>Sábado</td><td class="c">17:00</td>
+    <td>Instagram</td><td><b>Historia interactiva</b></td><td>Historia con sticker (encuesta / quiz / caja de preguntas) sobre el tema del día</td>
+    <td class="nota">Objetivo: respuestas para abrir conversación por DM</td><td class="link"></td>
+  </tr><tr>
+    <td>08/08/2026</td><td>Sábado</td><td class="c">19:00</td>
+    <td>WhatsApp</td><td><b>Difusión + estados</b></td><td>Mensaje del día a la base + estados del equipo con la pieza</td>
+    <td class="nota">Usar generador del Centro IA (Splash Admin)</td><td class="link"></td>
+  </tr><tr>
+    <td>08/08/2026</td><td>Sábado</td><td class="c">20:30</td>
+    <td>Instagram</td><td><b>Historia CTA</b></td><td>Historia de cierre con CTA directo a la landing</td>
+    <td class="nota">Link sticker a /splash</td><td class="link"></td>
+  </tr><tr class="day"><td colspan="8">DOMINGO 09/08/2026 — FASE VOLUMEN</td></tr><tr>
+    <td>09/08/2026</td><td>Domingo</td><td class="c">08:00</td>
+    <td>Instagram</td><td><b>Historia</b></td><td>Historia apertura del día — tema: Reel mashup entreno + fiesta</td>
+    <td class="nota">Buenos días + teaser de la pieza del día</td><td class="link"></td>
+  </tr><tr>
+    <td>09/08/2026</td><td>Domingo</td><td class="c">12:00</td>
+    <td>Instagram</td><td><b>Reel</b></td><td>Reel mashup entreno + fiesta</td>
+    <td class="nota">Gancho: No es un entrenamiento. Es un parche.</td><td class="link"></td>
+  </tr><tr>
+    <td>09/08/2026</td><td>Domingo</td><td class="c">12:30</td>
+    <td>TikTok</td><td><b>Video</b></td><td>Cruce de la pieza del día a TikTok (adaptar gancho a tendencia)</td>
+    <td class="nota">Mismo material, texto nativo TikTok</td><td class="link"></td>
+  </tr><tr>
+    <td>09/08/2026</td><td>Domingo</td><td class="c">13:00</td>
+    <td>Facebook</td><td><b>Post</b></td><td>Replicar pieza del día en Facebook (página + grupos locales)</td>
+    <td class="nota">Copy con link directo a la landing</td><td class="link"></td>
+  </tr><tr>
+    <td>09/08/2026</td><td>Domingo</td><td class="c">17:00</td>
+    <td>Instagram</td><td><b>Historia interactiva</b></td><td>Historia con sticker (encuesta / quiz / caja de preguntas) sobre el tema del día</td>
+    <td class="nota">Objetivo: respuestas para abrir conversación por DM</td><td class="link"></td>
+  </tr><tr>
+    <td>09/08/2026</td><td>Domingo</td><td class="c">19:00</td>
+    <td>WhatsApp</td><td><b>Difusión + estados</b></td><td>Mensaje del día a la base + estados del equipo con la pieza</td>
+    <td class="nota">Usar generador del Centro IA (Splash Admin)</td><td class="link"></td>
+  </tr><tr>
+    <td>09/08/2026</td><td>Domingo</td><td class="c">20:30</td>
+    <td>Instagram</td><td><b>Historia CTA</b></td><td>Historia de cierre con CTA directo a la landing</td>
+    <td class="nota">Link sticker a /splash</td><td class="link"></td>
+  </tr><tr>
+    <td>09/08/2026</td><td>Domingo</td><td class="c">21:00</td>
+    <td>Interno</td><td><b>Retro</b></td><td>Retro semanal en Splash Admin: qué canal vendió, mejor pieza, plan de la semana</td>
+    <td class="nota">Registrar aprendizajes en Notas del día</td><td class="link"></td>
+  </tr><tr class="day"><td colspan="8">LUNES 10/08/2026 — FASE VOLUMEN</td></tr><tr>
+    <td>10/08/2026</td><td>Lunes</td><td class="c">08:00</td>
+    <td>Instagram</td><td><b>Historia</b></td><td>Historia apertura del día — tema: Reel música</td>
+    <td class="nota">Buenos días + teaser de la pieza del día + aviso "el precio sube el 12"</td><td class="link"></td>
+  </tr><tr>
+    <td>10/08/2026</td><td>Lunes</td><td class="c">12:00</td>
+    <td>Instagram</td><td><b>Reel</b></td><td>Reel música: DJ en vivo sneak peek / playlist del evento</td>
+    <td class="nota">Gancho: El soundtrack del parche 🎧</td><td class="link"></td>
+  </tr><tr>
+    <td>10/08/2026</td><td>Lunes</td><td class="c">12:30</td>
+    <td>TikTok</td><td><b>Video</b></td><td>Cruce de la pieza del día a TikTok (adaptar gancho a tendencia)</td>
+    <td class="nota">Mismo material, texto nativo TikTok</td><td class="link"></td>
+  </tr><tr>
+    <td>10/08/2026</td><td>Lunes</td><td class="c">13:00</td>
+    <td>Facebook</td><td><b>Post</b></td><td>Replicar pieza del día en Facebook (página + grupos locales)</td>
+    <td class="nota">Copy con link directo a la landing</td><td class="link"></td>
+  </tr><tr>
+    <td>10/08/2026</td><td>Lunes</td><td class="c">17:00</td>
+    <td>Instagram</td><td><b>Historia interactiva</b></td><td>Historia con sticker (encuesta / quiz / caja de preguntas) sobre el tema del día</td>
+    <td class="nota">Objetivo: respuestas para abrir conversación por DM</td><td class="link"></td>
+  </tr><tr>
+    <td>10/08/2026</td><td>Lunes</td><td class="c">19:00</td>
+    <td>WhatsApp</td><td><b>Difusión + estados</b></td><td>Mensaje del día a la base + estados del equipo con la pieza</td>
+    <td class="nota">Usar generador del Centro IA (Splash Admin)</td><td class="link"></td>
+  </tr><tr>
+    <td>10/08/2026</td><td>Lunes</td><td class="c">20:30</td>
+    <td>Instagram</td><td><b>Historia CTA</b></td><td>Historia de cierre con CTA directo a la landing + "el precio sube el 12"</td>
+    <td class="nota">Link sticker a /splash</td><td class="link"></td>
+  </tr><tr>
+    <td>10/08/2026</td><td>Lunes</td><td class="c">10:00</td>
+    <td>Email</td><td><b>Email a la base</b></td><td>Email semanal: prueba social + agenda del evento</td>
+    <td class="nota">Plantilla en Salvaje/emails/ — personalizar {{nombre}}</td><td class="link"></td>
+  </tr><tr class="day"><td colspan="8">MARTES 11/08/2026 — FASE VOLUMEN</td></tr><tr>
+    <td>11/08/2026</td><td>Martes</td><td class="c">08:00</td>
+    <td>Instagram</td><td><b>Historia</b></td><td>Historia apertura del día — tema: Reel recap semana 1 + aviso</td>
+    <td class="nota">Buenos días + teaser de la pieza del día + aviso "el precio sube el 12"</td><td class="link"></td>
+  </tr><tr>
+    <td>11/08/2026</td><td>Martes</td><td class="c">12:00</td>
+    <td>Instagram</td><td><b>Reel</b></td><td>Reel recap semana 1 + aviso: mañana sube el precio</td>
+    <td class="nota">Gancho: ÚLTIMO DÍA de Salvaje Pass a $69.900</td><td class="link"></td>
+  </tr><tr>
+    <td>11/08/2026</td><td>Martes</td><td class="c">12:30</td>
+    <td>TikTok</td><td><b>Video</b></td><td>Cruce de la pieza del día a TikTok (adaptar gancho a tendencia)</td>
+    <td class="nota">Mismo material, texto nativo TikTok</td><td class="link"></td>
+  </tr><tr>
+    <td>11/08/2026</td><td>Martes</td><td class="c">13:00</td>
+    <td>Facebook</td><td><b>Post</b></td><td>Replicar pieza del día en Facebook (página + grupos locales)</td>
+    <td class="nota">Copy con link directo a la landing</td><td class="link"></td>
+  </tr><tr>
+    <td>11/08/2026</td><td>Martes</td><td class="c">17:00</td>
+    <td>Instagram</td><td><b>Historia interactiva</b></td><td>Historia con sticker (encuesta / quiz / caja de preguntas) sobre el tema del día</td>
+    <td class="nota">Objetivo: respuestas para abrir conversación por DM</td><td class="link"></td>
+  </tr><tr>
+    <td>11/08/2026</td><td>Martes</td><td class="c">19:00</td>
+    <td>WhatsApp</td><td><b>Difusión + estados</b></td><td>Mensaje del día a la base + estados del equipo con la pieza</td>
+    <td class="nota">Usar generador del Centro IA (Splash Admin)</td><td class="link"></td>
+  </tr><tr>
+    <td>11/08/2026</td><td>Martes</td><td class="c">20:30</td>
+    <td>Instagram</td><td><b>Historia CTA</b></td><td>Historia de cierre con CTA directo a la landing + "el precio sube el 12"</td>
+    <td class="nota">Link sticker a /splash</td><td class="link"></td>
+  </tr><tr>
+    <td>11/08/2026</td><td>Martes</td><td class="c">21:00</td>
+    <td>Instagram</td><td><b>Historia countdown</b></td><td>Historia "ÚLTIMAS HORAS de Salvaje Pass" (countdown a medianoche)</td>
+    <td class="nota">El 12 a las 00:00 sube a $84.900</td><td class="link"></td>
+  </tr><tr class="day"><td colspan="8">MIÉRCOLES 12/08/2026 — FASE URGENCIA · LAST WAVE</td></tr><tr>
+    <td>12/08/2026</td><td>Miércoles</td><td class="c">08:00</td>
+    <td>Instagram</td><td><b>Historia</b></td><td>Historia apertura del día — tema: Reel LAST WAVE</td>
+    <td class="nota">Buenos días + teaser de la pieza del día + urgencia Last Wave ($84.900, últimas entradas)</td><td class="link"></td>
+  </tr><tr>
+    <td>12/08/2026</td><td>Miércoles</td><td class="c">12:00</td>
+    <td>Instagram</td><td><b>Reel</b></td><td>Reel LAST WAVE: subió el precio, última etapa</td>
+    <td class="nota">Gancho: Llegó la última ola 🌊 $84.900 — no hay más etapas</td><td class="link"></td>
+  </tr><tr>
+    <td>12/08/2026</td><td>Miércoles</td><td class="c">12:30</td>
+    <td>TikTok</td><td><b>Video</b></td><td>Cruce de la pieza del día a TikTok (adaptar gancho a tendencia)</td>
+    <td class="nota">Mismo material, texto nativo TikTok</td><td class="link"></td>
+  </tr><tr>
+    <td>12/08/2026</td><td>Miércoles</td><td class="c">13:00</td>
+    <td>Facebook</td><td><b>Post</b></td><td>Replicar pieza del día en Facebook (página + grupos locales)</td>
+    <td class="nota">Copy con link directo a la landing</td><td class="link"></td>
+  </tr><tr>
+    <td>12/08/2026</td><td>Miércoles</td><td class="c">17:00</td>
+    <td>Instagram</td><td><b>Historia interactiva</b></td><td>Historia con sticker (encuesta / quiz / caja de preguntas) sobre el tema del día</td>
+    <td class="nota">Objetivo: respuestas para abrir conversación por DM</td><td class="link"></td>
+  </tr><tr>
+    <td>12/08/2026</td><td>Miércoles</td><td class="c">19:00</td>
+    <td>WhatsApp</td><td><b>Difusión + estados</b></td><td>Mensaje del día a la base + estados del equipo con la pieza</td>
+    <td class="nota">Usar generador del Centro IA (Splash Admin)</td><td class="link"></td>
+  </tr><tr>
+    <td>12/08/2026</td><td>Miércoles</td><td class="c">20:30</td>
+    <td>Instagram</td><td><b>Historia CTA</b></td><td>Historia de cierre con CTA directo a la landing + countdown Last Wave</td>
+    <td class="nota">Link sticker a /splash</td><td class="link"></td>
+  </tr><tr>
+    <td>12/08/2026</td><td>Miércoles</td><td class="c">16:00</td>
+    <td>Instagram / TikTok</td><td><b>Colab influencer</b></td><td>Publicación del influencer aliado (2 historias + 1 reel) — coordinar entrega de material</td>
+    <td class="nota">Entrada de cortesía a cambio de contenido</td><td class="link"></td>
+  </tr><tr>
+    <td>12/08/2026</td><td>Miércoles</td><td class="c">08:30</td>
+    <td>Todos</td><td><b>Anuncio</b></td><td>Anuncio oficial LAST WAVE en todos los canales (subió el precio)</td>
+    <td class="nota">Actualizar pauta con nuevo precio</td><td class="link"></td>
+  </tr><tr class="day"><td colspan="8">JUEVES 13/08/2026 — FASE URGENCIA · LAST WAVE</td></tr><tr>
+    <td>13/08/2026</td><td>Jueves</td><td class="c">08:00</td>
+    <td>Instagram</td><td><b>Historia</b></td><td>Historia apertura del día — tema: Reel colab influencer (takeover del perfil)</td>
+    <td class="nota">Buenos días + teaser de la pieza del día + urgencia Last Wave ($84.900, últimas entradas)</td><td class="link"></td>
+  </tr><tr>
+    <td>13/08/2026</td><td>Jueves</td><td class="c">12:00</td>
+    <td>Instagram</td><td><b>Reel</b></td><td>Reel colab influencer (takeover del perfil)</td>
+    <td class="nota">Gancho: Se nos une [influencer] al parche</td><td class="link"></td>
+  </tr><tr>
+    <td>13/08/2026</td><td>Jueves</td><td class="c">12:30</td>
+    <td>TikTok</td><td><b>Video</b></td><td>Cruce de la pieza del día a TikTok (adaptar gancho a tendencia)</td>
+    <td class="nota">Mismo material, texto nativo TikTok</td><td class="link"></td>
+  </tr><tr>
+    <td>13/08/2026</td><td>Jueves</td><td class="c">13:00</td>
+    <td>Facebook</td><td><b>Post</b></td><td>Replicar pieza del día en Facebook (página + grupos locales)</td>
+    <td class="nota">Copy con link directo a la landing</td><td class="link"></td>
+  </tr><tr>
+    <td>13/08/2026</td><td>Jueves</td><td class="c">17:00</td>
+    <td>Instagram</td><td><b>Historia interactiva</b></td><td>Historia con sticker (encuesta / quiz / caja de preguntas) sobre el tema del día</td>
+    <td class="nota">Objetivo: respuestas para abrir conversación por DM</td><td class="link"></td>
+  </tr><tr>
+    <td>13/08/2026</td><td>Jueves</td><td class="c">19:00</td>
+    <td>WhatsApp</td><td><b>Difusión + estados</b></td><td>Mensaje del día a la base + estados del equipo con la pieza</td>
+    <td class="nota">Usar generador del Centro IA (Splash Admin)</td><td class="link"></td>
+  </tr><tr>
+    <td>13/08/2026</td><td>Jueves</td><td class="c">20:30</td>
+    <td>Instagram</td><td><b>Historia CTA</b></td><td>Historia de cierre con CTA directo a la landing + countdown Last Wave</td>
+    <td class="nota">Link sticker a /splash</td><td class="link"></td>
+  </tr><tr class="day"><td colspan="8">VIERNES 14/08/2026 — FASE URGENCIA · LAST WAVE</td></tr><tr>
+    <td>14/08/2026</td><td>Viernes</td><td class="c">08:00</td>
+    <td>Instagram</td><td><b>Historia</b></td><td>Historia apertura del día — tema: Reel comida &amp; premios</td>
+    <td class="nota">Buenos días + teaser de la pieza del día + urgencia Last Wave ($84.900, últimas entradas)</td><td class="link"></td>
+  </tr><tr>
+    <td>14/08/2026</td><td>Viernes</td><td class="c">12:00</td>
+    <td>Instagram</td><td><b>Reel</b></td><td>Reel comida &amp; premios: qué te vas a comer / qué te puedes ganar</td>
+    <td class="nota">Gancho: Se entrena, se come, se gana 🏆</td><td class="link"></td>
+  </tr><tr>
+    <td>14/08/2026</td><td>Viernes</td><td class="c">12:30</td>
+    <td>TikTok</td><td><b>Video</b></td><td>Cruce de la pieza del día a TikTok (adaptar gancho a tendencia)</td>
+    <td class="nota">Mismo material, texto nativo TikTok</td><td class="link"></td>
+  </tr><tr>
+    <td>14/08/2026</td><td>Viernes</td><td class="c">13:00</td>
+    <td>Facebook</td><td><b>Post</b></td><td>Replicar pieza del día en Facebook (página + grupos locales)</td>
+    <td class="nota">Copy con link directo a la landing</td><td class="link"></td>
+  </tr><tr>
+    <td>14/08/2026</td><td>Viernes</td><td class="c">17:00</td>
+    <td>Instagram</td><td><b>Historia interactiva</b></td><td>Historia con sticker (encuesta / quiz / caja de preguntas) sobre el tema del día</td>
+    <td class="nota">Objetivo: respuestas para abrir conversación por DM</td><td class="link"></td>
+  </tr><tr>
+    <td>14/08/2026</td><td>Viernes</td><td class="c">19:00</td>
+    <td>WhatsApp</td><td><b>Difusión + estados</b></td><td>Mensaje del día a la base + estados del equipo con la pieza</td>
+    <td class="nota">Usar generador del Centro IA (Splash Admin)</td><td class="link"></td>
+  </tr><tr>
+    <td>14/08/2026</td><td>Viernes</td><td class="c">20:30</td>
+    <td>Instagram</td><td><b>Historia CTA</b></td><td>Historia de cierre con CTA directo a la landing + countdown Last Wave</td>
+    <td class="nota">Link sticker a /splash</td><td class="link"></td>
+  </tr><tr>
+    <td>14/08/2026</td><td>Viernes</td><td class="c">16:00</td>
+    <td>WhatsApp / Instagram</td><td><b>Activación</b></td><td>Activación "parche completo": empujar compra en grupo (3+ amigos) con los compradores actuales</td>
+    <td class="nota">Pedir a cada comprador 1 historia etiquetando</td><td class="link"></td>
+  </tr><tr class="day"><td colspan="8">SÁBADO 15/08/2026 — FASE URGENCIA · LAST WAVE</td></tr><tr>
+    <td>15/08/2026</td><td>Sábado</td><td class="c">08:00</td>
+    <td>Instagram</td><td><b>Historia</b></td><td>Historia apertura del día — tema: Reel "arma tu parche"</td>
+    <td class="nota">Buenos días + teaser de la pieza del día + urgencia Last Wave ($84.900, últimas entradas)</td><td class="link"></td>
+  </tr><tr>
+    <td>15/08/2026</td><td>Sábado</td><td class="c">12:00</td>
+    <td>Instagram</td><td><b>Reel</b></td><td>Reel "arma tu parche": grupos de amigos que ya van</td>
+    <td class="nota">Gancho: Etiqueta a los 3 que no te pueden fallar</td><td class="link"></td>
+  </tr><tr>
+    <td>15/08/2026</td><td>Sábado</td><td class="c">12:30</td>
+    <td>TikTok</td><td><b>Video</b></td><td>Cruce de la pieza del día a TikTok (adaptar gancho a tendencia)</td>
+    <td class="nota">Mismo material, texto nativo TikTok</td><td class="link"></td>
+  </tr><tr>
+    <td>15/08/2026</td><td>Sábado</td><td class="c">13:00</td>
+    <td>Facebook</td><td><b>Post</b></td><td>Replicar pieza del día en Facebook (página + grupos locales)</td>
+    <td class="nota">Copy con link directo a la landing</td><td class="link"></td>
+  </tr><tr>
+    <td>15/08/2026</td><td>Sábado</td><td class="c">17:00</td>
+    <td>Instagram</td><td><b>Historia interactiva</b></td><td>Historia con sticker (encuesta / quiz / caja de preguntas) sobre el tema del día</td>
+    <td class="nota">Objetivo: respuestas para abrir conversación por DM</td><td class="link"></td>
+  </tr><tr>
+    <td>15/08/2026</td><td>Sábado</td><td class="c">19:00</td>
+    <td>WhatsApp</td><td><b>Difusión + estados</b></td><td>Mensaje del día a la base + estados del equipo con la pieza</td>
+    <td class="nota">Usar generador del Centro IA (Splash Admin)</td><td class="link"></td>
+  </tr><tr>
+    <td>15/08/2026</td><td>Sábado</td><td class="c">20:30</td>
+    <td>Instagram</td><td><b>Historia CTA</b></td><td>Historia de cierre con CTA directo a la landing + countdown Last Wave</td>
+    <td class="nota">Link sticker a /splash</td><td class="link"></td>
+  </tr><tr class="day"><td colspan="8">DOMINGO 16/08/2026 — FASE URGENCIA · LAST WAVE</td></tr><tr>
+    <td>16/08/2026</td><td>Domingo</td><td class="c">08:00</td>
+    <td>Instagram</td><td><b>Historia</b></td><td>Historia apertura del día — tema: Reel behind the scenes</td>
+    <td class="nota">Buenos días + teaser de la pieza del día + urgencia Last Wave ($84.900, últimas entradas)</td><td class="link"></td>
+  </tr><tr>
+    <td>16/08/2026</td><td>Domingo</td><td class="c">12:00</td>
+    <td>Instagram</td><td><b>Reel</b></td><td>Reel behind the scenes: montaje del evento</td>
+    <td class="nota">Gancho: Esto se está poniendo serio…</td><td class="link"></td>
+  </tr><tr>
+    <td>16/08/2026</td><td>Domingo</td><td class="c">12:30</td>
+    <td>TikTok</td><td><b>Video</b></td><td>Cruce de la pieza del día a TikTok (adaptar gancho a tendencia)</td>
+    <td class="nota">Mismo material, texto nativo TikTok</td><td class="link"></td>
+  </tr><tr>
+    <td>16/08/2026</td><td>Domingo</td><td class="c">13:00</td>
+    <td>Facebook</td><td><b>Post</b></td><td>Replicar pieza del día en Facebook (página + grupos locales)</td>
+    <td class="nota">Copy con link directo a la landing</td><td class="link"></td>
+  </tr><tr>
+    <td>16/08/2026</td><td>Domingo</td><td class="c">17:00</td>
+    <td>Instagram</td><td><b>Historia interactiva</b></td><td>Historia con sticker (encuesta / quiz / caja de preguntas) sobre el tema del día</td>
+    <td class="nota">Objetivo: respuestas para abrir conversación por DM</td><td class="link"></td>
+  </tr><tr>
+    <td>16/08/2026</td><td>Domingo</td><td class="c">19:00</td>
+    <td>WhatsApp</td><td><b>Difusión + estados</b></td><td>Mensaje del día a la base + estados del equipo con la pieza</td>
+    <td class="nota">Usar generador del Centro IA (Splash Admin)</td><td class="link"></td>
+  </tr><tr>
+    <td>16/08/2026</td><td>Domingo</td><td class="c">20:30</td>
+    <td>Instagram</td><td><b>Historia CTA</b></td><td>Historia de cierre con CTA directo a la landing + countdown Last Wave</td>
+    <td class="nota">Link sticker a /splash</td><td class="link"></td>
+  </tr><tr>
+    <td>16/08/2026</td><td>Domingo</td><td class="c">21:00</td>
+    <td>Interno</td><td><b>Retro</b></td><td>Retro semanal en Splash Admin: qué canal vendió, mejor pieza, plan de la semana</td>
+    <td class="nota">Registrar aprendizajes en Notas del día</td><td class="link"></td>
+  </tr><tr class="day"><td colspan="8">LUNES 17/08/2026 — FASE URGENCIA · LAST WAVE</td></tr><tr>
+    <td>17/08/2026</td><td>Lunes</td><td class="c">08:00</td>
+    <td>Instagram</td><td><b>Historia</b></td><td>Historia apertura del día — tema: Reel compilado testimonios compradores</td>
+    <td class="nota">Buenos días + teaser de la pieza del día + urgencia Last Wave ($84.900, últimas entradas)</td><td class="link"></td>
+  </tr><tr>
+    <td>17/08/2026</td><td>Lunes</td><td class="c">12:00</td>
+    <td>Instagram</td><td><b>Reel</b></td><td>Reel compilado testimonios compradores</td>
+    <td class="nota">Gancho: Ellos ya tienen su entrada. ¿Y tú?</td><td class="link"></td>
+  </tr><tr>
+    <td>17/08/2026</td><td>Lunes</td><td class="c">12:30</td>
+    <td>TikTok</td><td><b>Video</b></td><td>Cruce de la pieza del día a TikTok (adaptar gancho a tendencia)</td>
+    <td class="nota">Mismo material, texto nativo TikTok</td><td class="link"></td>
+  </tr><tr>
+    <td>17/08/2026</td><td>Lunes</td><td class="c">13:00</td>
+    <td>Facebook</td><td><b>Post</b></td><td>Replicar pieza del día en Facebook (página + grupos locales)</td>
+    <td class="nota">Copy con link directo a la landing</td><td class="link"></td>
+  </tr><tr>
+    <td>17/08/2026</td><td>Lunes</td><td class="c">17:00</td>
+    <td>Instagram</td><td><b>Historia interactiva</b></td><td>Historia con sticker (encuesta / quiz / caja de preguntas) sobre el tema del día</td>
+    <td class="nota">Objetivo: respuestas para abrir conversación por DM</td><td class="link"></td>
+  </tr><tr>
+    <td>17/08/2026</td><td>Lunes</td><td class="c">19:00</td>
+    <td>WhatsApp</td><td><b>Difusión + estados</b></td><td>Mensaje del día a la base + estados del equipo con la pieza</td>
+    <td class="nota">Usar generador del Centro IA (Splash Admin)</td><td class="link"></td>
+  </tr><tr>
+    <td>17/08/2026</td><td>Lunes</td><td class="c">20:30</td>
+    <td>Instagram</td><td><b>Historia CTA</b></td><td>Historia de cierre con CTA directo a la landing + countdown Last Wave</td>
+    <td class="nota">Link sticker a /splash</td><td class="link"></td>
+  </tr><tr>
+    <td>17/08/2026</td><td>Lunes</td><td class="c">10:00</td>
+    <td>Email</td><td><b>Email a la base</b></td><td>Email semanal: prueba social + agenda del evento</td>
+    <td class="nota">Plantilla en Salvaje/emails/ — personalizar {{nombre}}</td><td class="link"></td>
+  </tr><tr class="day"><td colspan="8">MARTES 18/08/2026 — FASE URGENCIA · LAST WAVE</td></tr><tr>
+    <td>18/08/2026</td><td>Martes</td><td class="c">08:00</td>
+    <td>Instagram</td><td><b>Historia</b></td><td>Historia apertura del día — tema: Reel hype</td>
+    <td class="nota">Buenos días + teaser de la pieza del día + urgencia Last Wave ($84.900, últimas entradas)</td><td class="link"></td>
+  </tr><tr>
+    <td>18/08/2026</td><td>Martes</td><td class="c">12:00</td>
+    <td>Instagram</td><td><b>Reel</b></td><td>Reel hype: faltan 4 días</td>
+    <td class="nota">Gancho: 4 días para el parche del año</td><td class="link"></td>
+  </tr><tr>
+    <td>18/08/2026</td><td>Martes</td><td class="c">12:30</td>
+    <td>TikTok</td><td><b>Video</b></td><td>Cruce de la pieza del día a TikTok (adaptar gancho a tendencia)</td>
+    <td class="nota">Mismo material, texto nativo TikTok</td><td class="link"></td>
+  </tr><tr>
+    <td>18/08/2026</td><td>Martes</td><td class="c">13:00</td>
+    <td>Facebook</td><td><b>Post</b></td><td>Replicar pieza del día en Facebook (página + grupos locales)</td>
+    <td class="nota">Copy con link directo a la landing</td><td class="link"></td>
+  </tr><tr>
+    <td>18/08/2026</td><td>Martes</td><td class="c">17:00</td>
+    <td>Instagram</td><td><b>Historia interactiva</b></td><td>Historia con sticker (encuesta / quiz / caja de preguntas) sobre el tema del día</td>
+    <td class="nota">Objetivo: respuestas para abrir conversación por DM</td><td class="link"></td>
+  </tr><tr>
+    <td>18/08/2026</td><td>Martes</td><td class="c">19:00</td>
+    <td>WhatsApp</td><td><b>Difusión + estados</b></td><td>Mensaje del día a la base + estados del equipo con la pieza</td>
+    <td class="nota">Usar generador del Centro IA (Splash Admin)</td><td class="link"></td>
+  </tr><tr>
+    <td>18/08/2026</td><td>Martes</td><td class="c">20:30</td>
+    <td>Instagram</td><td><b>Historia CTA</b></td><td>Historia de cierre con CTA directo a la landing + countdown Last Wave</td>
+    <td class="nota">Link sticker a /splash</td><td class="link"></td>
+  </tr><tr class="day"><td colspan="8">MIÉRCOLES 19/08/2026 — FASE CIERRE</td></tr><tr>
+    <td>19/08/2026</td><td>Miércoles</td><td class="c">08:00</td>
+    <td>Instagram</td><td><b>Historia</b></td><td>Historia apertura del día — tema: Reel checklist</td>
+    <td class="nota">Buenos días + teaser de la pieza del día + urgencia Last Wave ($84.900, últimas entradas)</td><td class="link"></td>
+  </tr><tr>
+    <td>19/08/2026</td><td>Miércoles</td><td class="c">12:00</td>
+    <td>Instagram</td><td><b>Reel</b></td><td>Reel checklist: qué llevar a Salvaje Splash</td>
+    <td class="nota">Gancho: Ropa que se pueda mojar. Punto.</td><td class="link"></td>
+  </tr><tr>
+    <td>19/08/2026</td><td>Miércoles</td><td class="c">12:30</td>
+    <td>TikTok</td><td><b>Video</b></td><td>Cruce de la pieza del día a TikTok (adaptar gancho a tendencia)</td>
+    <td class="nota">Mismo material, texto nativo TikTok</td><td class="link"></td>
+  </tr><tr>
+    <td>19/08/2026</td><td>Miércoles</td><td class="c">13:00</td>
+    <td>Facebook</td><td><b>Post</b></td><td>Replicar pieza del día en Facebook (página + grupos locales)</td>
+    <td class="nota">Copy con link directo a la landing</td><td class="link"></td>
+  </tr><tr>
+    <td>19/08/2026</td><td>Miércoles</td><td class="c">17:00</td>
+    <td>Instagram</td><td><b>Historia interactiva</b></td><td>Historia con sticker (encuesta / quiz / caja de preguntas) sobre el tema del día</td>
+    <td class="nota">Objetivo: respuestas para abrir conversación por DM</td><td class="link"></td>
+  </tr><tr>
+    <td>19/08/2026</td><td>Miércoles</td><td class="c">19:00</td>
+    <td>WhatsApp</td><td><b>Difusión + estados</b></td><td>Mensaje del día a la base + estados del equipo con la pieza</td>
+    <td class="nota">Usar generador del Centro IA (Splash Admin)</td><td class="link"></td>
+  </tr><tr>
+    <td>19/08/2026</td><td>Miércoles</td><td class="c">20:30</td>
+    <td>Instagram</td><td><b>Historia CTA</b></td><td>Historia de cierre con CTA directo a la landing + countdown Last Wave</td>
+    <td class="nota">Link sticker a /splash</td><td class="link"></td>
+  </tr><tr>
+    <td>19/08/2026</td><td>Miércoles</td><td class="c">16:00</td>
+    <td>Instagram / TikTok</td><td><b>Colab influencer</b></td><td>Publicación del influencer aliado (2 historias + 1 reel) — coordinar entrega de material</td>
+    <td class="nota">Entrada de cortesía a cambio de contenido</td><td class="link"></td>
+  </tr><tr class="day"><td colspan="8">JUEVES 20/08/2026 — FASE CIERRE</td></tr><tr>
+    <td>20/08/2026</td><td>Jueves</td><td class="c">08:00</td>
+    <td>Instagram</td><td><b>Historia</b></td><td>Historia apertura del día — tema: Reel agenda del día</td>
+    <td class="nota">Buenos días + teaser de la pieza del día + urgencia Last Wave ($84.900, últimas entradas)</td><td class="link"></td>
+  </tr><tr>
+    <td>20/08/2026</td><td>Jueves</td><td class="c">12:00</td>
+    <td>Instagram</td><td><b>Reel</b></td><td>Reel agenda del día: hora por hora qué va a pasar</td>
+    <td class="nota">Gancho: Así se vive el 22 de agosto</td><td class="link"></td>
+  </tr><tr>
+    <td>20/08/2026</td><td>Jueves</td><td class="c">12:30</td>
+    <td>TikTok</td><td><b>Video</b></td><td>Cruce de la pieza del día a TikTok (adaptar gancho a tendencia)</td>
+    <td class="nota">Mismo material, texto nativo TikTok</td><td class="link"></td>
+  </tr><tr>
+    <td>20/08/2026</td><td>Jueves</td><td class="c">13:00</td>
+    <td>Facebook</td><td><b>Post</b></td><td>Replicar pieza del día en Facebook (página + grupos locales)</td>
+    <td class="nota">Copy con link directo a la landing</td><td class="link"></td>
+  </tr><tr>
+    <td>20/08/2026</td><td>Jueves</td><td class="c">17:00</td>
+    <td>Instagram</td><td><b>Historia interactiva</b></td><td>Historia con sticker (encuesta / quiz / caja de preguntas) sobre el tema del día</td>
+    <td class="nota">Objetivo: respuestas para abrir conversación por DM</td><td class="link"></td>
+  </tr><tr>
+    <td>20/08/2026</td><td>Jueves</td><td class="c">19:00</td>
+    <td>WhatsApp</td><td><b>Difusión + estados</b></td><td>Mensaje del día a la base + estados del equipo con la pieza</td>
+    <td class="nota">Usar generador del Centro IA (Splash Admin)</td><td class="link"></td>
+  </tr><tr>
+    <td>20/08/2026</td><td>Jueves</td><td class="c">20:30</td>
+    <td>Instagram</td><td><b>Historia CTA</b></td><td>Historia de cierre con CTA directo a la landing + countdown Last Wave</td>
+    <td class="nota">Link sticker a /splash</td><td class="link"></td>
+  </tr><tr class="day"><td colspan="8">VIERNES 21/08/2026 — FASE CIERRE</td></tr><tr>
+    <td>21/08/2026</td><td>Viernes</td><td class="c">08:00</td>
+    <td>Instagram</td><td><b>Historia</b></td><td>Historia apertura del día — tema: LIVE desde el montaje + reel última llamada</td>
+    <td class="nota">Buenos días + teaser de la pieza del día + urgencia Last Wave ($84.900, últimas entradas)</td><td class="link"></td>
+  </tr><tr>
+    <td>21/08/2026</td><td>Viernes</td><td class="c">12:00</td>
+    <td>Instagram</td><td><b>Reel</b></td><td>LIVE desde el montaje + reel última llamada</td>
+    <td class="nota">Gancho: MAÑANA. Últimas entradas.</td><td class="link"></td>
+  </tr><tr>
+    <td>21/08/2026</td><td>Viernes</td><td class="c">12:30</td>
+    <td>TikTok</td><td><b>Video</b></td><td>Cruce de la pieza del día a TikTok (adaptar gancho a tendencia)</td>
+    <td class="nota">Mismo material, texto nativo TikTok</td><td class="link"></td>
+  </tr><tr>
+    <td>21/08/2026</td><td>Viernes</td><td class="c">13:00</td>
+    <td>Facebook</td><td><b>Post</b></td><td>Replicar pieza del día en Facebook (página + grupos locales)</td>
+    <td class="nota">Copy con link directo a la landing</td><td class="link"></td>
+  </tr><tr>
+    <td>21/08/2026</td><td>Viernes</td><td class="c">17:00</td>
+    <td>Instagram</td><td><b>Historia interactiva</b></td><td>Historia con sticker (encuesta / quiz / caja de preguntas) sobre el tema del día</td>
+    <td class="nota">Objetivo: respuestas para abrir conversación por DM</td><td class="link"></td>
+  </tr><tr>
+    <td>21/08/2026</td><td>Viernes</td><td class="c">19:00</td>
+    <td>WhatsApp</td><td><b>Difusión + estados</b></td><td>Mensaje del día a la base + estados del equipo con la pieza</td>
+    <td class="nota">Usar generador del Centro IA (Splash Admin)</td><td class="link"></td>
+  </tr><tr>
+    <td>21/08/2026</td><td>Viernes</td><td class="c">20:30</td>
+    <td>Instagram</td><td><b>Historia CTA</b></td><td>Historia de cierre con CTA directo a la landing + countdown Last Wave</td>
+    <td class="nota">Link sticker a /splash</td><td class="link"></td>
+  </tr><tr>
+    <td>21/08/2026</td><td>Viernes</td><td class="c">16:00</td>
+    <td>WhatsApp / Instagram</td><td><b>Activación</b></td><td>Activación "parche completo": empujar compra en grupo (3+ amigos) con los compradores actuales</td>
+    <td class="nota">Pedir a cada comprador 1 historia etiquetando</td><td class="link"></td>
+  </tr><tr>
+    <td>21/08/2026</td><td>Viernes</td><td class="c">18:00</td>
+    <td>Instagram</td><td><b>Live</b></td><td>LIVE desde el montaje del evento (pista, tarima, inflable)</td>
+    <td class="nota">Última llamada de venta en vivo</td><td class="link"></td>
+  </tr><tr class="day"><td colspan="8">SÁBADO 22/08/2026 — DÍA DEL EVENTO</td></tr><tr>
+    <td>22/08/2026</td><td>Sábado</td><td class="c">07:00</td>
+    <td>Instagram</td><td><b>Historia</b></td><td>Historia "HOY ES SALVAJE SPLASH" con countdown a la hora de inicio</td>
+    <td class="nota">CTA: últimas entradas en puerta / link</td><td class="link"></td>
+  </tr><tr>
+    <td>22/08/2026</td><td>Sábado</td><td class="c">09:00</td>
+    <td>WhatsApp</td><td><b>Difusión + estados</b></td><td>Mensaje "HOY es el día" a toda la base + estados del equipo</td>
+    <td class="nota">Incluir dirección Salvaje Box Llanogrande</td><td class="link"></td>
+  </tr><tr>
+    <td>22/08/2026</td><td>Sábado</td><td class="c">10:00</td>
+    <td>Instagram / TikTok</td><td><b>Historias en vivo</b></td><td>Cobertura del evento: llegada, pista, DJ, premios (mín. 10 historias en el día)</td>
+    <td class="nota">Guardar todo el material para post-evento</td><td class="link"></td>
+  </tr><tr>
+    <td>22/08/2026</td><td>Sábado</td><td class="c">13:00</td>
+    <td>Instagram</td><td><b>Live</b></td><td>Live corto desde el evento (momento pico de la pista jabonosa)</td>
+    <td class="nota"></td><td class="link"></td>
+  </tr><tr>
+    <td>22/08/2026</td><td>Sábado</td><td class="c">20:00</td>
+    <td>Instagram / TikTok</td><td><b>Reel</b></td><td>DÍA DEL EVENTO: cobertura en vivo + reel resumen en la noche</td>
+    <td class="nota">Reel resumen del día — abre la venta de la próxima edición</td><td class="link"></td>
+  </tr>
+</table>
+</body></html>
