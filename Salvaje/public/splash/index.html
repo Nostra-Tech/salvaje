@@ -254,7 +254,7 @@
             <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-salvaje-danger opacity-75"></span>
             <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-salvaje-danger"></span>
           </span>
-          Etapa 2 activa
+          <span id="stagePillText">Etapa 2 activa</span>
         </p>
         <h2 class="mt-3 font-display text-4xl uppercase tracking-wide text-salvaje-brown sm:text-5xl">Compra ahora</h2>
         <p id="preventaIntro" class="mx-auto mt-3 max-w-2xl text-salvaje-gray">
@@ -313,12 +313,17 @@
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
             Próximamente
           </div>
-          <p class="mt-3 text-center text-[11px] font-semibold uppercase tracking-wide text-salvaje-gray">Del 1 al 11 de agosto</p>
+          <div class="mt-3 text-center">
+            <p id="stagePassTimer" class="hidden font-display text-2xl leading-none tracking-wide text-salvaje-danger">
+              <span id="spD">--</span>d : <span id="spH">--</span>h : <span id="spM">--</span>m : <span id="spS">--</span>s
+            </p>
+            <p id="notePass" class="mt-1 text-[11px] font-semibold uppercase tracking-wide text-salvaje-gray">Del 1 al 20 de agosto</p>
+          </div>
         </div>
 
-        <!-- Etapa 3 · Last Wave — BLOQUEADA -->
-        <div class="relative flex w-[82vw] max-w-[320px] shrink-0 snap-center flex-col rounded-3xl border-2 border-dashed border-salvaje-gray/30 bg-white/60 p-6 opacity-80 md:w-auto md:max-w-none md:shrink">
-          <span class="absolute -top-3.5 left-1/2 flex -translate-x-1/2 items-center gap-1.5 whitespace-nowrap rounded-full bg-salvaje-gray px-4 py-1 font-display text-xs uppercase tracking-[3px] text-white">
+        <!-- Etapa 3 · Last Wave — BLOQUEADA (se activa sola el 21 de agosto 00:00) -->
+        <div id="cardLast" class="relative flex w-[82vw] max-w-[320px] shrink-0 snap-center flex-col rounded-3xl border-2 border-dashed border-salvaje-gray/30 bg-white/60 p-6 opacity-80 md:w-auto md:max-w-none md:shrink">
+          <span id="badgeLast" class="absolute -top-3.5 left-1/2 flex -translate-x-1/2 items-center gap-1.5 whitespace-nowrap rounded-full bg-salvaje-gray px-4 py-1 font-display text-xs uppercase tracking-[3px] text-white">
             <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
             Bloqueada
           </span>
@@ -331,13 +336,13 @@
               <p class="text-xs font-semibold text-salvaje-gray">Etapa final</p>
             </div>
           </div>
-          <p class="mt-5 font-display text-5xl uppercase leading-none text-salvaje-gray">$84.900</p>
+          <p id="priceLast" class="mt-5 font-display text-5xl uppercase leading-none text-salvaje-gray">$84.900</p>
           <p class="text-sm text-salvaje-gray">por persona</p>
-          <div class="mt-6 flex items-center justify-center gap-2 rounded-xl border border-salvaje-gray/20 bg-salvaje-light-alt px-6 py-3.5 font-display text-lg uppercase tracking-widest text-salvaje-gray">
+          <div id="ctaLast" class="mt-6 flex items-center justify-center gap-2 rounded-xl border border-salvaje-gray/20 bg-salvaje-light-alt px-6 py-3.5 font-display text-lg uppercase tracking-widest text-salvaje-gray">
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
             Próximamente
           </div>
-          <p class="mt-3 text-center text-[11px] font-semibold uppercase tracking-wide text-salvaje-gray">Del 12 al 21 de agosto</p>
+          <p id="noteLast" class="mt-3 text-center text-[11px] font-semibold uppercase tracking-wide text-salvaje-gray">Del 21 al 22 de agosto</p>
         </div>
       </div>
 
@@ -731,6 +736,9 @@
       // Countdown de la etapa Splash Early: termina el 31 de julio a la
       // medianoche (hora Colombia). Al vencer muestra "Etapa finalizada".
       const STAGE_END = new Date('2026-08-01T00:00:00-05:00').getTime()
+      // Declarada AQUÍ ARRIBA (antes del primer stageTick) porque
+      // activateStage2() la lee — declararla después provoca TDZ.
+      const STAGE3_START = new Date('2026-08-21T00:00:00-05:00').getTime()
       const stD = document.getElementById('stD'), stH = document.getElementById('stH'),
             stM = document.getElementById('stM'), stS = document.getElementById('stS')
       const stageTimer = document.getElementById('stageTimer')
@@ -811,12 +819,117 @@
         if (intro) intro.innerHTML =
           'La etapa Splash Early se <span class="font-semibold text-salvaje-danger">agotó</span>. Estás en ' +
           '<span class="font-semibold text-salvaje-dark">Salvaje Pass</span>, disponible ' +
-          '<span class="font-semibold text-salvaje-dark">del 1 al 11 de agosto</span>. ' +
+          '<span class="font-semibold text-salvaje-dark">hasta el 20 de agosto</span>. ' +
           'Después, el precio <span class="font-semibold text-salvaje-dark">sube</span>.'
         const urgency = document.getElementById('urgencyLine')
         if (urgency) urgency.textContent = 'Asegura hoy tu entrada Salvaje Pass.'
+
+        // Contador de urgencia del Pass: visible mientras esta etapa esté activa.
+        const passTimer = document.getElementById('stagePassTimer')
+        if (passTimer && Date.now() < STAGE3_START) passTimer.classList.remove('hidden')
+        const notePass = document.getElementById('notePass')
+        if (notePass && Date.now() < STAGE3_START) {
+          notePass.textContent = 'Última oportunidad · termina el 20 de agosto'
+          notePass.classList.replace('text-salvaje-gray', 'text-salvaje-danger')
+        }
       }
       if (Date.now() >= STAGE_END) activateStage2()
+
+      // ── Etapa 3 · LAST WAVE (automática el 21 de agosto 00:00, hora Colombia) ──
+      // Contador de urgencia sobre la tarjeta Salvaje Pass; al llegar a cero la
+      // agota y deja Last Wave como única opción de compra.
+      // (STAGE3_START está declarada arriba, junto a STAGE_END.)
+      const spD = document.getElementById('spD'), spH = document.getElementById('spH'),
+            spM = document.getElementById('spM'), spS = document.getElementById('spS')
+      const passTimerEl = document.getElementById('stagePassTimer')
+      const notePassEl = document.getElementById('notePass')
+      let passInt = null
+      let stage3Done = false
+      function passTick() {
+        if (!passTimerEl) return
+        const diff = STAGE3_START - Date.now()
+        if (diff <= 0) {
+          passTimerEl.textContent = 'Etapa agotada'
+          if (notePassEl) notePassEl.textContent = 'Continúa Last Wave'
+          if (passInt) clearInterval(passInt)
+          activateStage3()
+          return
+        }
+        const s = Math.floor(diff / 1000)
+        spD.textContent = String(Math.floor(s / 86400))
+        spH.textContent = pad(Math.floor((s % 86400) / 3600))
+        spM.textContent = pad(Math.floor((s % 3600) / 60))
+        spS.textContent = pad(s % 60)
+      }
+      passTick()
+      if (STAGE3_START - Date.now() > 0) passInt = setInterval(passTick, 1000)
+
+      function activateStage3() {
+        if (stage3Done) return
+        stage3Done = true
+        const cardPass = document.getElementById('cardPass')
+        const cardLast = document.getElementById('cardLast')
+        if (!cardPass || !cardLast) return
+
+        // Salvaje Pass → agotada (gris, sin botón de compra, pierde el primer lugar en móvil)
+        cardPass.classList.remove('border-salvaje-orange', 'bg-white', 'shadow-[0_20px_60px_rgba(212,82,26,0.25)]', 'md:-my-2', 'order-first', 'md:order-none')
+        cardPass.classList.add('border-dashed', 'border-salvaje-gray/30', 'bg-white/60', 'opacity-80')
+        const badgePass = document.getElementById('badgePass')
+        if (badgePass) {
+          badgePass.textContent = 'Agotado'
+          badgePass.classList.remove('bg-salvaje-orange', 'shadow')
+          badgePass.classList.add('bg-salvaje-gray')
+        }
+        const pricePass = document.getElementById('pricePass')
+        if (pricePass) pricePass.classList.replace('text-salvaje-brown', 'text-salvaje-gray')
+        const passCta = cardPass.querySelector('.js-open-form')
+        if (passCta) passCta.outerHTML =
+          '<div class="mt-6 flex items-center justify-center gap-2 rounded-xl border border-salvaje-gray/20 bg-salvaje-light-alt px-6 py-3.5 font-display text-lg uppercase tracking-widest text-salvaje-gray">Agotado</div>'
+        if (passTimerEl) passTimerEl.classList.add('hidden')
+        if (notePassEl) {
+          notePassEl.textContent = 'Agotado'
+          notePassEl.classList.replace('text-salvaje-danger', 'text-salvaje-gray')
+        }
+
+        // Last Wave → ÚNICA etapa activa (naranja, con botón de compra, primera en móvil)
+        cardLast.classList.remove('border-dashed', 'border-salvaje-gray/30', 'bg-white/60', 'opacity-80')
+        cardLast.classList.add('border-salvaje-orange', 'bg-white', 'shadow-[0_20px_60px_rgba(212,82,26,0.25)]', 'md:-my-2', 'order-first', 'md:order-none')
+        const badgeLast = document.getElementById('badgeLast')
+        if (badgeLast) {
+          badgeLast.textContent = 'Disponible ahora'
+          badgeLast.classList.remove('bg-salvaje-gray')
+          badgeLast.classList.add('bg-salvaje-orange', 'shadow')
+        }
+        const priceLast = document.getElementById('priceLast')
+        if (priceLast) priceLast.classList.replace('text-salvaje-gray', 'text-salvaje-brown')
+        const ctaLast = document.getElementById('ctaLast')
+        if (ctaLast) ctaLast.outerHTML =
+          '<a href="#inscripcion" class="js-open-form group mt-6 flex items-center justify-center gap-2 rounded-xl bg-salvaje-orange px-6 py-3.5 font-display text-lg uppercase tracking-widest text-white shadow-[0_8px_24px_rgba(212,82,26,0.3)] transition-colors hover:bg-salvaje-fire">Comprar ahora</a>'
+        const newCtaLast = cardLast.querySelector('.js-open-form')
+        if (newCtaLast) newCtaLast.addEventListener('click', () => {
+          const btn = document.getElementById('openFormBtn')
+          const wrap = document.getElementById('formWrap')
+          if (btn && wrap) { btn.classList.add('hidden'); wrap.classList.remove('hidden'); wrap.classList.add('grid') }
+        })
+        const noteLast = document.getElementById('noteLast')
+        if (noteLast) {
+          noteLast.textContent = 'Última etapa · solo hasta el día del evento'
+          noteLast.classList.replace('text-salvaje-gray', 'text-salvaje-danger')
+        }
+
+        // Sección: badge y copy en modo etapa final
+        const pill = document.getElementById('stagePillText')
+        if (pill) pill.textContent = 'Etapa 3 activa'
+        const intro3 = document.getElementById('preventaIntro')
+        if (intro3) intro3.innerHTML =
+          'Salvaje Pass se <span class="font-semibold text-salvaje-danger">agotó</span>. Estás en ' +
+          '<span class="font-semibold text-salvaje-dark">Last Wave</span>, la ' +
+          '<span class="font-semibold text-salvaje-dark">última etapa</span> disponible antes del evento. ' +
+          'No hay más precios después de este.'
+        const urgency3 = document.getElementById('urgencyLine')
+        if (urgency3) urgency3.textContent = 'Last Wave es tu última oportunidad de entrar.'
+      }
+      if (Date.now() >= STAGE3_START) activateStage3()
     })()
   </script>
 
@@ -837,9 +950,15 @@
       // rige el link de Salvaje Pass. La URL se evalúa en el momento del clic
       // (no al cargar), así el cambio aplica aunque la página lleve abierta.
       const STAGE2_START_MS = new Date('2026-08-01T00:00:00-05:00').getTime()
+      const STAGE3_START_MS = new Date('2026-08-21T00:00:00-05:00').getTime()
       const PAY_URL_EARLY  = "https://checkout.bold.co/payment/LNK_J0JDWPE1PQ"  // Splash Early · $59.900
-      const PAY_URL_STAGE2 = "https://checkout.bold.co/payment/LNK_BRZ6H1YX3G" // Salvaje Pass · $69.900
-      function currentPayUrl() { return Date.now() >= STAGE2_START_MS ? PAY_URL_STAGE2 : PAY_URL_EARLY }
+      const PAY_URL_STAGE2 = "https://checkout.bold.co/payment/LNK_BRZ6H1YX3G" // Salvaje Pass · $69.900 (hasta 20 ago)
+      const PAY_URL_LAST   = "https://checkout.bold.co/payment/LNK_LUVKZPBDXA" // Last Wave · $84.900 (desde 21 ago)
+      function currentPayUrl() {
+        if (Date.now() >= STAGE3_START_MS) return PAY_URL_LAST
+        if (Date.now() >= STAGE2_START_MS) return PAY_URL_STAGE2
+        return PAY_URL_EARLY
+      }
       window.SPLASH_PAY_URL_FN = currentPayUrl
       window.SPLASH_PAYMENT_URL = currentPayUrl() // compatibilidad
       document.querySelectorAll('[data-pay]').forEach((el) => {
