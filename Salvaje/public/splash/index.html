@@ -284,7 +284,7 @@
         <div>
           <p class="font-display text-sm uppercase tracking-[5px] text-salvaje-orange">Cronograma</p>
           <h2 class="mt-2 font-body text-4xl font-medium leading-[1.02] tracking-tight text-salvaje-brown sm:text-6xl">
-            Así será<br />el día
+            Así será<br class="hidden sm:block" /> el día
           </h2>
         </div>
         <div class="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-full bg-white text-salvaje-brown shadow-[0_8px_24px_rgba(44,24,16,0.08)] sm:h-16 sm:w-16">
@@ -417,6 +417,7 @@
     (function () {
       var chips = Array.prototype.slice.call(document.querySelectorAll('.crono-chip'))
       if (!chips.length) return
+      var wrap = document.getElementById('cronoChips')
       function setActive(id) {
         chips.forEach(function (c) {
           var on = c.getAttribute('data-target') === id
@@ -427,7 +428,12 @@
           c.classList.toggle('bg-white', !on)
           c.classList.toggle('text-salvaje-dark', !on)
           c.classList.toggle('border-salvaje-brown/10', !on)
-          if (on && c.scrollIntoView) c.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' })
+          // Solo desplaza el chip HORIZONTALMENTE dentro de su fila: usar scrollIntoView aquí
+          // movía la página entera de vuelta a los chips y bloqueaba el scroll en móvil.
+          if (on && wrap) {
+            var left = c.getBoundingClientRect().left - wrap.getBoundingClientRect().left + wrap.scrollLeft - (wrap.clientWidth - c.offsetWidth) / 2
+            wrap.scrollTo({ left: Math.max(0, left), behavior: 'smooth' })
+          }
         })
       }
       setActive('crono-0830')
