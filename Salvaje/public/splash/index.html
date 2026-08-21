@@ -217,8 +217,8 @@
             Inscríbete aquí
             <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 16 16" fill="none"><path d="M8 3L13 8L8 13M13 8H3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
-          <a href="#programa" class="group flex items-center gap-2 rounded-full border border-white/25 bg-black/20 px-7 py-3 font-display text-sm uppercase tracking-widest text-salvaje-cream backdrop-blur-sm transition-colors hover:border-salvaje-gold/60 hover:text-salvaje-gold">
-            Ver qué incluye
+          <a href="#actividades" class="group flex items-center gap-2 rounded-full border border-white/25 bg-black/20 px-7 py-3 font-display text-sm uppercase tracking-widest text-salvaje-cream backdrop-blur-sm transition-colors hover:border-salvaje-gold/60 hover:text-salvaje-gold">
+            Ver el cronograma
             <svg class="h-4 w-4 transition-transform group-hover:translate-y-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
           </a>
         </div>
@@ -272,22 +272,6 @@
         Quiero ayudar · Inscríbete
         <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 16 16" fill="none"><path d="M8 3L13 8L8 13M13 8H3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
-    </div>
-  </section>
-
-  <!-- ================= CONTENIDO · QUÉ VAS A VIVIR (crema) ================= -->
-  <section id="programa" class="relative scroll-mt-4" style="background:#FAF6F0;">
-    <div class="pt-16 pb-8 sm:pt-20 sm:pb-10">
-      <div class="io mb-10 px-5 text-center sm:px-8">
-        <p class="font-display text-sm uppercase tracking-[5px] text-salvaje-orange">El plan</p>
-        <h2 class="mt-2 font-display text-4xl uppercase tracking-wide text-salvaje-brown sm:text-5xl">Qué vas a vivir</h2>
-        <p class="mt-2 font-body text-sm text-salvaje-gray">Toca cada experiencia para descubrirla</p>
-      </div>
-
-      <!-- Selector interactivo: paneles que se expanden al tocarlos (horizontal en todos los tamaños) -->
-      <div class="px-4 pb-8 sm:px-8">
-        <div id="expSelector" class="io mx-auto flex h-[360px] max-w-5xl flex-row gap-1.5 sm:gap-2 md:h-[420px]"></div>
-      </div>
     </div>
   </section>
 
@@ -800,96 +784,19 @@
     })()
   </script>
 
-  <!-- ============== "Qué vas a vivir" · selector interactivo de paneles ============== -->
-  <script>
-    (function () {
-      const wrap = document.getElementById('expSelector')
-      if (!wrap) return
-
-      const ICONS = {
-        music: '<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
-        dumbbell: '<path d="M14.4 14.4 9.6 9.6"/><path d="m21.5 21.5-1.4-1.4"/><path d="M3.9 3.9 2.5 2.5"/><path d="M6.404 12.768a3 3 0 1 1-4.243-4.243 3 3 0 0 1 4.243 4.243"/><path d="M17.596 11.232a3 3 0 1 1 4.243 4.243 3 3 0 0 1-4.243-4.243"/>',
-        droplets: '<path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"/>',
-        party: '<path d="M5.8 11.3 2 22l10.7-3.79"/><path d="M4 3h.01"/><path d="M22 8h.01"/><path d="M15 2h.01"/><path d="M22 20h.01"/><path d="m22 2-2.24.75a2.9 2.9 0 0 0-1.96 3.12c.1.86-.57 1.63-1.45 1.63h-.38c-.86 0-1.6.6-1.76 1.44L14 10"/><path d="m22 13-.82-.33c-.86-.34-1.82.2-1.98 1.11c-.11.7-.72 1.22-1.43 1.22H17"/><path d="m11 2 .33.82c.34.86-.2 1.82-1.11 1.98C9.52 4.9 9 5.52 9 6.23V7"/><path d="M11 13c1.93 1.93 2.83 4.17 2 5-.83.83-3.07-.07-5-2-1.93-1.93-2.83-4.17-2-5 .83-.83 3.07.07 5 2Z"/>',
-        food: '<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>',
-        trophy: '<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>',
-      }
-
-      const OPTIONS = [
-        { title: 'Música & DJ en vivo', desc: 'La fiesta suena todo el día', icon: 'music',
-          img: 'img/dj en vivo.jpg?v=2' },
-        { title: 'Entrenamiento Salvaje', desc: 'Suda y disfruta con la comunidad', icon: 'dumbbell',
-          img: 'img/entrenamiento.jpg?v=2' },
-        { title: 'Pista jabonosa', desc: 'Deslízate, mójate y ríete', icon: 'droplets',
-          img: 'img/pistajabonosa.jpg?v=2' },
-        { title: 'Comida & bebidas', desc: 'Recarga energía', icon: 'food',
-          img: 'img/COMIDA.jpg?v=2' },
-        { title: 'Premios y sorpresas', desc: 'Gánate lo mejor del día', icon: 'trophy',
-          img: 'img/premios.jpg?v=2' },
-      ]
-
-      let active = 0
-      const panels = OPTIONS.map((o, i) => {
-        const p = document.createElement('div')
-        p.className = 'exp-panel' + (i === 0 ? ' active' : '')
-        p.style.backgroundImage = "url('" + o.img + "')"
-        p.innerHTML =
-          '<div class="exp-shadow"></div>' +
-          '<div class="exp-label">' +
-            '<div class="exp-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + ICONS[o.icon] + '</svg></div>' +
-            '<div class="exp-info">' +
-              '<div class="main font-display text-xl uppercase tracking-wide leading-none">' + o.title + '</div>' +
-              '<div class="sub mt-0.5 text-sm text-white/80">' + o.desc + '</div>' +
-            '</div>' +
-          '</div>'
-        p.addEventListener('click', () => setActive(i, true))
-        wrap.appendChild(p)
-        return p
-      })
-
-      let pauseTimer = null
-      function setActive(i, byUser) {
-        if (i === active) return
-        panels[active].classList.remove('active')
-        active = i
-        panels[active].classList.add('active')
-        if (byUser) {
-          userPaused = true
-          clearTimeout(pauseTimer)
-          pauseTimer = setTimeout(() => { userPaused = false }, 7000)
-        }
-      }
-
-      // Entrada escalonada (como el original: fade + slide desde la izquierda).
-      panels.forEach((p, i) => setTimeout(() => p.classList.add('entered'), 180 * i))
-
-      // Rotación automática cada 3 s. Se pausa unos segundos si el usuario toca
-      // un panel y, SOLO en dispositivos con mouse real, mientras el cursor esté
-      // encima (en táctiles el hover "fantasma" congelaba la rotación).
-      let userPaused = false, hoverPaused = false
-      if (window.matchMedia('(hover: hover)').matches) {
-        wrap.addEventListener('mouseenter', () => { hoverPaused = true })
-        wrap.addEventListener('mouseleave', () => { hoverPaused = false })
-      }
-      setInterval(() => {
-        if (!userPaused && !hoverPaused && !document.hidden) setActive((active + 1) % panels.length, false)
-      }, 3000)
-    })()
-  </script>
-
   <!-- ============== Rutas por sección (/splash/<seccion>) ============== -->
   <script>
     (function () {
       // Slug de URL -> id de sección en la página (con alias amigables).
       var ROUTES = {
-        experiencias: 'programa', plan: 'programa', vivir: 'programa',
+        experiencias: 'actividades', plan: 'actividades', vivir: 'actividades',
         etapas: 'preventa', precios: 'preventa', preventa: 'preventa', 'compra': 'preventa',
         inscripcion: 'inscripcion', inscribete: 'inscripcion', registro: 'inscripcion', cupo: 'inscripcion',
         porcolombia: 'porcolombia', colombia: 'porcolombia', causa: 'porcolombia', donacion: 'porcolombia',
         actividades: 'actividades', cronograma: 'actividades', agenda: 'actividades', horario: 'actividades',
       }
       // id de sección -> slug canónico (para escribir la URL al navegar).
-      var CANONICAL = { programa: 'experiencias', preventa: 'etapas', inscripcion: 'inscripcion', porcolombia: 'porcolombia', actividades: 'actividades' }
+      var CANONICAL = { preventa: 'etapas', inscripcion: 'inscripcion', porcolombia: 'porcolombia', actividades: 'actividades' }
 
       var norm = function (s) {
         return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
