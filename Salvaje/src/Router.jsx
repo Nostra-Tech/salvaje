@@ -151,7 +151,8 @@ export function AppRouter() {
         <Route path="/superadmin/analytics" element={<ProtectedRoute><RoleGuard allowedRoles={['superadmin']}><SuperAdminAnalytics /></RoleGuard></ProtectedRoute>} />
         <Route path="/superadmin/polla-mundialista-salvaje" element={<ProtectedRoute><RoleGuard allowedRoles={['superadmin']}><PollaSalvaje /></RoleGuard></ProtectedRoute>} />
         <Route path="/superadmin/salvaje-mock" element={<ProtectedRoute><RoleGuard allowedRoles={['superadmin']}><SalvajeMock /></RoleGuard></ProtectedRoute>} />
-        <Route path="/superadmin/salvaje-splash" element={<ProtectedRoute><RoleGuard allowedRoles={['superadmin']}><SalvajeSplash /></RoleGuard></ProtectedRoute>} />
+        {/* Acceso también para 'admin': la cuenta de puerta (PIN) valida las boletas aquí. */}
+        <Route path="/superadmin/salvaje-splash" element={<ProtectedRoute><RoleGuard allowedRoles={['admin', 'superadmin']}><SalvajeSplash /></RoleGuard></ProtectedRoute>} />
         <Route path="/superadmin/splash-admin" element={<ProtectedRoute><RoleGuard allowedRoles={['superadmin']}><SplashAdmin /></RoleGuard></ProtectedRoute>} />
 
         <Route path="/setup" element={<Setup />} />

@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { useAuth } from '../hooks/useAuth'
 import { motion } from 'framer-motion'
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import toast from 'react-hot-toast'
@@ -33,6 +34,42 @@ export function Login() {
   // esa URL con su query string; si no, al inicio.
   const from = location.state?.from
   const afterLogin = from && from.pathname ? `${from.pathname}${from.search || ''}` : '/'
+
+  // ── Modo PUERTA (validación de boletas de Salvaje Splash) ──
+  // Si se llegó escaneando el QR de una entrada (?ticket= / ?gift=) sin sesión,
+  // en vez del login completo se pide solo el PIN del staff. Ese PIN es la
+  // contraseña de la cuenta de puerta (rol admin, sin privilegios de superadmin).
+  const DOOR_EMAIL = 'puerta@salvajesplash.co'
+  const isDoorScan = !!(from?.pathname?.includes('salvaje-splash') && /[?&](ticket|gift)=/.test(from?.search || ''))
+  const [useDoor, setUseDoor] = useState(isDoorScan)
+  const [pin, setPin] = useState('')
+
+  // Si YA hay sesión (p. ej. el navegador ya tenía al superadmin logueado),
+  // no mostrar el login: volver de inmediato a la URL escaneada.
+  const { user, initialized } = useAuth()
+  useEffect(() => {
+    if (initialized && user && from?.pathname) navigate(afterLogin, { replace: true })
+  }, [initialized, user]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleDoorSubmit = async (e) => {
+    e.preventDefault()
+    setError('')
+    const p = pin.trim()
+    if (p.length < 6) { setError('Ingresa el PIN de puerta'); return }
+    setLoading(true)
+    try {
+      await loginWithEmail(DOOR_EMAIL, p)
+      navigate(afterLogin, { replace: true })
+    } catch (err) {
+      const msg = err.code === 'auth/too-many-requests'
+        ? 'Demasiados intentos. Espera unos minutos.'
+        : 'PIN incorrecto. Pídelo al organizador.'
+      setError(msg)
+      toast.error(msg)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -70,6 +107,57 @@ export function Login() {
     } finally {
       setLoading(false)
     }
+  }
+
+  if (useDoor) {
+    return (
+      <div className="flex min-h-screen min-h-dvh w-full items-center justify-center bg-salvaje-cream p-4">
+        <div className="w-full max-w-sm rounded-salvaje bg-white p-8 text-center shadow-salvaje-lg">
+          <div className="flex justify-center"><Logo size={56} /></div>
+          <p className="mt-4 font-body text-[11px] font-semibold uppercase tracking-widest text-salvaje-gray">Salvaje Splash · Puerta</p>
+          <h1 className="mt-1 font-display text-3xl uppercase text-salvaje-dark">Validar boleta</h1>
+          <p className="mt-2 font-body text-sm text-salvaje-gray">
+            Ingresa el PIN del staff para abrir el validador de la entrada que escaneaste.
+            Solo se pide una vez por dispositivo.
+          </p>
+          <form onSubmit={handleDoorSubmit} className="mt-5 space-y-3">
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={pin}
+                onChange={(e) => setPin(e.target.value)}
+                placeholder="PIN de puerta"
+                autoFocus
+                autoCapitalize="characters"
+                autoComplete="off"
+                className="w-full rounded-xl border border-salvaje-cream bg-white px-4 py-3 text-center font-display text-2xl uppercase tracking-[6px] text-salvaje-dark placeholder:font-body placeholder:text-sm placeholder:normal-case placeholder:tracking-normal focus:outline-none focus:ring-2 focus:ring-salvaje-orange/30 focus:border-salvaje-orange"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-salvaje-gray hover:text-salvaje-dark transition-colors"
+                aria-label={showPassword ? 'Ocultar PIN' : 'Mostrar PIN'}
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+            {error && (
+              <p className="text-sm font-body bg-salvaje-danger/5 px-3 py-2 rounded-lg text-salvaje-danger">{error}</p>
+            )}
+            <Button type="submit" loading={loading} className="w-full" size="lg">
+              Validar boleta
+            </Button>
+          </form>
+          <button
+            type="button"
+            onClick={() => setUseDoor(false)}
+            className="mt-4 text-xs font-body text-salvaje-gray hover:underline"
+          >
+            Entrar con mi cuenta de administrador
+          </button>
+        </div>
+      </div>
+    )
   }
 
   return (
