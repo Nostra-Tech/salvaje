@@ -60,6 +60,7 @@ import { SuperAdminAnalytics } from './pages/superadmin/SuperAdminAnalytics'
 import { PollaSalvaje } from './pages/superadmin/PollaSalvaje'
 import { SalvajeMock } from './pages/superadmin/SalvajeMock'
 import { SalvajeSplash } from './pages/superadmin/SalvajeSplash'
+import { DoorScanner } from './pages/superadmin/DoorScanner'
 import { SplashAdmin } from './pages/superadmin/splash-admin/SplashAdmin'
 import { AdminPayrollHistory } from './pages/admin/AdminPayrollHistory'
 import { AdminVideos } from './pages/admin/AdminVideos'
@@ -153,6 +154,8 @@ export function AppRouter() {
         <Route path="/superadmin/salvaje-mock" element={<ProtectedRoute><RoleGuard allowedRoles={['superadmin']}><SalvajeMock /></RoleGuard></ProtectedRoute>} />
         {/* Acceso también para 'admin': la cuenta de puerta (PIN) valida las boletas aquí. */}
         <Route path="/superadmin/salvaje-splash" element={<ProtectedRoute><RoleGuard allowedRoles={['admin', 'superadmin']}><SalvajeSplash /></RoleGuard></ProtectedRoute>} />
+        {/* Escáner de puerta: una sola pantalla con cámara continua (login con PIN una vez por celular). */}
+        <Route path="/puerta" element={<ProtectedRoute><RoleGuard allowedRoles={['admin', 'superadmin']}><DoorScanner /></RoleGuard></ProtectedRoute>} />
         <Route path="/superadmin/splash-admin" element={<ProtectedRoute><RoleGuard allowedRoles={['superadmin']}><SplashAdmin /></RoleGuard></ProtectedRoute>} />
 
         <Route path="/setup" element={<Setup />} />

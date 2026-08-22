@@ -40,7 +40,10 @@ export function Login() {
   // en vez del login completo se pide solo el PIN del staff. Ese PIN es la
   // contraseña de la cuenta de puerta (rol admin, sin privilegios de superadmin).
   const DOOR_EMAIL = 'puerta@salvajesplash.co'
-  const isDoorScan = !!(from?.pathname?.includes('salvaje-splash') && /[?&](ticket|gift)=/.test(from?.search || ''))
+  const isDoorScan = !!(
+    from?.pathname === '/puerta' ||
+    (from?.pathname?.includes('salvaje-splash') && /[?&](ticket|gift)=/.test(from?.search || ''))
+  )
   const [useDoor, setUseDoor] = useState(isDoorScan)
   const [pin, setPin] = useState('')
 

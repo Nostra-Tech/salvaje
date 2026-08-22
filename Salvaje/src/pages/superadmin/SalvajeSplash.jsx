@@ -195,13 +195,21 @@ export function SalvajeSplash() {
               <p className="font-body text-sm text-salvaje-gray">Registros del formulario "Separa tu cupo" de la landing /splash.</p>
             </div>
           </div>
-          <button
-            onClick={() => downloadSplashExcel(rows)}
-            disabled={total === 0}
-            className="inline-flex items-center gap-2 rounded-xl bg-salvaje-success px-4 py-2.5 font-display uppercase tracking-widest text-sm text-white hover:opacity-90 active:scale-95 transition disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            <Download size={16} /> Descargar Excel
-          </button>
+          <div className="flex items-center gap-2 flex-wrap">
+            <a
+              href="/puerta"
+              className="inline-flex items-center gap-2 rounded-xl bg-salvaje-brown px-4 py-2.5 font-display uppercase tracking-widest text-sm text-white hover:opacity-90 active:scale-95 transition"
+            >
+              <QrCode size={16} /> Escáner de puerta
+            </a>
+            <button
+              onClick={() => downloadSplashExcel(rows)}
+              disabled={total === 0}
+              className="inline-flex items-center gap-2 rounded-xl bg-salvaje-success px-4 py-2.5 font-display uppercase tracking-widest text-sm text-white hover:opacity-90 active:scale-95 transition disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <Download size={16} /> Descargar Excel
+            </button>
+          </div>
         </motion.div>
 
         {/* Stats */}
