@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import toast from 'react-hot-toast'
@@ -27,6 +27,12 @@ export function Login() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const navigate = useNavigate()
+  const location = useLocation()
+  // Si llegó redirigido desde una ruta protegida (p. ej. al escanear el QR de
+  // una entrada: /superadmin/salvaje-splash?ticket=...), volver EXACTAMENTE a
+  // esa URL con su query string; si no, al inicio.
+  const from = location.state?.from
+  const afterLogin = from && from.pathname ? `${from.pathname}${from.search || ''}` : '/'
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -51,7 +57,7 @@ export function Login() {
     try {
       await loginWithEmail(finalEmail, finalPassword)
       // Let useAuth's onAuthStateChanged resolve the role and redirect.
-      navigate('/', { replace: true })
+      navigate(afterLogin, { replace: true })
     } catch (err) {
       const msg =
         err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found'

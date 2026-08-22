@@ -11,7 +11,7 @@ import {
 import { AdminShell } from '../../components/layout/AdminShell'
 import {
   subscribeMockInscriptions, setMockPaid, deleteMockInscription,
-  uploadMockComprobante, setMockComprobanteLink, setMockCheckedIn, redeemGiftClass,
+  uploadMockComprobante, setMockComprobanteLink, setMockCheckedIn, undoMockCheckedIn, redeemGiftClass,
   duplicateMockInscription, downloadSplashExcel,
 } from '../../services/mockStats'
 
@@ -73,11 +73,29 @@ export function SalvajeSplash() {
   const handleCheckIn = async (r) => {
     try {
       await setMockCheckedIn(r.id)
-      toast.success('Ingreso registrado')
-      setValidating(null)
+      toast.success('Ingreso registrado · boleta marcada como usada')
+      // El modal pasa a "Ingreso confirmado"; el registro se refresca solo vía onSnapshot.
+      setValidating((v) => (v ? { ...v, done: true } : v))
     } catch (e) {
       console.error(e)
-      toast.error('No se pudo registrar el ingreso')
+      const code = e?.message
+      if (code === 'ALREADY_CHECKED_IN') toast.error('Esta boleta YA fue usada: no es válida')
+      else if (code === 'NOT_PAID') toast.error('La boleta no tiene pago registrado')
+      else if (code === 'NOT_FOUND') toast.error('La boleta no existe')
+      else toast.error('No se pudo registrar el ingreso')
+    }
+  }
+
+  // Corrección de errores humanos: la boleta vuelve a quedar válida.
+  const handleUndoCheckIn = async (r) => {
+    if (!window.confirm(`¿Anular el ingreso de ${r.nombre || 'este inscrito'}? Su boleta volverá a ser válida para entrar.`)) return
+    try {
+      await undoMockCheckedIn(r.id)
+      toast.success('Ingreso anulado · la boleta vuelve a ser válida')
+      setValidating((v) => (v ? { ...v, done: false } : v))
+    } catch (e) {
+      console.error(e)
+      toast.error('No se pudo anular el ingreso')
     }
   }
 
@@ -108,6 +126,7 @@ export function SalvajeSplash() {
   const total = rows.length
   const pagados = rows.filter((r) => r.paid).length
   const autorizados = rows.filter((r) => r.contactoAutorizado).length
+  const ingresaron = rows.filter((r) => r.checkedIn).length
   const ciudades = new Set(rows.map((r) => (r.ciudad || '').trim().toLowerCase()).filter(Boolean)).size
 
   const mark = (id, v) => v ? setBusy((b) => ({ ...b, [id]: v })) : setBusy((b) => { const n = { ...b }; delete n[id]; return n })
@@ -186,9 +205,10 @@ export function SalvajeSplash() {
         </motion.div>
 
         {/* Stats */}
-        <motion.div variants={item} className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <motion.div variants={item} className="grid grid-cols-2 sm:grid-cols-5 gap-3">
           <StatCard icon={Users} label="Registrados" value={total} tint="text-salvaje-orange bg-salvaje-orange/10" />
           <StatCard icon={CheckCircle2} label="Pagados" value={pagados} tint="text-salvaje-success bg-salvaje-success/10" />
+          <StatCard icon={QrCode} label="Ingresaron" value={`${ingresaron}/${pagados}`} tint="text-salvaje-brown bg-salvaje-brown/10" />
           <StatCard icon={ShieldCheck} label="Contacto autorizado" value={autorizados} tint="text-salvaje-gold bg-salvaje-gold/10" />
           <StatCard icon={MapPin} label="Ciudades" value={ciudades} tint="text-salvaje-brown bg-salvaje-brown/10" />
         </motion.div>
@@ -221,7 +241,7 @@ export function SalvajeSplash() {
                           <span className="text-[10px] font-body font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-salvaje-success/15 text-salvaje-success">Verificado Bold</span>
                         )}
                         {r.checkedIn && (
-                          <span className="text-[10px] font-body font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-salvaje-brown/15 text-salvaje-brown">Ingresó</span>
+                          <span className="text-[10px] font-body font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-salvaje-brown text-white">Ingresó · boleta usada</span>
                         )}
                         {(r.giftClassesRedeemed || 0) > 0 && (
                           <span className="text-[10px] font-body font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-salvaje-gold/15 text-salvaje-gold">Regalo {Math.min(r.giftClassesRedeemed, GIFT_TOTAL)}/{GIFT_TOTAL}</span>
@@ -269,6 +289,16 @@ export function SalvajeSplash() {
                         className="inline-flex items-center gap-1.5 rounded-lg bg-salvaje-gold/10 px-3 py-1.5 text-xs font-body font-semibold text-salvaje-gold hover:bg-salvaje-gold/20 transition"
                       >
                         <Ticket size={14} /> Entrada
+                      </button>
+                    )}
+
+                    {/* Ingreso manual (si el QR no se puede escanear): abre el mismo validador */}
+                    {r.paid && !r.checkedIn && (
+                      <button
+                        onClick={() => setValidating({ row: r, mode: 'ticket' })}
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-salvaje-brown/10 px-3 py-1.5 text-xs font-body font-semibold text-salvaje-brown hover:bg-salvaje-brown/20 transition"
+                      >
+                        <QrCode size={14} /> Registrar ingreso
                       </button>
                     )}
 
@@ -390,9 +420,12 @@ export function SalvajeSplash() {
       {/* Validación por QR (?ticket= entrada · ?gift= tarjeta de regalo) */}
       {validating && (
         <ValidationModal
-          data={validating}
+          // El registro se lee EN VIVO desde la suscripción: si otro dispositivo
+          // ya registró el ingreso, este modal lo refleja al instante.
+          data={{ ...validating, row: validating.row ? (rows.find((x) => x.id === validating.row.id) || validating.row) : undefined }}
           onClose={() => setValidating(null)}
           onCheckIn={handleCheckIn}
+          onUndoCheckIn={handleUndoCheckIn}
           onRedeemGift={handleRedeemGift}
         />
       )}
@@ -549,7 +582,7 @@ function TicketModal({ row, onClose }) {
 }
 
 /** Verificador por QR: entradas (?ticket=) y tarjetas de regalo (?gift=). */
-function ValidationModal({ data, onClose, onCheckIn, onRedeemGift }) {
+function ValidationModal({ data, onClose, onCheckIn, onUndoCheckIn, onRedeemGift }) {
   const r = data.row
   const isGift = data.mode === 'gift'
   const fmtIn = (ts) => {
@@ -579,6 +612,14 @@ function ValidationModal({ data, onClose, onCheckIn, onRedeemGift }) {
         </button>
       )
     }
+  } else if (data.done && r.checkedIn) {
+    // Recién confirmado en ESTE dispositivo: pantalla verde de bienvenida.
+    tone = 'success'; Icon = CheckCircle2; title = 'Ingreso confirmado'; sub = `Bienvenido · ${fmtIn(r.checkedInAt) || 'ahora'}`
+    action = (
+      <p className="mt-5 rounded-xl bg-salvaje-brown/5 px-4 py-3 font-body text-xs text-salvaje-gray">
+        La boleta quedó marcada como <span className="font-semibold text-salvaje-dark">USADA</span>: si se vuelve a escanear aparecerá como <span className="font-semibold text-salvaje-danger">no válida</span>.
+      </p>
+    )
   } else {
     const valid = r.paid && !r.checkedIn
     const already = r.paid && r.checkedIn
@@ -589,10 +630,26 @@ function ValidationModal({ data, onClose, onCheckIn, onRedeemGift }) {
           onClick={() => onCheckIn(r)}
           className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-salvaje-success px-6 py-3.5 font-display text-base uppercase tracking-widest text-white hover:opacity-90 active:scale-95 transition"
         >
-          <CheckCircle2 size={18} /> Registrar ingreso
+          <CheckCircle2 size={18} /> Confirmar ingreso
         </button>
       )
-    } else if (already) { tone = 'gold'; Icon = QrCode; title = 'Ya registró ingreso'; sub = `Ingreso: ${fmtIn(r.checkedInAt)}` }
+    } else if (already) {
+      // Boleta YA USADA: se muestra en rojo, sin botón de ingreso.
+      tone = 'danger'; Icon = AlertTriangle; title = 'Boleta ya usada'; sub = `NO VÁLIDA · ingresó ${fmtIn(r.checkedInAt) || 'antes'}`
+      action = (
+        <div className="mt-5">
+          <p className="rounded-xl bg-salvaje-danger/10 px-4 py-3 font-display text-lg uppercase tracking-wide text-salvaje-danger">
+            Esta persona ya entró · no permitir un segundo ingreso
+          </p>
+          <button
+            onClick={() => onUndoCheckIn(r)}
+            className="mt-3 text-xs font-semibold text-salvaje-gray underline underline-offset-2 hover:text-salvaje-brown transition-colors"
+          >
+            ¿Fue un error? Anular el ingreso
+          </button>
+        </div>
+      )
+    }
     else { tone = 'danger'; Icon = AlertTriangle; title = 'Entrada no válida'; sub = 'No tiene pago registrado' }
   }
 

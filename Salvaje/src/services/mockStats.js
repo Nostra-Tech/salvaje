@@ -3,7 +3,7 @@
  * Lee la colección `mock_inscriptions` (la que escribe la landing /mock) y
  * gestiona las notificaciones de nuevo registro para los admins.
  */
-import { collection, onSnapshot, getDocs, doc, setDoc, addDoc, updateDoc, deleteDoc, serverTimestamp, increment, query, where } from 'firebase/firestore'
+import { collection, onSnapshot, getDocs, doc, setDoc, addDoc, updateDoc, deleteDoc, serverTimestamp, increment, query, where, runTransaction } from 'firebase/firestore'
 import { db } from './firebase'
 
 /** Marca una inscripción como pagada / no pagada. */
@@ -42,11 +42,30 @@ export async function duplicateMockInscription(row, sequence = 2) {
   return ref.id
 }
 
-/** Registra el INGRESO al evento (validación del QR de la entrada). */
+/**
+ * Registra el INGRESO al evento (validación del QR de la entrada).
+ * Es una transacción: la boleta solo se puede usar UNA vez. Si ya fue usada
+ * (o no tiene pago) lanza un error con código para que la UI lo explique.
+ *   NOT_FOUND · NOT_PAID · ALREADY_CHECKED_IN
+ */
 export async function setMockCheckedIn(id) {
+  const ref = doc(db, 'mock_inscriptions', id)
+  await runTransaction(db, async (tx) => {
+    const snap = await tx.get(ref)
+    if (!snap.exists()) throw new Error('NOT_FOUND')
+    const d = snap.data() || {}
+    if (!d.paid) throw new Error('NOT_PAID')
+    if (d.checkedIn) throw new Error('ALREADY_CHECKED_IN')
+    tx.update(ref, { checkedIn: true, checkedInAt: serverTimestamp() })
+  })
+}
+
+/** Anula un ingreso registrado por error: la boleta vuelve a ser válida. */
+export async function undoMockCheckedIn(id) {
   await updateDoc(doc(db, 'mock_inscriptions', id), {
-    checkedIn: true,
-    checkedInAt: serverTimestamp(),
+    checkedIn: false,
+    checkedInAt: null,
+    checkInUndoneAt: serverTimestamp(),
   })
 }
 
