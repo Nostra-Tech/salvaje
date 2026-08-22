@@ -88,31 +88,31 @@ export function DoorScanner() {
     processingRef.current = true
     try {
       const parsed = parseCode(text)
-      if (!parsed) { beep(false); showResult({ tone: 'danger', title: 'QR no reconocido', sub: 'No es una boleta de Salvaje Splash' }, 3500); return }
+      if (!parsed) { beep(false); showResult({ tone: 'danger', title: 'QR no reconocido', sub: 'No es una boleta de Salvaje Splash' }, 7000); return }
       const row = rowsRef.current.find((r) => r.id === parsed.id)
-      if (!row) { beep(false); showResult({ tone: 'danger', title: 'Boleta no encontrada', sub: 'No existe ningún registro con ese código' }, 4000); return }
+      if (!row) { beep(false); showResult({ tone: 'danger', title: 'Boleta no encontrada', sub: 'No existe ningún registro con ese código' }, 7000); return }
 
       if (parsed.mode === 'gift') {
         const redeemed = Math.min(row.giftClassesRedeemed || 0, GIFT_TOTAL)
-        if (!row.paid) { beep(false); showResult({ tone: 'danger', title: 'Tarjeta no válida', sub: 'Sin pago registrado', name: row.nombre }, 4000); return }
-        if (redeemed >= GIFT_TOTAL) { beep(false); showResult({ tone: 'danger', title: 'Tarjeta agotada', sub: `Ya redimió las ${GIFT_TOTAL} clases`, name: row.nombre }, 4000); return }
+        if (!row.paid) { beep(false); showResult({ tone: 'danger', title: 'Tarjeta no válida', sub: 'Sin pago registrado', name: row.nombre }, 7000); return }
+        if (redeemed >= GIFT_TOTAL) { beep(false); showResult({ tone: 'danger', title: 'Tarjeta agotada', sub: `Ya redimió las ${GIFT_TOTAL} clases`, name: row.nombre }, 7000); return }
         showResult({ tone: 'gold', title: 'Tarjeta de regalo', sub: `${redeemed}/${GIFT_TOTAL} redimidas`, name: row.nombre, row, mode: 'gift' }, 15000)
         return
       }
 
       // Boleta de entrada: se confirma al instante (un solo uso, transaccional).
-      if (!row.paid) { beep(false); showResult({ tone: 'danger', title: 'Entrada no válida', sub: 'No tiene pago registrado', name: row.nombre }, 4500); return }
-      if (row.checkedIn) { beep(false); showResult({ tone: 'danger', title: 'Boleta ya usada', sub: `NO VÁLIDA · ingresó a las ${fmtIn(row.checkedInAt) || '—'}`, name: row.nombre }, 5000); return }
+      if (!row.paid) { beep(false); showResult({ tone: 'danger', title: 'Entrada no válida', sub: 'No tiene pago registrado', name: row.nombre }, 7000); return }
+      if (row.checkedIn) { beep(false); showResult({ tone: 'danger', title: 'Boleta ya usada', sub: `NO VÁLIDA · ingresó a las ${fmtIn(row.checkedInAt) || '—'}`, name: row.nombre }, 7000); return }
       try {
         await setMockCheckedIn(row.id)
         beep(true)
-        showResult({ tone: 'success', title: 'Ingreso confirmado', sub: 'Boleta marcada como usada', name: row.nombre, row, undoable: true }, 3500)
+        showResult({ tone: 'success', title: 'Ingreso confirmado', sub: 'Boleta marcada como usada', name: row.nombre, row, undoable: true }, 7000)
       } catch (e) {
         const code = e?.message
         beep(false)
-        if (code === 'ALREADY_CHECKED_IN') showResult({ tone: 'danger', title: 'Boleta ya usada', sub: 'Otro dispositivo ya registró este ingreso', name: row.nombre }, 5000)
-        else if (code === 'NOT_PAID') showResult({ tone: 'danger', title: 'Entrada no válida', sub: 'No tiene pago registrado', name: row.nombre }, 4500)
-        else showResult({ tone: 'danger', title: 'Error al registrar', sub: 'Revisa la conexión e intenta de nuevo', name: row.nombre }, 4000)
+        if (code === 'ALREADY_CHECKED_IN') showResult({ tone: 'danger', title: 'Boleta ya usada', sub: 'Otro dispositivo ya registró este ingreso', name: row.nombre }, 7000)
+        else if (code === 'NOT_PAID') showResult({ tone: 'danger', title: 'Entrada no válida', sub: 'No tiene pago registrado', name: row.nombre }, 7000)
+        else showResult({ tone: 'danger', title: 'Error al registrar', sub: 'Revisa la conexión e intenta de nuevo', name: row.nombre }, 7000)
       }
     } finally {
       processingRef.current = false
